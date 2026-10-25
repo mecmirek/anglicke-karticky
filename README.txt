@@ -1,0 +1,1 @@
+Testovací verze: načítá souhrnný počet správných a všech odpovědí na nepravidelná slovesa ze Supabase a zobrazuje jej v průběžném výsledku. Nahraj celý ZIP jako předchozí verze. Testuj nejprve na Macu a iPhonu; zatím nenahrazuj původní zálohu.
