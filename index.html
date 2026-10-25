@@ -1138,7 +1138,7 @@ const supabaseUrl='https://rmovoinsjuynkfsmrghz.supabase.co';
 const supabaseKey='sb_publishable_7pa5pOi6Jxx4ggasPuWtRA_3-x264BE';
 // Když se knihovna z CDN nenačte (offline, blokovač), kartičky musí fungovat dál – jen bez synchronizace.
 let cloud=null;try{if(window.supabase&&typeof window.supabase.createClient==='function')cloud=window.supabase.createClient(supabaseUrl,supabaseKey);}catch(e){cloud=null;}
-function localSave(){try{localStorage.setItem('engcards1000',JSON.stringify({grades,lesson,dirty,srs,starred}))}catch(e){}}
+function localSave(){try{const key=cloudUser&&cloudUser.id?'engcards1000:user:'+cloudUser.id:'engcards1000:guest';localStorage.setItem(key,JSON.stringify({grades,lesson,dirty,srs,starred}));}catch(e){}}
 function save(){localSave();if(cloudUser&&cloudReady)syncOneCardChanges();}
 function cloudMessage(msg){const el=$('cloudStatus');if(el)el.textContent=msg;}
 let verbSyncBusy=false,verbSyncQueued=false;
@@ -1156,19 +1156,48 @@ async function loadVerbPracticeHistory(){
 }
 async function syncVerbPracticeAnswers(){if(!cloud||!cloudUser||!cloudReady)return;if(verbSyncBusy){verbSyncQueued=true;return;}const pending=readPendingVerbAnswers();if(!pending.length)return;verbSyncBusy=true;const sent=pending.slice();try{const rows=sent.map(r=>({user_id:cloudUser.id,event_id:r.event_id,is_correct:!!r.is_correct,created_at:r.created_at||new Date().toISOString()}));const {error}=await cloud.from('verb_practice_answers').upsert(rows,{onConflict:'user_id,event_id'});if(error)throw error;const sentIds=new Set(sent.map(r=>r.event_id));writePendingVerbAnswers(readPendingVerbAnswers().filter(r=>!sentIds.has(r.event_id)));cloudMessage('Synchronizace zapnutá. Kartičky i výsledky nepravidelných sloves se ukládají online.');}catch(err){cloudMessage('Výsledky nepravidelných sloves se zatím nepodařilo uložit online: '+(err.message||'zkus to znovu')+'. Zůstávají uložené v tomto zařízení a odešlou se později.');}finally{verbSyncBusy=false;if(verbSyncQueued){verbSyncQueued=false;syncVerbPracticeAnswers();}}}
 async function syncOneCardChanges(){if(!cloud||!cloudUser||!cloudReady)return;if(cloudBusy){syncQueued=true;return;}cloudBusy=true;const sent={...dirty};try{const rows=Object.entries(grades).filter(([word,grade])=>['known','review'].includes(grade)).map(([word,grade])=>({user_id:cloudUser.id,word_index:words.findIndex(w=>w.word===word),grade,updated_at:new Date().toISOString()})).filter(r=>r.word_index>=0);if(rows.length){const {error}=await cloud.from('card_progress').upsert(rows,{onConflict:'user_id,word_index'});if(error)throw error;}for(const word of Object.keys(sent))delete dirty[word];localSave();cloudMessage('Synchronizace zapnutá. Změny se ukládají online.');}catch(err){cloudMessage('Online uložení se nezdařilo: '+(err.message||'zkus to znovu')+' Hodnocení zůstává uložené v tomto prohlížeči a odešle se při další změně.');}finally{cloudBusy=false;if(syncQueued){syncQueued=false;syncOneCardChanges();}}}
-async function loadCloudProgress(user){if(!cloud||cloudLoading||cloudUser)return;cloudLoading=true;cloudReady=false;try{const {data,error}=await cloud.from('card_progress').select('word_index,grade').eq('user_id',user.id);if(error)throw error;const serverGrades={};for(const row of (data||[])){if(Number.isInteger(row.word_index)&&words[row.word_index]&&['known','uncertain','review'].includes(row.grade))serverGrades[words[row.word_index].word]=row.grade==='uncertain'?'review':row.grade;}
-// Sloučení: cloud je společný zdroj pravdy, ale slovíčka, která v cloudu chybí nebo byla
-// na tomto zařízení ohodnocena bez připojení, se z lokálního uložení neztratí.
-const merged={...serverGrades};let kept=0;for(const [word,grade] of Object.entries(grades)){if(!(word in serverGrades)||dirty[word]){if(merged[word]!==grade)kept++;merged[word]=grade;dirty[word]=true;}}
-grades=merged;ensureSrs();localSave();render();cloudUser=user;cloudReady=true;
-await syncOneCardChanges();
-await syncVerbPracticeAnswers();
-await loadVerbPracticeHistory();
-if(!Object.keys(dirty).length)cloudMessage(((data||[]).length?'Postup načten z cloudu: '+Object.keys(grades).length+' ohodnocených slovíček'+(kept?' (z toho '+kept+' doplněno z tohoto zařízení).':'.'):'První synchronizace: hodnocení z tohoto zařízení bylo uloženo online.')+' Výsledky nepravidelných sloves se také synchronizují.');
-$('signIn').classList.add('hidden');$('signUp').classList.add('hidden');$('signOut').classList.remove('hidden');$('authEmail').disabled=true;$('authPassword').disabled=true;
-}catch(err){cloudUser=null;cloudReady=false;cloudMessage('Nepodařilo se načíst online postup: '+(err.message||'zkontroluj nastavení'));}finally{cloudLoading=false;}}
+async function loadCloudProgress(user){
+ if(!cloud||cloudLoading)return;
+ if(cloudUser&&cloudUser.id===user.id&&cloudReady)return;
+ cloudLoading=true;cloudReady=false;
+ // Switch account context before any save/sync; never reuse another account's in-memory state.
+ cloudUser=user;
+ try{
+  const accountKey='engcards1000:user:'+user.id;
+  let accountLocal={};
+  try{const raw=localStorage.getItem(accountKey);if(raw)accountLocal=JSON.parse(raw)||{};}catch(e){}
+  const {data,error}=await cloud.from('card_progress').select('word_index,grade').eq('user_id',user.id);
+  if(error)throw error;
+  const serverGrades={};
+  for(const row of (data||[])){
+   if(Number.isInteger(row.word_index)&&words[row.word_index]&&['known','uncertain','review'].includes(row.grade))serverGrades[words[row.word_index].word]=row.grade==='uncertain'?'review':row.grade;
+  }
+  // Cloud is authoritative for this account. Only unsynced changes saved under THIS user ID may merge.
+  const accountDirty=accountLocal.dirty&&typeof accountLocal.dirty==='object'?migrateKeys(accountLocal.dirty):{};
+  const accountGrades=accountLocal.grades&&typeof accountLocal.grades==='object'?migrateKeys(accountLocal.grades):{};
+  const merged={...serverGrades};
+  dirty={};
+  for(const [word,pending] of Object.entries(accountDirty)){
+   if(pending&&Object.prototype.hasOwnProperty.call(accountGrades,word)&&words.some(w=>w.word===word)){
+    merged[word]=accountGrades[word];dirty[word]=true;
+   }
+  }
+  grades=merged;
+  srs=accountLocal.srs&&typeof accountLocal.srs==='object'?migrateKeys(accountLocal.srs):{};
+  starred=accountLocal.starred&&typeof accountLocal.starred==='object'?migrateKeys(accountLocal.starred):{};
+  lesson=accountLocal.lesson>=1&&accountLocal.lesson<=20?+accountLocal.lesson:1;
+  $('lesson').value=lesson;
+  ensureSrs();render();cloudReady=true;localSave();
+  await syncOneCardChanges();
+  await syncVerbPracticeAnswers();
+  await loadVerbPracticeHistory();
+  if(!Object.keys(dirty).length)cloudMessage(((data||[]).length?'Postup načten z cloudu: '+Object.keys(grades).length+' ohodnocených slovíček.':'Tento účet zatím nemá uložený postup kartiček.')+' Výsledky nepravidelných sloves se také synchronizují.');
+  $('signIn').classList.add('hidden');$('signUp').classList.add('hidden');$('signOut').classList.remove('hidden');$('authEmail').disabled=true;$('authPassword').disabled=true;
+ }catch(err){cloudUser=null;cloudReady=false;cloudMessage('Nepodařilo se načíst online postup: '+(err.message||'zkontroluj nastavení'));}
+ finally{cloudLoading=false;}
+}
 async function handleAuth(kind){if(!cloud){cloudMessage('Online synchronizace teď není dostupná (nepodařilo se načíst knihovnu). Kartičky fungují dál a hodnocení se ukládá v tomto prohlížeči.');return;}const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password){cloudMessage('Vyplň e-mail a heslo.');return;}if(kind==='signup'&&password.length<6){cloudMessage('Heslo musí mít alespoň 6 znaků.');return;}cloudMessage('Pracuji…');try{let result;if(kind==='signup'){result=await cloud.auth.signUp({email,password,options:{emailRedirectTo:window.location.href.split('#')[0]}});}else{result=await cloud.auth.signInWithPassword({email,password});}if(result.error)throw result.error;if(kind==='signup'&&!result.data.session){cloudMessage('Účet byl vytvořen. Zkontroluj e-mail a potvrď registraci. Potom se vrať sem a přihlas se.');return;}if(result.data.user)await loadCloudProgress(result.data.user);}catch(err){cloudMessage('Chyba: '+(err.message||'přihlášení se nezdařilo'));}}
-$('signIn').onclick=()=>handleAuth('signin');$('signUp').onclick=()=>handleAuth('signup');$('signOut').onclick=async()=>{if(cloud)await cloud.auth.signOut();cloudUser=null;cloudReady=false;$('signIn').classList.remove('hidden');$('signUp').classList.remove('hidden');$('signOut').classList.add('hidden');$('authEmail').disabled=false;$('authPassword').disabled=false;cloudMessage('Odhlášeno. Hodnocení zůstává uložené v tomto prohlížeči.');};
+$('signIn').onclick=()=>handleAuth('signin');$('signUp').onclick=()=>handleAuth('signup');$('signOut').onclick=async()=>{if(cloud)await cloud.auth.signOut();cloudUser=null;cloudReady=false;cloudLoading=false;grades={};dirty={};srs={};starred={};lesson=1;$('lesson').value='1';localSave();render();$('signIn').classList.remove('hidden');$('signUp').classList.remove('hidden');$('signOut').classList.add('hidden');$('authEmail').disabled=false;$('authPassword').disabled=false;cloudMessage('Odhlášeno. Účet je odpojen; přihlášením se načte pouze postup příslušného uživatele.');};
 if(cloud){cloud.auth.getSession().then(({data})=>{if(data.session?.user)loadCloudProgress(data.session.user);}).catch(()=>{});
 cloud.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session?.user&&!cloudUser)loadCloudProgress(session.user);});}
 else{cloudMessage('Online synchronizace teď není dostupná (nepodařilo se načíst knihovnu – zkontroluj připojení). Kartičky fungují a hodnocení se ukládá v tomto prohlížeči.');$('signIn').disabled=true;$('signUp').disabled=true;}
@@ -1208,7 +1237,7 @@ $('frontSpeak').onclick=e=>{e.stopPropagation();speakCurrentSentence()};$('backS
 $('export').onclick=()=>{let blob=new Blob([JSON.stringify({grades,lesson,srs,starred,daily,prefs},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='vysledky-karticek.json';document.body.appendChild(a);a.click();a.remove();
  // Safari (iPhone) potřebuje, aby odkaz chvíli existoval – okamžité uvolnění stahování zruší.
  setTimeout(()=>URL.revokeObjectURL(a.href),4000)};$('importBtn').onclick=()=>$('file').click();$('file').onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());grades=migrateKeys(x.grades);dirty={};for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';dirty[key]=true;}srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};ensureSrs();if(x.starred&&typeof x.starred==='object')starred=migrateKeys(x.starred);if(x.daily&&typeof x.daily==='object'){daily={...daily,...x.daily};saveDaily();loadDaily();}if(x.prefs&&typeof x.prefs==='object'){prefs={...prefs,...x.prefs};savePrefs();$('prefShowTr').checked=!!prefs.showTranslation;$('prefTheme').value=prefs.theme||'auto';applyTheme();}lesson=x.lesson>=1&&x.lesson<=20?+x.lesson:1;$('lesson').value=lesson;save();index=0;render();$('status').textContent='Výsledky importovány.'}catch(err){$('status').textContent='Soubor se nepodařilo načíst.'}};
-try{let x=JSON.parse(localStorage.getItem('engcards1000')||'{}');grades=migrateKeys(x.grades);dirty=x.dirty&&typeof x.dirty==='object'?migrateKeys(x.dirty):{};for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';}srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};starred=x.starred&&typeof x.starred==='object'?migrateKeys(x.starred):{};lesson=x.lesson>=1&&x.lesson<=20?x.lesson:1}catch(e){}ensureSrs();loadDaily();$('dailyCount').value=String(daily.count);$('lesson').value=lesson;render();
+try{let raw=localStorage.getItem('engcards1000:guest');if(!raw)raw=localStorage.getItem('engcards1000')||'{}';let x=JSON.parse(raw);grades=migrateKeys(x.grades);dirty=x.dirty&&typeof x.dirty==='object'?migrateKeys(x.dirty):{};for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';}srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};starred=x.starred&&typeof x.starred==='object'?migrateKeys(x.starred):{};lesson=x.lesson>=1&&x.lesson<=20?+x.lesson:1}catch(e){}ensureSrs();loadDaily();$('dailyCount').value=String(daily.count);$('lesson').value=lesson;render();
 // --- Ovládání obrazovky Dnes ---
 $('dailyCount').onchange=()=>{daily.count=+$('dailyCount').value;fillNewWords();saveDaily();render();};
 function showCards(m){$('mode').value=m;mode=m;const a=set();const first=a.findIndex(w=>!grades[w.word]);index=first>=0?first:0;render();document.querySelector('.stage').scrollIntoView({behavior:'smooth',block:'start'});}
