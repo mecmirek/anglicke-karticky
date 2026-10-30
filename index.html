@@ -320,6 +320,7 @@ html.dark #prompt .aligned-highlight{background:#1d5a47;color:#e1f5ee}
 #context.cs-sentence{display:block;margin:12px 0;padding:10px 14px;border-radius:12px;background:#e1f5ee;border:1px solid #9fe1cb;color:#085041;font-size:1.05rem;font-weight:650;line-height:1.4}
 #context.cs-sentence::before{content:"Česky: ";font-weight:600;color:#0f6e56}
 html.dark #context.cs-sentence{background:#173a30;border-color:#1d6b55;color:#e1f5ee}html.dark #context.cs-sentence::before{color:#9fe1cb}
+#verbAnswerMic.listening,#verbWordMic.listening,#verbSentenceMic.listening{background:#c33c48;border-color:#c33c48;color:#fff}
 </style>
 </head>
 <body>
@@ -836,7 +837,7 @@ document.addEventListener('keydown',function(e){
 (function setupVerbDictation(){
  const mic=$("verbAnswerMic"), wordMic=$("verbWordMic"), sentenceMic=$("verbSentenceMic"), langSelect=$("verbVoiceLang"), status=$("verbVoiceStatus");
  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
- let recognition=null, lastAnswerId="answer0", dictationKind="default";
+ let lastAnswerId="answer0", dictationKind="default";
  try{const saved=localStorage.getItem("irregularVerbSpeechLang");if(saved==="en-GB"||saved==="en-US")langSelect.value=saved;}catch(e){}
  langSelect.addEventListener("change",()=>{try{localStorage.setItem("irregularVerbSpeechLang",langSelect.value);}catch(e){} });
  $("inputs").addEventListener("focusin",e=>{if(e.target&&/^answer\d+$/.test(e.target.id))lastAnswerId=e.target.id;});
@@ -878,29 +879,32 @@ document.addEventListener('keydown',function(e){
    sayStatus("Přímé hlasové rozpoznávání není v tomto Safari dostupné. Můžeš použít mikrofon klávesnice iPhonu.",true);
    return;
  }
- function stopDictation(message){
-   const active=recognition;
-   if(active){
-     // Odpoj handlery před abort(), aby pozdní událost starého rozpoznávání
-     // nemohla přepsat stav nového poslechu.
-     recognition=null;
-     try{active.onresult=null;active.onerror=null;active.onend=null;active.abort();}catch(e){}
+ // ---- Řízení poslechu: jedna instance, časový limit, bezpečné zastavení ----
+ const MIC_BTNS=[mic,wordMic,sentenceMic],MIC_LABELS=new Map(MIC_BTNS.map(b=>[b,b.textContent]));
+ const FIRST_SPEECH_LIMIT=8000,SPEECH_LIMIT=12000,STOP_WAIT=600;
+ let rec=null,sess=null,state="idle",pending=null,watchdog=null,endTimer=null;
+ function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=false;b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
+ function dropRec(){const r=rec;rec=null;if(r){try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=null;r.abort();}catch(e){}}}
+ // Jediné místo, kde se poslech uzavírá – vždy vrátí tlačítka i stav do výchozího stavu.
+ function settle(){
+   clearTimeout(watchdog);clearTimeout(endTimer);
+   const c=sess;sess=null;state="idle";paintButtons();
+   if(c&&!c.discard&&!c.gotResult&&!c.error){
+     sayStatus(c.byUser?"Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.":"Nic jsem nerozpoznal"+(c.timedOut?" (čas vypršel)":"")+". Zkus to znovu nebo odpověď napiš.",!c.byUser);
    }
-   [mic,wordMic,sentenceMic].forEach(b=>{b.disabled=false;b.classList.remove("listening");});
-   if(message)sayStatus(message);
+   if(pending){const k=pending;pending=null;startDictation(k);}
  }
- function startDictation(kind){
-   // Klepnutí během poslechu jej vždy zastaví. Dalším klepnutím lze poslech znovu spustit.
-   if(recognition){stopDictation("Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.");return;}
-   dictationKind=kind;
-   const fields=[...$("inputs").querySelectorAll("input")];
-   let target=fields.find(f=>f.id===lastAnswerId&&!f.disabled)||fields.find(f=>f===document.activeElement)||fields[0];
-   if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
-   if("speechSynthesis" in window)window.speechSynthesis.cancel();
-   const rec=new Recognition();recognition=rec;rec.lang=langSelect.value;rec.interimResults=false;rec.maxAlternatives=8;
-   [mic,wordMic,sentenceMic].forEach(b=>{b.disabled=false;b.classList.add("listening");});
-   sayStatus(kind==="sentence"?"Poslouchám celou anglickou větu…":"Poslouchám… řekni odpověď anglicky.");
-   rec.onresult=e=>{
+ function beginStop(){
+   if(state==="stopping")return;
+   state="stopping";clearTimeout(watchdog);paintButtons();
+   try{if(rec)rec.stop();}catch(e){}
+   clearTimeout(endTimer);
+   // Když Safari nepošle onend, po krátké době instanci zahodíme a příště vznikne nová.
+   endTimer=setTimeout(()=>{dropRec();settle();},STOP_WAIT);
+ }
+ function armWatchdog(ms){clearTimeout(watchdog);watchdog=setTimeout(()=>{if(state==="listening"&&sess){sess.timedOut=true;beginStop();}},ms);}
+ // Vyhodnocení rozpoznané řeči (beze změny oproti dřívější verzi).
+ function handleResult(e,kind,target){
      const alternatives=Array.from(e.results[0]||[]).map(x=>x.transcript.trim()).filter(Boolean);
      if(!alternatives.length){sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);return;}
      const v=cur();let transcript=alternatives[0];
@@ -933,18 +937,56 @@ document.addEventListener('keydown',function(e){
      }
      target.dispatchEvent(new Event("input",{bubbles:true}));
      if(mode==="forms"){const idx=Number(target.id.replace("answer",""));const next=$("answer"+(idx+1));if(next&&!next.disabled){lastAnswerId=next.id;next.focus({preventScroll:true});}}
+ }
+ function makeRec(){
+   const r=new Recognition();r.continuous=false;r.interimResults=false;r.maxAlternatives=8;
+   r.onresult=e=>{if(!sess||sess.discard||sess.gotResult)return;sess.gotResult=true;handleResult(e,sess.kind,sess.target);beginStop();};
+   r.onnomatch=()=>{if(!sess||sess.discard||sess.gotResult)return;sess.error=true;sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);beginStop();};
+   r.onspeechstart=()=>{if(state==="listening")armWatchdog(SPEECH_LIMIT);};
+   r.onspeechend=()=>{if(state==="listening")beginStop();};
+   r.onerror=e=>{
+     if(!sess||e.error==="aborted")return;
+     const messages={"not-allowed":"Přístup k mikrofonu byl zamítnut. Povol mikrofon v nastavení prohlížeče.","service-not-allowed":"Rozpoznávání řeči není povoleno.","no-speech":"Nebylo nic slyšet. Zkus to znovu.","network":"Rozpoznávání řeči potřebuje připojení k internetu.","audio-capture":"Mikrofon není dostupný."};
+     sess.error=true;sayStatus(messages[e.error]||"Hlasové zadávání se nepovedlo. Odpověď můžeš napsat.",true);beginStop();
    };
-   rec.onerror=e=>{const messages={"not-allowed":"Přístup k mikrofonu byl zamítnut. Povol mikrofon v nastavení prohlížeče.","service-not-allowed":"Rozpoznávání řeči není povoleno.","no-speech":"Nebylo nic slyšet. Zkus to znovu.","network":"Rozpoznávání řeči potřebuje připojení k internetu.","audio-capture":"Mikrofon není dostupný."};sayStatus(messages[e.error]||"Hlasové zadávání se nepovedlo. Odpověď můžeš napsat.",true);};
-   rec.onend=()=>{[mic,wordMic,sentenceMic].forEach(b=>{b.disabled=false;b.classList.remove("listening");});if(recognition===rec)recognition=null;};
-   try{rec.start();}catch(err){[mic,wordMic,sentenceMic].forEach(b=>{b.disabled=false;b.classList.remove("listening");});recognition=null;sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);}
+   r.onend=()=>{settle();};
+   return r;
+ }
+ function startEngine(){
+   for(let attempt=0;attempt<2;attempt++){
+     try{if(!rec)rec=makeRec();rec.lang=langSelect.value;rec.start();return true;}catch(err){dropRec();}
+   }
+   return false;
+ }
+ // Přerušení poslechu při změně otázky, cvičení nebo sady: pozdní výsledek se zahodí.
+ function stopDictation(message){
+   if(state==="idle")return;
+   if(sess)sess.discard=true;
+   if(message)sayStatus(message);
+   beginStop();
+ }
+ function startDictation(kind){
+   // Klepnutí během poslechu jej zastaví; během uvolňování mikrofonu se nové zadání zařadí do fronty.
+   if(state==="listening"){if(sess)sess.byUser=true;sayStatus("Zastavuji poslech…");beginStop();return;}
+   if(state==="stopping"){pending=kind;sayStatus("Chvíli počkej, uvolňuji mikrofon…");return;}
+   dictationKind=kind;
+   const fields=[...$("inputs").querySelectorAll("input")];
+   let target=fields.find(f=>f.id===lastAnswerId&&!f.disabled)||fields.find(f=>f===document.activeElement)||fields[0];
+   if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
+   if("speechSynthesis" in window)window.speechSynthesis.cancel();
+   sess={kind,target,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
+   state="listening";paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
+   sayStatus(kind==="sentence"?"Poslouchám celou anglickou větu…":"Poslouchám… řekni odpověď anglicky.");
+   if(!startEngine()){sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
+   armWatchdog(FIRST_SPEECH_LIMIT);
  }
  mic.addEventListener("click",()=>startDictation("default"));wordMic.addEventListener("click",()=>startDictation("word"));sentenceMic.addEventListener("click",()=>startDictation("sentence"));
  // Při opuštění cvičení nebo změně otázky ukonči případný rozběhnutý poslech.
  ["backToSelection","exitLesson","next","prev","restart"].forEach(id=>{
-   const el=$(id);if(el)el.addEventListener("click",()=>{if(recognition)stopDictation("Hlasové zadávání ukončeno.");},true);
+   const el=$(id);if(el)el.addEventListener("click",()=>{if(state!=="idle")stopDictation("Hlasové zadávání ukončeno.");},true);
  });
- document.querySelectorAll("#modes .mode").forEach(el=>el.addEventListener("click",()=>{if(recognition)stopDictation("Hlasové zadávání ukončeno při změně cvičení.");},true));
- $("verbSet").addEventListener("change",()=>{if(recognition)stopDictation("Hlasové zadávání ukončeno při změně sady.");},true);
+ document.querySelectorAll("#modes .mode").forEach(el=>el.addEventListener("click",()=>{if(state!=="idle")stopDictation("Hlasové zadávání ukončeno při změně cvičení.");},true));
+ $("verbSet").addEventListener("change",()=>{if(state!=="idle")stopDictation("Hlasové zadávání ukončeno při změně sady.");},true);
 })();
 <\/script>
 </body>
