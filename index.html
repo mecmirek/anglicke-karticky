@@ -305,6 +305,13 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
 }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&display=swap" rel="stylesheet">
+<style>
+/* Kompaktní tlačítka režimů A–D: klepnutí spustí cvičení */
+#modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#modes .mode{flex:none;width:100%;padding:8px 10px;font-size:.9rem;line-height:1.2;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px}
+@media(min-width:700px){#modes{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:360px){#modes .mode{font-size:.82rem;padding:8px}}
+</style>
 </head>
 <body>
 <header><div><h1>Angličtina A2 – nepravidelná slovesa</h1><p>Procvičování tří tvarů · britská výslovnost IPA · česká vysvětlení</p></div></header>
@@ -319,7 +326,6 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
   </div>
   <div class="toolbar" style="margin-top:10px;align-items:center"><label for="verbSet" class="muted">Sada sloves:</label><select id="verbSet"></select></div>
   <p class="muted">Odpovídej bez nápovědy. Po kontrole vysvětlím chybu a můžeš pokračovat. U překladu vět máš dva pokusy.</p>
-  <button type="button" class="primary" id="startExercise">Spustit cvičení →</button>
 </section>
 <section class="panel hidden" id="exercisePanel">
   <button type="button" id="backToSelection" style="margin-bottom:8px">← Zpět k výběru cvičení</button>
@@ -546,7 +552,6 @@ function record(key,ok){if(recorded.has(key))return;recorded.set(key,ok);try{if(
 const $=id=>document.getElementById(id);
 function showSelection(){ $("selectionPanel").classList.remove("hidden"); $("exercisePanel").classList.add("hidden"); $("scorePanel").classList.add("hidden"); $("tablePanel").classList.add("hidden"); window.scrollTo(0,0); }
 function showExercise(){ $("selectionPanel").classList.add("hidden"); $("exercisePanel").classList.remove("hidden"); $("scorePanel").classList.remove("hidden"); $("tablePanel").classList.remove("hidden"); renderTable();render();window.scrollTo(0,0); }
-$("startExercise").addEventListener("click",showExercise);
 $("backToSelection").addEventListener("click",showSelection);
 $("exitLesson").addEventListener("click",()=>window.parent.postMessage("close-irregular-lesson","*"));
 const cur=()=>verbs[index%verbs.length];
@@ -705,7 +710,7 @@ function evaluate(){
  $("check").disabled=true;$("next").disabled=false;
  $("score").textContent=scoreText();
 }
-document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));if(!$("exercisePanel").classList.contains("hidden"))render()}));
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));showExercise()}));
 $("check").addEventListener("click",evaluate);
 // Klávesa Enter funguje ve všech režimech:
 // A (dva tvary): z 2. tvaru přesune do 3. tvaru; z 3. tvaru zkontroluje.
@@ -887,7 +892,7 @@ document.addEventListener('keydown',function(e){
  }
  mic.addEventListener("click",()=>startDictation("default"));wordMic.addEventListener("click",()=>startDictation("word"));sentenceMic.addEventListener("click",()=>startDictation("sentence"));
  // Při opuštění cvičení nebo změně otázky ukonči případný rozběhnutý poslech.
- ["startExercise","backToSelection","exitLesson","next","prev","restart"].forEach(id=>{
+ ["backToSelection","exitLesson","next","prev","restart"].forEach(id=>{
    const el=$(id);if(el)el.addEventListener("click",()=>{if(recognition)stopDictation("Hlasové zadávání ukončeno.");},true);
  });
  document.querySelectorAll("#modes .mode").forEach(el=>el.addEventListener("click",()=>{if(recognition)stopDictation("Hlasové zadávání ukončeno při změně cvičení.");},true));
