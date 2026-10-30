@@ -311,6 +311,15 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
 #modes .mode{flex:none;width:100%;padding:8px 10px;font-size:.9rem;line-height:1.2;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px}
 @media(min-width:700px){#modes{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:360px){#modes .mode{font-size:.82rem;padding:8px}}
+/* Režim C: IPA pod slovy věty, český překlad po kontrole */
+#exercisePanel .neg-aligned{margin:0;gap:2px 9px}
+#exercisePanel .neg-aligned .en-word{font-size:1em;font-weight:inherit;line-height:1.25}
+#exercisePanel .neg-aligned .ipa-part{font-family:system-ui,-apple-system,sans-serif;font-size:.5em;font-weight:400;line-height:1.3}
+#prompt .aligned-highlight{background:#c9ecdd;color:#085041;border-radius:6px;padding:0 4px}
+html.dark #prompt .aligned-highlight{background:#1d5a47;color:#e1f5ee}
+#context.cs-sentence{display:block;margin:12px 0;padding:10px 14px;border-radius:12px;background:#e1f5ee;border:1px solid #9fe1cb;color:#085041;font-size:1.05rem;font-weight:650;line-height:1.4}
+#context.cs-sentence::before{content:"Česky: ";font-weight:600;color:#0f6e56}
+html.dark #context.cs-sentence{background:#173a30;border-color:#1d6b55;color:#e1f5ee}html.dark #context.cs-sentence::before{color:#9fe1cb}
 </style>
 </head>
 <body>
@@ -319,7 +328,7 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
 <section class="panel" id="selectionPanel">
   <button type="button" id="exitLesson" style="margin-bottom:12px">← Zpět ke kartičkám</button>
   <div class="toolbar" id="modes">
-    <button class="mode active" data-mode="forms">A · Tři tvary</button>
+    <button class="mode" data-mode="forms">A · Tři tvary</button>
     <button class="mode" data-mode="translate">B · Překlad vět</button>
     <button class="mode" data-mode="negative">C · Zápory a otázky</button>
     <button class="mode" data-mode="third">D · Třetí tvar</button>
@@ -528,6 +537,36 @@ for(const group of verbSets){for(const v of group){if(v.ipa3.every(x=>x==="—")
  if(v.base==="be"){v.neg.gap="I ___ at home yesterday.";v.neg.src="I was at home yesterday.";}
  else if(!/\b(?:did|didn't)\b/i.test(v.neg.gap)){v.neg.gap=v.neg.gap.replace("___","didn't ___");}
 }}}
+// Režim C: český překlad věty (po kontrole) a IPA celé věty. "___" v IPA = místo slovesa, doplní se z ověřeného ipa3[0].
+// IPA je jen u sloves s ověřenou výslovností (ipa3); u ostatních se řádek s IPA nezobrazuje. Pole [m,f] = mužský/ženský rod mluvčího.
+const NEG_CS={go:["Včera jsem nešel do práce.","Včera jsem nešla do práce."],come:"Přišla domů v šest?",see:"Ten film jsme neviděli.",say:"Řekl „děkuji“?",buy:["Nekoupil jsem žádný chléb.","Nekoupila jsem žádný chléb."],forget:"Zapomněli jste klíče?",meet:"Na nádraží se nesetkali.",write:"Napsala e-mail?",drink:"Dnes ráno nepil kávu.",take:"Jeli jste autobusem?",
+ eat:"Včera jsme nejedli pizzu.",find:"Našla pěkný byt?",give:"Nedal mi své číslo.",know:"Věděli jste o té oslavě?",think:"Nemysleli jsme si, že to bylo snadné.",tell:"Řekla ti ty novinky?",get:"Dostal novou práci?",make:"Neudělali jsme chybu.",leave:"Vlak neodjel včas.",feel:"Byla jí zima?",begin:"Hodina nezačala pozdě.",break:"Zlomil si nohu?",bring:"Přinesli jste si deštník?",build:"Nepostavili jsme sněhuláka.",choose:"Vybrala si levný hotel?",drive:"Nejel moc rychle.",fall:"Spadla ta váza na podlahu?",fly:"Letěli do Španělska?",grow:"Loni jsme nepěstovali rajčata.",hear:"Slyšeli jste ty zprávy?",keep:"Nechala si ty peníze?",lose:"Náš tým zápas neprohrál.",pay:"Zaplatil účet?",put:"Dala si kabát na židli?",read:"Nečetli jsme návod.",run:"Uběhl pět kilometrů?",sell:"Prodali svůj dům?",send:"Neposlala mi pohlednici.",sing:"Zpívaly děti písničku?",sit:"Neseděli jsme na zahradě.",sleep:"Spalo miminko celou noc?",speak:"Mluvila s učitelem?",spend:"Neprožili jsme týden v Itálii.",stand:"Stáli blízko dveří?",swim:"Přeplaval jezero?",teach:"Neučila angličtinu.",throw:"Vyhodil ty staré boty?",understand:"Nerozuměli jsme té otázce.",wear:"Měla na sobě klobouk?",win:"Vyhrál ten závod?",
+ be:["Včera jsem byl doma.","Včera jsem byla doma."],have:["Včera jsem neměl dost času.","Včera jsem neměla dost času."],do:["Včera jsem neudělal domácí úkol.","Včera jsem neudělala domácí úkol."],hold:"Nedržela mě za ruku.",let:"Rodiče mě nepustili.",mean:["Nemyslel jsem to, co jsem řekl.","Nemyslela jsem to, co jsem řekla."],set:["Nenastavil jsem budík na šestou.","Nenastavila jsem budík na šestou."],lie:"Neležel na pohovce.",lead:"Nevedla tým dobře.",cut:["Nekrájel jsem chléb opatrně.","Nekrájela jsem chléb opatrně."],rise:"Slunce nevyšlo brzy.",catch:["Nestihl jsem ranní autobus.","Nestihla jsem ranní autobus."],fight:"Nebojovali za svou zemi.",shut:["Nezavřel jsem před spaním okno.","Nezavřela jsem před spaním okno."],wake:["Neprobudil jsem se v sedm.","Neprobudila jsem se v sedm."],ring:"Telefon nezazvonil dvakrát.",ride:["Nejel jsem do práce na kole.","Nejela jsem do práce na kole."],shake:"Nepodal mi ruku.",steal:"Někdo mi neukradl kolo.",stick:"Klíč se v zámku nezasekl.",hurt:["Včera jsem si nezranil záda.","Včera jsem si nezranila záda."],hit:"Netrefil míč silně.",cost:"Lístek nestál deset liber.",spread:"Zpráva se nešířila rychle.",lend:["Nepůjčil jsem mu své pero.","Nepůjčila jsem mu své pero."],feed:["Dnes ráno jsem nenakrmil kočku.","Dnes ráno jsem nenakrmila kočku."],deal:"Nevypořádali jsme se s tím problémem.",dig:"Nevykopali na zahradě díru.",hang:["Nepověsil jsem kabát u dveří.","Nepověsila jsem kabát u dveří."],hide:"Dítě se neschovalo za pohovku.",shoot:"Nevstřelil míč do brány.",shine:"Slunce nesvítilo celý den.",beat:"Náš tým šampiony neporazil.",blow:"Vítr nefoukal celou noc.",burn:["Dnes ráno jsem nepřipálil topinku.","Dnes ráno jsem nepřipálila topinku."],dream:["Nesnil jsem o dovolené.","Nesnila jsem o dovolené."],learn:["Dnes jsem se nenaučil nové slovo.","Dnes jsem se nenaučila nové slovo."],spell:["Nenapsal jsem tvé jméno špatně.","Nenapsala jsem tvé jméno špatně."],smell:"Květiny nevoněly nádherně.",spill:["Nevylil jsem si kávu na košili.","Nevylila jsem si kávu na košili."],tear:["Omylem jsem neroztrhl papír.","Omylem jsem neroztrhla papír."],freeze:"Jezero loni v zimě nezamrzlo.",forgive:"Rychle mu neodpustila.",bite:"Pes nekousl do mé boty.",bend:["Neohnul jsem drát opatrně.","Neohnula jsem drát opatrně."],bet:"Nevsadil pět liber na ten závod.",burst:"Balónek náhle nepraskl.",become:"Loni se nestala učitelkou.",show:"Neukázal mi svůj nový telefon.",draw:["Nenakreslil jsem obrázek pro mámu.","Nenakreslila jsem obrázek pro mámu."]};
+const NEG_IPA={go:"aɪ ˈdɪdnt ___ tə wɜːk ˈjestədeɪ",come:"dɪd ʃiː ___ həʊm ət sɪks",see:"wiː ˈdɪdnt ___ ðə fɪlm",say:"dɪd hiː ___ θæŋk juː",buy:"aɪ ˈdɪdnt ___ ˈeni bred",forget:"dɪd juː ___ jɔː kiːz",meet:"ðeɪ ˈdɪdnt ___ ət ðə ˈsteɪʃn",write:"dɪd ʃiː ___ ən ˈiːmeɪl",drink:"hiː ˈdɪdnt ___ ˈkɒfi ðɪs ˈmɔːnɪŋ",take:"dɪd juː ___ ðə bʌs",
+ eat:"wiː ˈdɪdnt ___ ˈpiːtsə ˈjestədeɪ",find:"dɪd ʃiː ___ ə naɪs flæt",give:"hiː ˈdɪdnt ___ miː hɪz ˈnʌmbə",know:"dɪd juː ___ əˈbaʊt ðə ˈpɑːti",think:"wiː ˈdɪdnt ___ ɪt wəz ˈiːzi",tell:"dɪd ʃiː ___ juː ðə njuːz",get:"dɪd hiː ___ ə njuː dʒɒb",make:"wiː ˈdɪdnt ___ ə mɪˈsteɪk",leave:"ðə treɪn ˈdɪdnt ___ ɒn taɪm",feel:"dɪd ʃiː ___ kəʊld",begin:"ðə ˈlesn ˈdɪdnt ___ leɪt",break:"dɪd hiː ___ hɪz leɡ",bring:"dɪd juː ___ jɔː ʌmˈbrelə",build:"wiː ˈdɪdnt ___ ə ˈsnəʊmæn",choose:"dɪd ʃiː ___ ðə tʃiːp həʊˈtel",drive:"hiː ˈdɪdnt ___ ˈveri fɑːst",fall:"dɪd ðə vɑːz ___ ɒn ðə flɔː",fly:"dɪd ðeɪ ___ tə speɪn",grow:"wiː ˈdɪdnt ___ təˈmɑːtəʊz lɑːst jɪə",hear:"dɪd juː ___ ðə njuːz",keep:"dɪd ʃiː ___ ðə ˈmʌni",lose:"ˈaʊə tiːm ˈdɪdnt ___ ðə mætʃ",pay:"dɪd hiː ___ ðə bɪl",put:"dɪd ʃiː ___ hɜː kəʊt ɒn ðə tʃeə",read:"wiː ˈdɪdnt ___ ði ɪnˈstrʌkʃnz",run:"dɪd hiː ___ faɪv ˈkɪləmiːtəz",sell:"dɪd ðeɪ ___ ðeə haʊs",send:"ʃiː ˈdɪdnt ___ miː ə ˈpəʊstkɑːd",sing:"dɪd ðə ˈtʃɪldrən ___ ə sɒŋ",sit:"wiː ˈdɪdnt ___ ɪn ðə ˈɡɑːdn",sleep:"dɪd ðə ˈbeɪbi ___ ɔːl naɪt",speak:"dɪd ʃiː ___ tə ðə ˈtiːtʃə",spend:"wiː ˈdɪdnt ___ ə wiːk ɪn ˈɪtəli",stand:"dɪd ðeɪ ___ nɪə ðə dɔː",swim:"dɪd hiː ___ əˈkrɒs ðə leɪk",teach:"ʃiː ˈdɪdnt ___ ˈɪŋɡlɪʃ",throw:"dɪd hiː ___ ði əʊld ʃuːz əˈweɪ",understand:"wiː ˈdɪdnt ___ ðə ˈkwestʃən",wear:"dɪd ʃiː ___ ə hæt",win:"dɪd hiː ___ ðə reɪs"};
+// Režim D: IPA celé věty ("___" = sloveso, doplní se z ověřeného ipa3[2]) a český překlad. Pole [m,f] = rod mluvčího.
+const PERF_IPA={"go":"ʃiː həz ___ tə ˈlʌndən fə ðə ˌwiːkˈend","come":"sprɪŋ həz ___ ˈɜːli ðɪs jɪə","see":"aɪ həv ___ ðɪs fɪlm twaɪs","say":"həv juː ___ ˈsɒri tə hɜː","buy":"wiː həv ___ ə njuː kɑː","forget":"aɪ həv ___ hɪz neɪm","meet":"həv juː ___ maɪ ˈsɪstə","write":"ʃiː həz ___ θriː ˈiːmeɪlz təˈdeɪ","drink":"aɪ həv ___ tuː mʌtʃ ˈkɒfi təˈdeɪ","take":"ˈsʌmwʌn həz ___ maɪ ʌmˈbrelə","eat":"həv juː ___ ˈsuːʃi bɪˈfɔː","find":"aɪ həv ___ ə njuː dʒɒb","give":"ʃiː həz ___ miː ə ˈpreznt","know":"aɪ həv ___ hɜː fə ten jɪəz","think":"həv juː ___ əˈbaʊt maɪ ˈɒfə","tell":"həz ˈeniwʌn ___ juː əˈbaʊt ðə ˈmiːtɪŋ","get":"ˈpraɪsɪz həv ___ ˈhaɪə ðɪs jɪə","make":"həv juː ___ ˈdɪnə jet","leave":"ðə bʌs həz dʒʌst ___","feel":"aɪ həv ˈnevə ___ səʊ ˈhæpi","begin":"ɪt həz ___ tə reɪn","break":"ˈsʌmwʌn həz ___ ðə ˈwɪndəʊ","bring":"aɪ həv ___ juː ə ˈkɒfi","build":"ðeɪ həv ___ ə njuː brɪdʒ","choose":"həv juː ___ ə neɪm fə ðə ˈbeɪbi","drive":"aɪ həv ˈnevə ___ ə bɪɡ kɑː","fall":"ðə praɪs həz ___ əˈɡen","fly":"həv juː ˈevə ___ ɪn ə smɔːl pleɪn","grow":"jɔː sʌn həz ___ səʊ mʌtʃ","hear":"aɪ həv ___ ðɪs sɒŋ bɪˈfɔː","keep":"həv juː ___ maɪ ˈletəz","lose":"aɪ həv ___ maɪ ˈɡlɑːsɪz əˈɡen","pay":"həv juː ___ fə ðə ˈkɒfi","put":"weə həv juː ___ maɪ kiːz","read":"həv juː ___ ðɪs ˈɑːtɪkl","run":"ʃiː həz ___ ə ˈmærəθɒn","sell":"wiː həv ___ ɔːl ðə ˈtɪkɪts","send":"həv juː ___ ði ˌɪnvɪˈteɪʃnz","sing":"ʃiː həz ___ ɪn ə ˈkwaɪə fə jɪəz","sit":"aɪ həv ___ hɪə ɔːl deɪ","sleep":"aɪ ˈhævnt ___ fə tuː deɪz","speak":"həv juː ___ tə jɔː ˈpeərənts","spend":"ʃiː həz ___ ɔːl hɜː ˈmʌni","stand":"aɪ həv ___ hɪə fər ˈeɪdʒɪz","swim":"aɪ həv ˈnevə ___ ɪn ə leɪk","teach":"hiː həz ___ ət ðɪs skuːl fə jɪəz","throw":"huː həz ___ ðɪs ˈpeɪpə ɒn ðə flɔː","understand":"həv juː ___ ðə ruːlz","wear":"aɪ həv ___ ðiːz ʃuːz ˈəʊnli wʌns","win":"ʃiː həz ___ θriː ˈmedlz"};
+const PERF_CS={"go":"Odjela na víkend do Londýna.","come":"Letos přišlo jaro brzy.","see":["Ten film jsem viděl dvakrát.","Ten film jsem viděla dvakrát."],"say":"Omluvili jste se jí?","buy":"Koupili jsme nové auto.","forget":["Zapomněl jsem jeho jméno.","Zapomněla jsem jeho jméno."],"meet":"Potkali jste moji sestru?","write":"Dnes napsala tři e-maily.","drink":["Dnes jsem vypil příliš mnoho kávy.","Dnes jsem vypila příliš mnoho kávy."],"take":"Někdo mi vzal deštník.","eat":"Jedli jste už někdy sushi?","find":["Našel jsem novou práci.","Našla jsem novou práci."],"give":"Dala mi dárek.","know":"Znám ji deset let.","think":"Přemýšleli jste o mé nabídce?","tell":"Řekl vám někdo něco o schůzce?","get":"Ceny letos stouply.","make":"Už jste uvařili večeři?","leave":"Autobus právě odjel.","feel":["Nikdy jsem se necítil tak šťastně.","Nikdy jsem se necítila tak šťastně."],"begin":"Začalo pršet.","break":"Někdo rozbil okno.","bring":["Přinesl jsem ti kávu.","Přinesla jsem ti kávu."],"build":"Postavili nový most.","choose":"Vybrali jste jméno pro miminko?","drive":["Nikdy jsem neřídil velké auto.","Nikdy jsem neřídila velké auto."],"fall":"Cena zase klesla.","fly":"Letěli jste někdy malým letadlem?","grow":"Tvůj syn tolik vyrostl!","hear":["Tu písničku jsem už slyšel.","Tu písničku jsem už slyšela."],"keep":"Nechali jste si moje dopisy?","lose":["Zase jsem ztratil brýle.","Zase jsem ztratila brýle."],"pay":"Zaplatili jste za kávu?","put":"Kam jste dali moje klíče?","read":"Četli jste tento článek?","run":"Zaběhla maraton.","sell":"Prodali jsme všechny lístky.","send":"Poslali jste pozvánky?","sing":"Už léta zpívá ve sboru.","sit":"Sedím tu celý den.","sleep":["Nespal jsem dva dny.","Nespala jsem dva dny."],"speak":"Mluvili jste se svými rodiči?","spend":"Utratila všechny své peníze.","stand":"Stojím tady už celé věky.","swim":["Nikdy jsem neplaval v jezeře.","Nikdy jsem neplavala v jezeře."],"teach":"Už léta učí na této škole.","throw":"Kdo hodil tento papír na podlahu?","understand":"Porozuměli jste pravidlům?","wear":["Tyhle boty jsem měl na sobě jen jednou.","Tyhle boty jsem měla na sobě jen jednou."],"win":"Vyhrála tři medaile.","be":["Už jsem tu byl.","Už jsem tu byla."],"have":"Ten telefon mám už léta.","do":["Domácí úkol jsem už udělal.","Domácí úkol jsem už udělala."],"hold":"Tuto práci dělám už léta.","let":"Pustili nás dovnitř.","mean":["Chtěl jsem ti zavolat.","Chtěla jsem ti zavolat."],"set":["Prostřel jsem stůl.","Prostřela jsem stůl."],"lie":["Celou noc jsem ležel vzhůru.","Celou noc jsem ležela vzhůru."],"lead":"Vede tu skupinu už léta.","cut":["Říznul jsem se do prstu.","Říznula jsem se do prstu."],"rise":"Ceny zase vzrostly.","catch":"Nachladili jste se?","fight":"Tvrdě za to bojoval.","shut":["Zavřel jsem dveře.","Zavřela jsem dveře."],"wake":"Celý týden se budím brzy.","ring":"Někdo zazvonil na zvonek.","ride":["Jednou jsem jel na koni.","Jednou jsem jela na koni."],"shake":["Protřepal jsem láhev.","Protřepala jsem láhev."],"steal":"Někdo mi ukradl tašku.","stick":"Štítek se přilepil na krabici.","hurt":["Poranil jsem si koleno.","Poranila jsem si koleno."],"hit":["Udeřil jsem se do hlavy.","Udeřila jsem se do hlavy."],"cost":"Stálo to příliš mnoho.","spread":"Nemoc se široce rozšířila.","lend":["Půjčil jsem jí nějaké peníze.","Půjčila jsem jí nějaké peníze."],"feed":"Nakrmili jste psa?","deal":["Už jsem to řešil.","Už jsem to řešila."],"dig":"Pes vykopal díru.","hang":["Pověsil jsem obraz.","Pověsila jsem obraz."],"hide":["Schoval jsem dárek.","Schovala jsem dárek."],"shoot":"Pořídila několik skvělých fotek.","shine":"Hvězdy jasně zářily.","beat":"Porazili nás dvakrát.","blow":"Vítr zabouchl dveře.","burn":"Svíčka dohořela.","dream":["Snil jsem o tomto místě.","Snila jsem o tomto místě."],"learn":["Letos jsem se hodně naučil.","Letos jsem se hodně naučila."],"spell":["Teď jsem to napsal správně.","Teď jsem to napsala správně."],"smell":["Ucítil jsem kouř.","Ucítila jsem kouř."],"spill":"Někdo rozlil mléko.","tear":["Roztrhl jsem dopis.","Roztrhla jsem dopis."],"freeze":"Jídlo zamrzlo.","forgive":["Odpustil jsem ti.","Odpustila jsem ti."],"bite":"Kousl mě komár.","bend":["Ohnul jsem pravidla.","Ohnula jsem pravidla."],"bet":["Už jsem na tenhle tým sázel.","Už jsem na tenhle tým sázela."],"burst":"Trubka praskla.","become":"Stal se z něj dobrý přítel.","show":"Ukázali jste jí ty fotky?","draw":"Nakreslila krásný obrázek."};
+const negCs=v=>{const e=NEG_CS[v.base];return Array.isArray(e)?(gender==="f"?e[1]:e[0]):(e||"");};
+const negFull=v=>v.base==="be"?v.neg.src:v.neg.gap.replace("___",v.base);
+const negWord=v=>v.base==="be"?"was":v.base;
+// Věta s mezerou (režim C a D): před kontrolou s prázdnou mezerou, po kontrole s doplněným slovesem. Pod slovy je IPA (jen u ověřených sloves).
+function gapPrompt(sentence,fill,fillIpa,tplStr,filled,suffix){
+ const words=sentence.split(/\s+/),gi=words.findIndex(w=>w.includes("___"));
+ const tpl=tplStr?tplStr.split(/\s+/):null;
+ const wordHtml=(w,i)=>i===gi&&filled?`<span class="aligned-highlight">${escapeHtml(w.replace("___",fill))}</span>`:escapeHtml(w);
+ if(tpl&&tpl.length===words.length){
+  const cells=words.map((w,i)=>`<span class="ipa-word"><span class="en-word">${wordHtml(w,i)}</span><span class="ipa-part">${i===gi?(filled?escapeHtml(fillIpa):" "):escapeHtml(tpl[i])}</span></span>`);
+  if(suffix)cells.push(`<span class="ipa-word"><span class="en-word">${escapeHtml(suffix)}</span><span class="ipa-part"> </span></span>`);
+  $("prompt").innerHTML='<span class="neg-aligned aligned-ipa">'+cells.join("")+'</span>';
+ }else $("prompt").innerHTML=words.map(wordHtml).join(" ")+(suffix?" "+escapeHtml(suffix):"");
+}
+function negPrompt(v,filled){
+ const fill=v.base==="be"?(v.neg.src.split(/\s+/)[v.neg.gap.split(/\s+/).findIndex(w=>w.includes("___"))]||v.base):v.base;
+ gapPrompt(v.neg.gap,fill,v.ipa3[0],v.ipa3[0]!=="—"?NEG_IPA[v.base]:null,filled,"");
+}
+function perfPrompt(v,filled){gapPrompt(v.perf,v.part,v.ipa3[2],v.ipa3[2]!=="—"?PERF_IPA[v.base]:null,filled,`(${v.base})`);}
+const perfCs=v=>{const e=PERF_CS[v.base];return Array.isArray(e)?(gender==="f"?e[1]:e[0]):(e||"");};
 // Ženské tvary českých zadání v režimu B (věty bez rodu mluvčího tu nejsou). Rod volí hlavní stránka kartiček v Nastavení.
 const FEMININE={go:"Včera jsem šla do práce.",come:"Přišla jsem domů v šest.",see:"Včera jsem viděla kamaráda.",say:"Řekla jsem: „Děkuji.“",buy:"Koupila jsem si nové boty.",forget:"Zapomněla jsem telefon.",meet:"Potkala jsem kamaráda.",write:"Napsala jsem e-mail.",drink:"Vypila jsem šálek kávy.",take:"Jela jsem do práce autobusem.",
  eat:"K snídani jsem snědla jablko.",find:"Našla jsem klíče pod gaučem.",give:"Dala jsem mámě květiny.",know:"Věděla jsem odpověď.",think:"Včera jsem na tebe myslela.",tell:"Řekla jsem jí pravdu.",get:"Dostala jsem pěkný dárek.",make:"Upekla jsem jí k narozeninám dort.",leave:"Odešla jsem z práce v pět.",feel:"Po práci jsem se cítila unavená.",
@@ -542,7 +581,7 @@ const modeNames={forms:"A · Tři tvary",translate:"B · Překlad vět",negative
 const tasks={
 forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. tvar"},{ph:"3. tvar"}],answers:[v.past,v.part],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
 translate:{make(v){return {prompt:(gender==="f"&&FEMININE[v.base])||v.translation,fields:[{ph:"Napiš anglickou větu"}],answers:[v.sentence],ipa:v.ipa}}},
-negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[v.base],explain:"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
+negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[negWord(v)],explain:v.base==="be"?"Sloveso be má v minulosti tvary was (I, he, she, it) a were (we, you, they). Zápor a otázku tvoří bez did/didn't.":"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
 third:{make(v){return {prompt:`${v.perf} (${v.base})`,gap:v.perf,fields:[{ph:"3. tvar"}],answers:[v.part],explain:"Po have/has používáme 3. tvar slovesa (předpřítomný čas)."}}}
 };
 let mode="forms",index=0,answered=false,finished=false,tries=0;
@@ -575,9 +614,10 @@ function render(){
  $("counter").textContent=`Otázka ${index+1} z ${verbs.length}`;
  $("prev").disabled=index===0;
  $("prompt").textContent=q.prompt;
+ if(mode==="negative")negPrompt(v,false);else if(mode==="third")perfPrompt(v,false);
  $("ipa").textContent=mode==="forms"?`/${v.ipa3[0]}/`:"";$("ipa").classList.toggle("hidden",mode!=="forms");
- const context=$("context");context.classList.toggle("meaning-highlight",mode==="forms");
- context.textContent=mode==="forms"?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?`Výchozí věta: ${v.neg.src} Doplň správný tvar slovesa.`:"Po have/has následuje třetí tvar.";
+ const context=$("context");context.classList.toggle("meaning-highlight",mode==="forms");context.classList.remove("cs-sentence");
+ context.textContent=mode==="forms"?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?(v.base==="be"?"Doplň správný minulý tvar slovesa be.":`Doplň základní tvar slovesa „${v.past}“.`):"Po have/has následuje třetí tvar.";
  $("inputs").innerHTML=q.fields.map((f,i)=>`<input id="answer${i}" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="${f.ph}" placeholder="${f.ph}">`).join("");
  // Clear explicitly: Safari can restore values in freshly rendered inputs.
  q.fields.forEach((_,i)=>{const field=$("answer"+i);if(field){field.value="";delete field.dataset.dictationKind;}});
@@ -691,11 +731,11 @@ function evaluate(){
  } else {
    const vals=raw.map(norm);
    if(mode==="forms"&&v.base==="be")ok=[vals[0]==="was"||vals[0]==="were",vals[1]===norm(v.part)].every(Boolean);
-   else if(mode==="negative"&&v.base==="be")ok=[vals[0]==="was"||vals[0]==="were"].every(Boolean);
+   else if(mode==="negative"&&v.base==="be"&&!/\s/.test(raw[0].trim()))ok=vals[0]==="was";
    else if((mode==="negative"||mode==="third")&&(dictationKind==="sentence"||$("answer0")?.dataset.dictationKind==="sentence"||/\s/.test(raw[0].trim()))){
      // Pokud je v poli celá věta, kontrolujeme celou větu i tehdy, když prohlížeč
      // nebo obnovený stav ztratil informaci, kterým tlačítkem byl diktát spuštěn.
-     const expectedSentence=mode==="negative"?v.neg.gap.replace("___",v.base):v.perf.replace("___",v.part);
+     const expectedSentence=mode==="negative"?negFull(v):v.perf.replace("___",v.part);
      ok=canon(raw[0])===canon(expectedSentence);
    }else ok=vals.every((x,i)=>x===norm(q.answers[i]));
    answered=true;record(key,ok);
@@ -703,14 +743,22 @@ function evaluate(){
    else{
      const full=q.gap.replace("___",q.answers[0]);
      const sound=mode==="third"?`${v.part} /${v.ipa3[2]}/`:`${v.base} /${v.ipa3[0]}/`;
-     message=ok?`Správně! Výborně.\n${full}`:`Správné řešení: ${sound}\n${full}\n${q.explain}`;
+     if(mode==="negative"){
+       negPrompt(v,true);const c=$("context");c.textContent=negCs(v);c.classList.add("cs-sentence");
+       const snd=v.base==="be"?"was":(v.ipa3[0]!=="—"?`${v.base} /${v.ipa3[0]}/`:v.base);
+       message=ok?"Správně! Výborně.":`Správné řešení: ${snd}\n${q.explain}`;
+     }else if(mode==="third"){
+       perfPrompt(v,true);const c=$("context");c.textContent=perfCs(v);c.classList.add("cs-sentence");
+       const snd=v.ipa3[2]!=="—"?`${v.part} /${v.ipa3[2]}/`:v.part;
+       message=ok?"Správně! Výborně.":`Správné řešení: ${snd}\n${q.explain}`;
+     }else message=ok?`Správně! Výborně.\n${full}`:`Správné řešení: ${sound}\n${full}\n${q.explain}`;
    }
  }
  $("feedback").textContent=message;$("feedback").className="feedback "+(ok?"good":"bad");
  $("check").disabled=true;$("next").disabled=false;
  $("score").textContent=scoreText();
 }
-document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));showExercise()}));
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;showExercise()}));
 $("check").addEventListener("click",evaluate);
 // Klávesa Enter funguje ve všech režimech:
 // A (dva tvary): z 2. tvaru přesune do 3. tvaru; z 3. tvaru zkontroluje.
@@ -769,7 +817,7 @@ document.addEventListener('keydown',function(e){
    const v=cur(); let lines=[];
    if(mode==="forms") lines=[v.base,v.past,v.part];
    else if(mode==="translate") lines=[v.sentence];
-   else if(mode==="negative") lines=[v.neg.gap.replace("___",v.base)];
+   else if(mode==="negative") lines=[negFull(v)];
    else lines=[v.perf.replace("___",v.part)];
    if(!lines.every(Boolean)){status.textContent="Pro tuto otázku není k dispozici text k přečtení.";return;}
    window.speechSynthesis.cancel();
@@ -868,13 +916,13 @@ document.addEventListener('keydown',function(e){
        showDictationComparison(transcript,v.sentence,canon(transcript)===canon(v.sentence));
        sayStatus(canon(transcript)===canon(v.sentence)?"Rozpoznaná věta odpovídá vzoru. Zkontroluj text a stiskni „Zkontrolovat“.":"Rozpoznání se liší od vzoru. Oranžově jsou označena slova ke kontrole; můžeš text opravit.");
      }else if((mode==="negative"||mode==="third")&&kind==="word"){
-       const expected=mode==="negative"?v.base:v.part;
+       const expected=mode==="negative"?negWord(v):v.part;
        transcript=chooseRecognitionAlternative(alternatives,expected);
        target.value=transcript;
        sayStatus(canon(transcript)===canon(expected)?"Rozpoznán správný tvar: “"+transcript+"”. Zkontroluj text a stiskni „Zkontrolovat“.":"Rozpoznáno slovo: “"+transcript+"”. Pokud nesouhlasí s vyslovovaným tvarem, oprav text před kontrolou.");
      }else if((mode==="negative"||mode==="third")&&kind==="sentence"){
        target.dataset.dictationKind="sentence";
-       const expectedSentence=mode==="negative"?v.neg.gap.replace("___",v.base):v.perf.replace("___",v.part);
+       const expectedSentence=mode==="negative"?negFull(v):v.perf.replace("___",v.part);
        transcript=chooseRecognitionAlternative(alternatives,expectedSentence);
        target.value=transcript;
        showDictationComparison(transcript,expectedSentence,canon(transcript)===canon(expectedSentence));
