@@ -896,20 +896,21 @@ document.addEventListener('keydown',function(e){
  // ---- Řízení poslechu: nová instance pro každé zadání, žádný abort(), start jen přímo z klepnutí ----
  const MIC_BTNS=[mic,wordMic,sentenceMic],MIC_LABELS=new Map(MIC_BTNS.map(b=>[b,b.textContent]));
  const AUDIO_START_LIMIT=6000,LISTEN_LIMIT=10000,SPEECH_LIMIT=12000,FINISH_WAIT=2500;
- let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0;
+ let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0,cool=false,coolTimer=null,lastEnd=0;
+ const COOLDOWN=1200;
  // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
  const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
- const VOICE_VERSION="v9";
+ const VOICE_VERSION="v10";
  let traceLog=[],t0=0;
  trace.textContent="Hlasové zadávání "+VOICE_VERSION;
  function tr(ev){traceLog.push(((Date.now()-t0)/1000).toFixed(1)+" s "+ev);if(traceLog.length>14)traceLog.shift();trace.textContent="Ladění "+VOICE_VERSION+": "+traceLog.join(" · ");}
- function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=(state==="finishing");b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
+ function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=(state==="finishing"||cool);b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
  function detach(x){const r=x.rec;try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=r.onaudiostart=r.onaudioend=null;}catch(e){}}
  // Jediné místo, kde se poslech uzavírá – vždy vrátí tlačítka i stav do výchozího stavu.
  function settle(x){
    if(x!==sess)return;
    clearTimeout(watchdog);clearTimeout(finishTimer);
-   sess=null;state="idle";paintButtons();tr("hotovo");
+   sess=null;state="idle";lastEnd=Date.now();cool=true;clearTimeout(coolTimer);coolTimer=setTimeout(()=>{cool=false;paintButtons();},COOLDOWN);paintButtons();tr("hotovo");
    if(x.discard||x.gotResult||x.error)return;
    if(x.byUser){sayStatus("Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.");return;}
    failStreak++;
@@ -956,7 +957,7 @@ document.addEventListener('keydown',function(e){
        sayStatus("Rozpoznáno: “"+transcript+"”. Zkontroluj text a stiskni „Zkontrolovat“.");
      }
      target.dispatchEvent(new Event("input",{bubbles:true}));
-     if(mode==="forms"){const idx=Number(target.id.replace("answer",""));const next=$("answer"+(idx+1));if(next&&!next.disabled){lastAnswerId=next.id;next.focus({preventScroll:true});}}
+     if(mode==="forms"){const idx=Number(target.id.replace("answer",""));const next=$("answer"+(idx+1));if(next&&!next.disabled){lastAnswerId=next.id;}}
  }
  // Přerušení poslechu při změně otázky, cvičení nebo sady: pozdní výsledek se zahodí.
  function stopDictation(message){
@@ -969,12 +970,15 @@ document.addEventListener('keydown',function(e){
  function startDictation(kind){
    // Klepnutí během poslechu jej zastaví. Nový poslech startuje vždy přímo z klepnutí (požadavek iOS).
    if(state==="listening"){sess.byUser=true;sayStatus("Zastavuji poslech…");tr("zastavení uživatelem");try{sess.rec.stop();}catch(e){}finish(sess);return;}
-   if(state==="finishing"){sayStatus("Chvíli počkej, dokončuji předchozí poslech…");return;}
+   if(state==="finishing"||cool){sayStatus("Chvíli počkej, mikrofon se uvolňuje…");return;}
    dictationKind=kind;
    const fields=[...$("inputs").querySelectorAll("input")];
    let target=fields.find(f=>f.id===lastAnswerId&&!f.disabled)||fields.find(f=>f===document.activeElement)||fields[0];
    if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
    if("speechSynthesis" in window)window.speechSynthesis.cancel();
+   // Otevřená klávesnice iPhonu blokuje rozpoznávání řeči (obě používají stejnou službu) – před startem ji zavřeme.
+   const ae=document.activeElement,hadFocus=!!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
+   if(hadFocus){try{ae.blur();}catch(e){}}
    const rec=new Recognition();rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=8;rec.lang=langSelect.value;
    const x={rec,kind,target,audioStarted:false,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
    rec.onaudiostart=()=>{if(x!==sess)return;tr("zvuk");x.audioStarted=true;if(state==="listening"){sayStatus(kind==="sentence"?"🎤 Mluv teď – celou anglickou větu.":"🎤 Mluv teď – řekni odpověď anglicky.",false,true);armWatchdog(x,LISTEN_LIMIT);}};
@@ -991,11 +995,16 @@ document.addEventListener('keydown',function(e){
      finish(x);
    };
    rec.onend=()=>{if(x!==sess)return;tr("end");settle(x);};
-   sess=x;state="listening";traceLog=[];t0=Date.now();tr("start");
+   sess=x;state="listening";traceLog=[];t0=Date.now();tr("start"+(hadFocus?" (klávesnice zavřena)":""));
    paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
    sayStatus("Připravuji mikrofon… počkej na výzvu „Mluv teď“.");
-   try{rec.start();}catch(err){tr("start selhal");detach(x);sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
-   armWatchdog(x,AUDIO_START_LIMIT);
+   const go=()=>{
+     if(x!==sess)return;
+     try{rec.start();}catch(err){tr("start selhal");detach(x);sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
+     armWatchdog(x,AUDIO_START_LIMIT);
+   };
+   // Po zavření klávesnice chvíli počkáme (WebKit drží platnost klepnutí asi 1 s), aby se zvuková relace stihla uvolnit.
+   if(hadFocus)setTimeout(go,350);else go();
  }
  mic.addEventListener("click",()=>startDictation("default"));wordMic.addEventListener("click",()=>startDictation("word"));sentenceMic.addEventListener("click",()=>startDictation("sentence"));
  // Při opuštění cvičení nebo změně otázky ukonči případný rozběhnutý poslech.
