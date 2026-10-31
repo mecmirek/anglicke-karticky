@@ -320,6 +320,7 @@ html.dark #prompt .aligned-highlight{background:#1d5a47;color:#e1f5ee}
 #context.cs-sentence{display:block;margin:12px 0;padding:10px 14px;border-radius:12px;background:#e1f5ee;border:1px solid #9fe1cb;color:#085041;font-size:1.05rem;font-weight:650;line-height:1.4}
 #context.cs-sentence::before{content:"Česky: ";font-weight:600;color:#0f6e56}
 html.dark #context.cs-sentence{background:#173a30;border-color:#1d6b55;color:#e1f5ee}html.dark #context.cs-sentence::before{color:#9fe1cb}
+input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(93,202,165,.55)}
 #verbAnswerMic.listening,#verbWordMic.listening,#verbSentenceMic.listening{background:#c33c48;border-color:#c33c48;color:#fff}
 </style>
 </head>
@@ -900,16 +901,19 @@ document.addEventListener('keydown',function(e){
  const COOLDOWN=1200;
  // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
  const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
- const VOICE_VERSION="v10";
+ const VOICE_VERSION="v11";
  let traceLog=[],t0=0;
  trace.textContent="Hlasové zadávání "+VOICE_VERSION;
  function tr(ev){traceLog.push(((Date.now()-t0)/1000).toFixed(1)+" s "+ev);if(traceLog.length>14)traceLog.shift();trace.textContent="Ladění "+VOICE_VERSION+": "+traceLog.join(" · ");}
  function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=(state==="finishing"||cool);b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
- function detach(x){const r=x.rec;try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=r.onaudiostart=r.onaudioend=null;}catch(e){}}
+ function detach(x){const r=x.rec;try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=r.onaudiostart=r.onaudioend=r.onsoundstart=null;}catch(e){}}
  // Jediné místo, kde se poslech uzavírá – vždy vrátí tlačítka i stav do výchozího stavu.
  function settle(x){
    if(x!==sess)return;
    clearTimeout(watchdog);clearTimeout(finishTimer);
+   document.querySelectorAll(".dictation-target").forEach(el=>el.classList.remove("dictation-target"));
+   // Konečný výsledek někdy nepřijde (krátká slova na iPhonu) – použijeme poslední průběžný.
+   if(!x.gotResult&&!x.discard&&x.interim){x.gotResult=true;failStreak=0;tr("použit průběžný výsledek");try{handleResult({results:[[{transcript:x.interim}]]},x.kind,x.target);}catch(e){}}
    sess=null;state="idle";lastEnd=Date.now();cool=true;clearTimeout(coolTimer);coolTimer=setTimeout(()=>{cool=false;paintButtons();},COOLDOWN);paintButtons();tr("hotovo");
    if(x.discard||x.gotResult||x.error)return;
    if(x.byUser){sayStatus("Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.");return;}
@@ -967,25 +971,47 @@ document.addEventListener('keydown',function(e){
    if(state==="listening"){try{sess.rec.stop();}catch(e){}}
    finish(sess);
  }
+ // Do kterého pole se zapíše nadiktovaná odpověď: pole, které uživatel právě vybral; jinak první prázdné (u dvou tvarů 2. a pak 3. tvar).
+ function pickTarget(all){
+   const fields=all.filter(f=>!f.disabled);if(!fields.length)return null;
+   const act=document.activeElement;
+   if(act&&fields.includes(act))return act;
+   if(fields.length===1)return fields[0];
+   const last=fields.find(f=>f.id===lastAnswerId);
+   if(last&&!last.value.trim())return last;
+   return fields.find(f=>!f.value.trim())||last||fields[0];
+ }
+ function resetVoiceStatus(){
+   if(state!=="idle")return;
+   status.textContent="";status.style.color="";status.style.fontWeight="";
+   trace.textContent="Hlasové zadávání "+VOICE_VERSION;
+ }
  function startDictation(kind){
    // Klepnutí během poslechu jej zastaví. Nový poslech startuje vždy přímo z klepnutí (požadavek iOS).
    if(state==="listening"){sess.byUser=true;sayStatus("Zastavuji poslech…");tr("zastavení uživatelem");try{sess.rec.stop();}catch(e){}finish(sess);return;}
    if(state==="finishing"||cool){sayStatus("Chvíli počkej, mikrofon se uvolňuje…");return;}
    dictationKind=kind;
    const fields=[...$("inputs").querySelectorAll("input")];
-   let target=fields.find(f=>f.id===lastAnswerId&&!f.disabled)||fields.find(f=>f===document.activeElement)||fields[0];
+   const target=pickTarget(fields);
    if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
    if("speechSynthesis" in window)window.speechSynthesis.cancel();
    // Otevřená klávesnice iPhonu blokuje rozpoznávání řeči (obě používají stejnou službu) – před startem ji zavřeme.
    const ae=document.activeElement,hadFocus=!!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
    if(hadFocus){try{ae.blur();}catch(e){}}
-   const rec=new Recognition();rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=8;rec.lang=langSelect.value;
+   const rec=new Recognition();rec.continuous=false;rec.interimResults=true;rec.maxAlternatives=8;rec.lang=langSelect.value;
    const x={rec,kind,target,audioStarted:false,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
    rec.onaudiostart=()=>{if(x!==sess)return;tr("zvuk");x.audioStarted=true;if(state==="listening"){sayStatus(kind==="sentence"?"🎤 Mluv teď – celou anglickou větu.":"🎤 Mluv teď – řekni odpověď anglicky.",false,true);armWatchdog(x,LISTEN_LIMIT);}};
    rec.onaudioend=()=>{if(x===sess)tr("konec zvuku");};
    rec.onspeechstart=()=>{if(x!==sess)return;tr("řeč");if(state==="listening")armWatchdog(x,SPEECH_LIMIT);};
    rec.onspeechend=()=>{if(x===sess)tr("konec řeči");};
-   rec.onresult=e=>{if(x!==sess)return;tr("výsledek");if(x.gotResult||x.discard)return;x.gotResult=true;failStreak=0;handleResult(e,x.kind,x.target);finish(x);};
+   rec.onsoundstart=()=>{if(x===sess)tr("zvuk slyšet");};
+   rec.onresult=e=>{
+     if(x!==sess||x.discard)return;
+     const last=e.results&&e.results[e.results.length-1];
+     if(last&&last.isFinal){if(x.gotResult)return;tr("výsledek");x.gotResult=true;failStreak=0;handleResult({results:[last]},x.kind,x.target);finish(x);return;}
+     const t=last&&last[0]&&last[0].transcript?String(last[0].transcript).trim():"";
+     if(t&&!x.gotResult){if(!x.interim)tr("slyším");x.interim=t;sayStatus("Slyším: “"+t+"”…",false,true);}
+   };
    rec.onnomatch=()=>{if(x!==sess)return;tr("nerozpoznáno");if(!x.gotResult&&!x.discard){x.error=true;failStreak++;sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);}finish(x);};
    rec.onerror=e=>{
      if(x!==sess)return;tr("chyba "+e.error);
@@ -995,6 +1021,7 @@ document.addEventListener('keydown',function(e){
      finish(x);
    };
    rec.onend=()=>{if(x!==sess)return;tr("end");settle(x);};
+   document.querySelectorAll(".dictation-target").forEach(el=>el.classList.remove("dictation-target"));target.classList.add("dictation-target");
    sess=x;state="listening";traceLog=[];t0=Date.now();tr("start"+(hadFocus?" (klávesnice zavřena)":""));
    paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
    sayStatus("Připravuji mikrofon… počkej na výzvu „Mluv teď“.");
@@ -1013,6 +1040,11 @@ document.addEventListener('keydown',function(e){
  });
  document.querySelectorAll("#modes .mode").forEach(el=>el.addEventListener("click",()=>{if(state!=="idle")stopDictation("Hlasové zadávání ukončeno při změně cvičení.");},true));
  $("verbSet").addEventListener("change",()=>{if(state!=="idle")stopDictation("Hlasové zadávání ukončeno při změně sady.");},true);
+ // Hláška o hlasovém zadávání se smaže při přechodu na jinou otázku, změně cvičení, kontrole i při psaní.
+ ["backToSelection","next","prev","restart","check"].forEach(id=>{const el=$(id);if(el)el.addEventListener("click",()=>setTimeout(resetVoiceStatus,0));});
+ document.querySelectorAll("#modes .mode").forEach(el=>el.addEventListener("click",()=>setTimeout(resetVoiceStatus,0)));
+ $("verbSet").addEventListener("change",()=>setTimeout(resetVoiceStatus,0));
+ $("inputs").addEventListener("input",e=>{if(e.isTrusted)resetVoiceStatus();});
 })();
 <\/script>
 </body>
