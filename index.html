@@ -879,30 +879,34 @@ document.addEventListener('keydown',function(e){
    sayStatus("Přímé hlasové rozpoznávání není v tomto Safari dostupné. Můžeš použít mikrofon klávesnice iPhonu.",true);
    return;
  }
- // ---- Řízení poslechu: jedna instance, časový limit, bezpečné zastavení ----
+ // ---- Řízení poslechu: nová instance pro každé zadání, žádný abort(), start jen přímo z klepnutí ----
  const MIC_BTNS=[mic,wordMic,sentenceMic],MIC_LABELS=new Map(MIC_BTNS.map(b=>[b,b.textContent]));
- const FIRST_SPEECH_LIMIT=8000,SPEECH_LIMIT=12000,STOP_WAIT=600;
- let rec=null,sess=null,state="idle",pending=null,watchdog=null,endTimer=null;
- function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=false;b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
- function dropRec(){const r=rec;rec=null;if(r){try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=null;r.abort();}catch(e){}}}
+ const FIRST_SPEECH_LIMIT=8000,SPEECH_LIMIT=12000,FINISH_WAIT=2500;
+ let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0;
+ // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
+ const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
+ let traceLog=[],t0=0;
+ function tr(ev){traceLog.push(((Date.now()-t0)/1000).toFixed(1)+" s "+ev);if(traceLog.length>14)traceLog.shift();trace.textContent="Ladění: "+traceLog.join(" · ");}
+ function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=(state==="finishing");b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
+ function detach(x){const r=x.rec;try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=r.onaudiostart=r.onaudioend=null;}catch(e){}}
  // Jediné místo, kde se poslech uzavírá – vždy vrátí tlačítka i stav do výchozího stavu.
- function settle(){
-   clearTimeout(watchdog);clearTimeout(endTimer);
-   const c=sess;sess=null;state="idle";paintButtons();
-   if(c&&!c.discard&&!c.gotResult&&!c.error){
-     sayStatus(c.byUser?"Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.":"Nic jsem nerozpoznal"+(c.timedOut?" (čas vypršel)":"")+". Zkus to znovu nebo odpověď napiš.",!c.byUser);
-   }
-   if(pending){const k=pending;pending=null;startDictation(k);}
+ function settle(x){
+   if(x!==sess)return;
+   clearTimeout(watchdog);clearTimeout(finishTimer);
+   sess=null;state="idle";paintButtons();tr("hotovo");
+   if(x.discard||x.gotResult||x.error)return;
+   if(x.byUser){sayStatus("Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.");return;}
+   failStreak++;
+   sayStatus("Nic jsem nerozpoznal"+(x.timedOut?" (čas vypršel)":"")+". Zkus to znovu nebo odpověď napiš."+(failStreak>=2?" Když mikrofon nereaguje, zavři lekci a otevři ji znovu, nebo použij diktování na klávesnici iPhonu.":""),true);
  }
- function beginStop(){
-   if(state==="stopping")return;
-   state="stopping";clearTimeout(watchdog);paintButtons();
-   try{if(rec)rec.stop();}catch(e){}
-   clearTimeout(endTimer);
-   // Když Safari nepošle onend, po krátké době instanci zahodíme a příště vznikne nová.
-   endTimer=setTimeout(()=>{dropRec();settle();},STOP_WAIT);
+ // Čekáme na přirozený konec poslechu (onend). Až po 2,5 s uvolníme stav, ale bez abort().
+ function finish(x){
+   if(x!==sess||state==="finishing")return;
+   state="finishing";clearTimeout(watchdog);paintButtons();
+   clearTimeout(finishTimer);
+   finishTimer=setTimeout(()=>{tr("onend nepřišel");try{x.rec.stop();}catch(e){}detach(x);settle(x);},FINISH_WAIT);
  }
- function armWatchdog(ms){clearTimeout(watchdog);watchdog=setTimeout(()=>{if(state==="listening"&&sess){sess.timedOut=true;beginStop();}},ms);}
+ function armWatchdog(x,ms){clearTimeout(watchdog);watchdog=setTimeout(()=>{if(x===sess&&state==="listening"){x.timedOut=true;tr("časový limit");try{x.rec.stop();}catch(e){}finish(x);}},ms);}
  // Vyhodnocení rozpoznané řeči (beze změny oproti dřívější verzi).
  function handleResult(e,kind,target){
      const alternatives=Array.from(e.results[0]||[]).map(x=>x.transcript.trim()).filter(Boolean);
@@ -938,47 +942,44 @@ document.addEventListener('keydown',function(e){
      target.dispatchEvent(new Event("input",{bubbles:true}));
      if(mode==="forms"){const idx=Number(target.id.replace("answer",""));const next=$("answer"+(idx+1));if(next&&!next.disabled){lastAnswerId=next.id;next.focus({preventScroll:true});}}
  }
- function makeRec(){
-   const r=new Recognition();r.continuous=false;r.interimResults=false;r.maxAlternatives=8;
-   r.onresult=e=>{if(!sess||sess.discard||sess.gotResult)return;sess.gotResult=true;handleResult(e,sess.kind,sess.target);beginStop();};
-   r.onnomatch=()=>{if(!sess||sess.discard||sess.gotResult)return;sess.error=true;sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);beginStop();};
-   r.onspeechstart=()=>{if(state==="listening")armWatchdog(SPEECH_LIMIT);};
-   r.onspeechend=()=>{if(state==="listening")beginStop();};
-   r.onerror=e=>{
-     if(!sess||e.error==="aborted")return;
-     const messages={"not-allowed":"Přístup k mikrofonu byl zamítnut. Povol mikrofon v nastavení prohlížeče.","service-not-allowed":"Rozpoznávání řeči není povoleno.","no-speech":"Nebylo nic slyšet. Zkus to znovu.","network":"Rozpoznávání řeči potřebuje připojení k internetu.","audio-capture":"Mikrofon není dostupný."};
-     sess.error=true;sayStatus(messages[e.error]||"Hlasové zadávání se nepovedlo. Odpověď můžeš napsat.",true);beginStop();
-   };
-   r.onend=()=>{settle();};
-   return r;
- }
- function startEngine(){
-   for(let attempt=0;attempt<2;attempt++){
-     try{if(!rec)rec=makeRec();rec.lang=langSelect.value;rec.start();return true;}catch(err){dropRec();}
-   }
-   return false;
- }
  // Přerušení poslechu při změně otázky, cvičení nebo sady: pozdní výsledek se zahodí.
  function stopDictation(message){
-   if(state==="idle")return;
-   if(sess)sess.discard=true;
+   if(state==="idle"||!sess)return;
+   sess.discard=true;
    if(message)sayStatus(message);
-   beginStop();
+   if(state==="listening"){try{sess.rec.stop();}catch(e){}}
+   finish(sess);
  }
  function startDictation(kind){
-   // Klepnutí během poslechu jej zastaví; během uvolňování mikrofonu se nové zadání zařadí do fronty.
-   if(state==="listening"){if(sess)sess.byUser=true;sayStatus("Zastavuji poslech…");beginStop();return;}
-   if(state==="stopping"){pending=kind;sayStatus("Chvíli počkej, uvolňuji mikrofon…");return;}
+   // Klepnutí během poslechu jej zastaví. Nový poslech startuje vždy přímo z klepnutí (požadavek iOS).
+   if(state==="listening"){sess.byUser=true;sayStatus("Zastavuji poslech…");tr("zastavení uživatelem");try{sess.rec.stop();}catch(e){}finish(sess);return;}
+   if(state==="finishing"){sayStatus("Chvíli počkej, dokončuji předchozí poslech…");return;}
    dictationKind=kind;
    const fields=[...$("inputs").querySelectorAll("input")];
    let target=fields.find(f=>f.id===lastAnswerId&&!f.disabled)||fields.find(f=>f===document.activeElement)||fields[0];
    if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
    if("speechSynthesis" in window)window.speechSynthesis.cancel();
-   sess={kind,target,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
-   state="listening";paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
+   const rec=new Recognition();rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=8;rec.lang=langSelect.value;
+   const x={rec,kind,target,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
+   rec.onaudiostart=()=>{if(x===sess)tr("zvuk");};
+   rec.onaudioend=()=>{if(x===sess)tr("konec zvuku");};
+   rec.onspeechstart=()=>{if(x!==sess)return;tr("řeč");if(state==="listening")armWatchdog(x,SPEECH_LIMIT);};
+   rec.onspeechend=()=>{if(x===sess)tr("konec řeči");};
+   rec.onresult=e=>{if(x!==sess)return;tr("výsledek");if(x.gotResult||x.discard)return;x.gotResult=true;failStreak=0;handleResult(e,x.kind,x.target);finish(x);};
+   rec.onnomatch=()=>{if(x!==sess)return;tr("nerozpoznáno");if(!x.gotResult&&!x.discard){x.error=true;failStreak++;sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);}finish(x);};
+   rec.onerror=e=>{
+     if(x!==sess)return;tr("chyba "+e.error);
+     if(e.error==="aborted")return;
+     const messages={"not-allowed":"Přístup k mikrofonu byl zamítnut. Povol mikrofon v nastavení prohlížeče.","service-not-allowed":"Rozpoznávání řeči není povoleno.","no-speech":"Nebylo nic slyšet. Zkus to znovu.","network":"Rozpoznávání řeči potřebuje připojení k internetu.","audio-capture":"Mikrofon není dostupný."};
+     if(!x.discard){x.error=true;failStreak++;sayStatus(messages[e.error]||"Hlasové zadávání se nepovedlo. Odpověď můžeš napsat.",true);}
+     finish(x);
+   };
+   rec.onend=()=>{if(x!==sess)return;tr("end");settle(x);};
+   sess=x;state="listening";traceLog=[];t0=Date.now();tr("start");
+   paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
    sayStatus(kind==="sentence"?"Poslouchám celou anglickou větu…":"Poslouchám… řekni odpověď anglicky.");
-   if(!startEngine()){sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
-   armWatchdog(FIRST_SPEECH_LIMIT);
+   try{rec.start();}catch(err){tr("start selhal");detach(x);sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
+   armWatchdog(x,FIRST_SPEECH_LIMIT);
  }
  mic.addEventListener("click",()=>startDictation("default"));wordMic.addEventListener("click",()=>startDictation("word"));sentenceMic.addEventListener("click",()=>startDictation("sentence"));
  // Při opuštění cvičení nebo změně otázky ukonči případný rozběhnutý poslech.
