@@ -854,14 +854,28 @@ document.addEventListener('keydown',function(e){
    if(a.length<b.length){const note=document.createElement("span");note.textContent="  [část věty možná chybí]";note.style.color="#9a5700";box.appendChild(note);}
    if(!a.length)box.classList.add("hidden");
  }
- // Prohlížeč vrací několik hypotéz rozpoznání. Pokud je mezi nimi přesná očekávaná odpověď,
+ // Slova, která zní stejně (rozpoznávání řeči je nerozliší): ate/eight, knew/new, write/right…
+ // Když je rozpoznané slovo shodné výslovností s očekávaným tvarem, použije se očekávaný tvar.
+ const HOMOPHONES={ate:["eight"],been:["bean"],knew:["new","gnu"],know:["no"],flew:["flu","flue"],threw:["through"],write:["right","rite"],wrote:["rote"],read:["red","reed"],led:["lead"],lead:["led"],sent:["scent","cent"],won:["one"],worn:["warn"],wore:["war"],saw:["sore","soar"],taught:["taut","tort"],fought:["fort"],caught:["court"],heard:["herd"],hear:["here"],see:["sea"],seen:["scene"],buy:["by","bye"],break:["brake"],made:["maid"],meet:["meat"],rode:["road","rowed"],rose:["rows"],grown:["groan"],lain:["lane"],steal:["steel"],wear:["where","ware"],told:["tolled"],be:["bee"],ring:["wring"],rung:["wrung"]};
+ const sameSound=(heard,expected)=>{const h=canon(heard),e=canon(expected);return h===e||(HOMOPHONES[e]||[]).includes(h);};
+ function fixHomophones(alt,expected){
+   if(!/\s/.test(String(expected).trim()))return sameSound(alt,expected)?expected:null;
+   const a=String(alt).match(/\S+/g)||[],b=String(expected).match(/\S+/g)||[];
+   if(a.length!==b.length)return null;
+   const out=[];for(let i=0;i<a.length;i++){if(canon(a[i])===canon(b[i]))out.push(a[i]);else if(sameSound(a[i],b[i]))out.push(b[i]);else return null;}
+   return out.join(" ");
+ }
+ // Prohlížeč vrací několik hypotéz rozpoznání. Pokud je mezi nimi přesná očekávaná odpověď (nebo odpověď se stejnou výslovností),
  // použijeme ji místo první hypotézy; jinak ponecháme původní rozpoznání, aby aplikace odpověď nevymýšlela.
  function chooseRecognitionAlternative(alternatives,expected){
    if(!alternatives||!alternatives.length)return "";
-   if(expected){const exact=alternatives.find(x=>canon(x)===canon(expected));if(exact)return exact;}
+   if(expected){
+     const exact=alternatives.find(x=>canon(x)===canon(expected));if(exact)return exact;
+     for(const alt of alternatives){const fixed=fixHomophones(alt,expected);if(fixed&&canon(fixed)===canon(expected))return fixed;}
+   }
    return alternatives[0];
  }
- function sayStatus(message,isError=false){status.textContent=message;status.style.color=isError?"var(--red)":"var(--muted)";}
+ function sayStatus(message,isError=false,strong=false){status.textContent=message;status.style.color=isError?"var(--red)":strong?"var(--blue)":"var(--muted)";status.style.fontWeight=strong?"700":"";}
  function updateVoiceButtons(){const cd=mode==="negative"||mode==="third";mic.classList.toggle("hidden",cd);wordMic.classList.toggle("hidden",!cd);sentenceMic.classList.toggle("hidden",!cd);}
  const observer=new MutationObserver(updateVoiceButtons);observer.observe($("modes"),{subtree:true,attributes:true,attributeFilter:["class"]});
  document.querySelectorAll("#modes .mode").forEach(b=>b.addEventListener("click",()=>setTimeout(updateVoiceButtons,0)));
@@ -881,7 +895,7 @@ document.addEventListener('keydown',function(e){
  }
  // ---- Řízení poslechu: nová instance pro každé zadání, žádný abort(), start jen přímo z klepnutí ----
  const MIC_BTNS=[mic,wordMic,sentenceMic],MIC_LABELS=new Map(MIC_BTNS.map(b=>[b,b.textContent]));
- const FIRST_SPEECH_LIMIT=8000,SPEECH_LIMIT=12000,FINISH_WAIT=2500;
+ const AUDIO_START_LIMIT=6000,LISTEN_LIMIT=10000,SPEECH_LIMIT=12000,FINISH_WAIT=2500;
  let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0;
  // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
  const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
@@ -897,7 +911,7 @@ document.addEventListener('keydown',function(e){
    if(x.discard||x.gotResult||x.error)return;
    if(x.byUser){sayStatus("Poslech zastaven. Klepni znovu na mikrofon pro nové zadání.");return;}
    failStreak++;
-   sayStatus("Nic jsem nerozpoznal"+(x.timedOut?" (čas vypršel)":"")+". Zkus to znovu nebo odpověď napiš."+(failStreak>=2?" Když mikrofon nereaguje, zavři lekci a otevři ji znovu, nebo použij diktování na klávesnici iPhonu.":""),true);
+   sayStatus((x.timedOut&&!x.audioStarted?"Mikrofon se nespustil včas":"Nic jsem nerozpoznal"+(x.timedOut?" (čas vypršel)":""))+". Zkus to znovu nebo odpověď napiš."+(failStreak>=2?" Když mikrofon nereaguje, zavři lekci a otevři ji znovu, nebo použij diktování na klávesnici iPhonu.":""),true);
  }
  // Čekáme na přirozený konec poslechu (onend). Až po 2,5 s uvolníme stav, ale bez abort().
  function finish(x){
@@ -960,8 +974,8 @@ document.addEventListener('keydown',function(e){
    if(!target){sayStatus("Nejdřív otevři otázku s odpovědním polem.",true);return;}
    if("speechSynthesis" in window)window.speechSynthesis.cancel();
    const rec=new Recognition();rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=8;rec.lang=langSelect.value;
-   const x={rec,kind,target,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
-   rec.onaudiostart=()=>{if(x===sess)tr("zvuk");};
+   const x={rec,kind,target,audioStarted:false,gotResult:false,error:false,byUser:false,timedOut:false,discard:false};
+   rec.onaudiostart=()=>{if(x!==sess)return;tr("zvuk");x.audioStarted=true;if(state==="listening"){sayStatus(kind==="sentence"?"🎤 Mluv teď – celou anglickou větu.":"🎤 Mluv teď – řekni odpověď anglicky.",false,true);armWatchdog(x,LISTEN_LIMIT);}};
    rec.onaudioend=()=>{if(x===sess)tr("konec zvuku");};
    rec.onspeechstart=()=>{if(x!==sess)return;tr("řeč");if(state==="listening")armWatchdog(x,SPEECH_LIMIT);};
    rec.onspeechend=()=>{if(x===sess)tr("konec řeči");};
@@ -977,9 +991,9 @@ document.addEventListener('keydown',function(e){
    rec.onend=()=>{if(x!==sess)return;tr("end");settle(x);};
    sess=x;state="listening";traceLog=[];t0=Date.now();tr("start");
    paintButtons(kind==="sentence"?sentenceMic:kind==="word"?wordMic:mic);
-   sayStatus(kind==="sentence"?"Poslouchám celou anglickou větu…":"Poslouchám… řekni odpověď anglicky.");
+   sayStatus("Připravuji mikrofon… počkej na výzvu „Mluv teď“.");
    try{rec.start();}catch(err){tr("start selhal");detach(x);sess=null;state="idle";paintButtons();sayStatus("Mikrofon se nepodařilo spustit. Zkus odpověď napsat.",true);return;}
-   armWatchdog(x,FIRST_SPEECH_LIMIT);
+   armWatchdog(x,AUDIO_START_LIMIT);
  }
  mic.addEventListener("click",()=>startDictation("default"));wordMic.addEventListener("click",()=>startDictation("word"));sentenceMic.addEventListener("click",()=>startDictation("sentence"));
  // Při opuštění cvičení nebo změně otázky ukonči případný rozběhnutý poslech.
