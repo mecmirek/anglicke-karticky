@@ -214,6 +214,51 @@ html.dark .chart-bar{background:#1d9e75}html.dark .chart-bar em{color:var(--ink)
  .sentence-ipa{margin-bottom:4px}
  .hint{margin:4px 0;font-size:.78rem}
 }
+.chart{overflow-x:auto}
+/* Moje chyby a Poslech bez rukou */
+.listen-launch{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid #d3d1c7;text-align:left;font-weight:700;color:#0f6e56}
+.listen-launch span{font-weight:400;font-size:.85rem;color:var(--muted)}
+.listen-now{text-align:center}
+.listen-word{font-family:Fraunces,Georgia,serif;font-size:clamp(2rem,9vw,3.2rem);color:#085041;margin:8px 0 2px;overflow-wrap:anywhere}
+.listen-answer{font-size:1.25rem;font-weight:650;min-height:1.6em;overflow-wrap:anywhere}
+.listen-answer .ipa{font-size:.95rem;font-weight:400}
+.listen-phase{color:var(--muted);min-height:1.5em;margin:6px 0 12px}
+.listen-controls{display:flex;justify-content:center;gap:10px}.listen-controls button{min-width:56px;padding:12px 16px;font-size:1.05rem}.listen-controls .primary{min-width:150px}
+.listen-field{display:grid;gap:6px;margin:0 0 14px;font-weight:650;font-size:.92rem}
+.listen-field select{width:100%}
+.seg{display:flex;flex-wrap:wrap;gap:6px}.seg button{flex:1 1 auto;padding:8px 10px;border-radius:20px;font-size:.88rem}.seg button.on{background:#0f6e56;border-color:#0f6e56;color:#fff}
+.stepper{display:flex;align-items:center;gap:10px}.stepper button{width:46px;height:42px;padding:0;font-size:1.3rem;border-radius:12px}.stepper output{min-width:52px;text-align:center;font-size:1.15rem;font-weight:700}
+.listen-check{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:.95rem}
+.mis-actions{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}
+.mis-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:9px 0}
+.mis-row:first-of-type{border-top:0}
+.mis-main b{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:1.05rem}.mis-main .cs{display:block;font-size:.88rem;color:var(--muted);overflow-wrap:anywhere}
+.mis-meta{font-size:.78rem;color:var(--muted);white-space:nowrap;text-align:right}
+.mis-row .mis-del{padding:4px 9px;font-size:.8rem}
+html.dark .listen-launch{background:#1f211e;border-color:#3a3c36;color:#5dcaa5}html.dark .listen-word{color:#5dcaa5}
+html.dark .seg button.on{background:#1d9e75;border-color:#1d9e75}
+/* Různé typy mobilů: malé displeje (iPhone SE, menší Android), telefony na šířku, tablety */
+.p-path{margin-left:14px;margin-right:14px}
+@media(max-width:420px){
+ header h1{font-size:clamp(1.35rem,6.4vw,1.8rem)}
+ header p{font-size:.9rem}
+}
+@media(max-width:360px){
+ .today-actions{gap:8px}
+ .today-btn{padding:10px}
+ .week{gap:2px;justify-content:space-between}.week-day{min-width:0;flex:1}.week-dot{width:22px;height:22px}
+ .week-count{flex-basis:100%;margin-left:0;text-align:right}
+ .word{font-size:clamp(1.7rem,9vw,2.2rem)}
+ .card-tab{padding:5px 7px}
+}
+@media(max-height:600px) and (max-width:650px){
+ .stage,.flip,.flip.has-extra{min-height:270px}
+}
+@media(max-height:500px) and (orientation:landscape){
+ header{padding-top:6px;padding-bottom:6px}
+ header p{display:none}
+ .stage,.flip,.flip.has-extra{min-height:240px}
+}
 </style></head><body><header><div><h1>Anglické kartičky – 1 000 slovíček</h1><p>Britská výslovnost IPA · 20 lekcí po 50 kartičkách</p></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Lekce nepravidelných sloves">
@@ -310,7 +355,9 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
 #modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 #modes .mode{flex:none;width:100%;padding:8px 10px;font-size:.9rem;line-height:1.2;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px}
 @media(min-width:700px){#modes{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:360px){#modes .mode{font-size:.82rem;padding:8px}}
+@media(max-width:360px){#modes .mode{font-size:.82rem;padding:8px;white-space:normal!important;text-overflow:clip!important;overflow:visible!important;height:auto!important;line-height:1.25}}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+@media(max-width:420px){.wordtable td,.wordtable th{padding:7px 5px;font-size:.88rem}.panel{padding:12px}}
 /* Režim C: IPA pod slovy věty, český překlad po kontrole */
 #exercisePanel .neg-aligned{margin:0;gap:2px 9px}
 #exercisePanel .neg-aligned .en-word{font-size:1em;font-weight:inherit;line-height:1.25}
@@ -352,8 +399,8 @@ input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(
     <button id="prev" type="button" disabled>← Zpět</button>
     <button id="next" type="button">Další otázka →</button>
   </div>
-  <!-- ZMĚNA Fáze 3: hlasové zadávání patří do lekce nepravidelných sloves. -->
-  <!-- ZMĚNA Fáze 3: v režimech C/D lze nadiktovat samotné slovo nebo celou větu. -->
+  
+  
   <div class="toolbar" style="margin-top:8px;align-items:center">
     <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost">🔊 Poslechnout výslovnost</button>
     <span class="muted" id="verbListenStatus" aria-live="polite"></span>
@@ -376,7 +423,7 @@ input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(
 </section>
 <section class="panel hidden" id="tablePanel">
   <details><summary><strong>Přehled sloves v této sadě</strong></summary>
-  <table class="wordtable"><thead><tr><th>1. tvar</th><th>2. tvar</th><th>3. tvar</th><th>Význam</th></tr></thead><tbody id="verbtable"></tbody></table>
+  <div class="tablewrap"><table class="wordtable"><thead><tr><th>1. tvar</th><th>2. tvar</th><th>3. tvar</th><th>Význam</th></tr></thead><tbody id="verbtable"></tbody></table></div>
   <p class="muted">Tvary jsou ověřeny podle tabulky nepravidelných sloves Cambridge Dictionary a příslušných slovníkových hesel Oxford Learner’s Dictionaries.</p></details>
 </section>
 </main>
@@ -534,11 +581,11 @@ const verbSets=[[
 {base:"become",past:"became",part:"become",ipa3:["—","—","—"],cs:"stát se",sentence:"She became a teacher last year.",ipa:"",translation:"Loni se stala učitelkou.",neg:{src:"She became a teacher last year.",gap:"She ___ a teacher last year."},perf:"He has ___ a good friend."},
 {base:"show",past:"showed",part:"shown",ipa3:["—","—","—"],cs:"ukázat; předvést",sentence:"He showed me his new phone.",ipa:"",translation:"Ukázal mi svůj nový telefon.",neg:{src:"He showed me his new phone.",gap:"He ___ me his new phone."},perf:"Have you ___ her the photos?"},
 {base:"draw",past:"drew",part:"drawn",ipa3:["—","—","—"],cs:"kreslit; táhnout",sentence:"I drew a picture for my mum.",ipa:"",translation:"Nakreslil jsem obrázek pro mámu.",neg:{src:"I drew a picture for my mum.",gap:"I ___ a picture for my mum."},perf:"She has ___ a beautiful picture."}]];
-// U nově doplněných sloves režim C používá přirozenou konstrukci s did/didn’t; u be se zachovává was/were.
-for(const group of verbSets){for(const v of group){if(v.ipa3.every(x=>x==="—")){
+// Režim C: věty bez did/didn't dostanou zápor s didn't; be tvoří zápor bez did (I wasn't).
+for(const group of verbSets){for(const v of group){
  if(v.base==="be"){v.neg.gap="I ___ at home yesterday.";v.neg.src="I was at home yesterday.";}
  else if(!/\b(?:did|didn't)\b/i.test(v.neg.gap)){v.neg.gap=v.neg.gap.replace("___","didn't ___");}
-}}}
+}}
 // Režim C: český překlad věty (po kontrole) a IPA celé věty. "___" v IPA = místo slovesa, doplní se z ověřeného ipa3[0].
 // IPA je jen u sloves s ověřenou výslovností (ipa3); u ostatních se řádek s IPA nezobrazuje. Pole [m,f] = mužský/ženský rod mluvčího.
 const NEG_CS={go:["Včera jsem nešel do práce.","Včera jsem nešla do práce."],come:"Přišla domů v šest?",see:"Ten film jsme neviděli.",say:"Řekl „děkuji“?",buy:["Nekoupil jsem žádný chléb.","Nekoupila jsem žádný chléb."],forget:"Zapomněli jste klíče?",meet:"Na nádraží se nesetkali.",write:"Napsala e-mail?",drink:"Dnes ráno nepil kávu.",take:"Jeli jste autobusem?",
@@ -549,9 +596,55 @@ const NEG_IPA={go:"aɪ ˈdɪdnt ___ tə wɜːk ˈjestədeɪ",come:"dɪd ʃiː __
 // Režim D: IPA celé věty ("___" = sloveso, doplní se z ověřeného ipa3[2]) a český překlad. Pole [m,f] = rod mluvčího.
 const PERF_IPA={"go":"ʃiː həz ___ tə ˈlʌndən fə ðə ˌwiːkˈend","come":"sprɪŋ həz ___ ˈɜːli ðɪs jɪə","see":"aɪ həv ___ ðɪs fɪlm twaɪs","say":"həv juː ___ ˈsɒri tə hɜː","buy":"wiː həv ___ ə njuː kɑː","forget":"aɪ həv ___ hɪz neɪm","meet":"həv juː ___ maɪ ˈsɪstə","write":"ʃiː həz ___ θriː ˈiːmeɪlz təˈdeɪ","drink":"aɪ həv ___ tuː mʌtʃ ˈkɒfi təˈdeɪ","take":"ˈsʌmwʌn həz ___ maɪ ʌmˈbrelə","eat":"həv juː ___ ˈsuːʃi bɪˈfɔː","find":"aɪ həv ___ ə njuː dʒɒb","give":"ʃiː həz ___ miː ə ˈpreznt","know":"aɪ həv ___ hɜː fə ten jɪəz","think":"həv juː ___ əˈbaʊt maɪ ˈɒfə","tell":"həz ˈeniwʌn ___ juː əˈbaʊt ðə ˈmiːtɪŋ","get":"ˈpraɪsɪz həv ___ ˈhaɪə ðɪs jɪə","make":"həv juː ___ ˈdɪnə jet","leave":"ðə bʌs həz dʒʌst ___","feel":"aɪ həv ˈnevə ___ səʊ ˈhæpi","begin":"ɪt həz ___ tə reɪn","break":"ˈsʌmwʌn həz ___ ðə ˈwɪndəʊ","bring":"aɪ həv ___ juː ə ˈkɒfi","build":"ðeɪ həv ___ ə njuː brɪdʒ","choose":"həv juː ___ ə neɪm fə ðə ˈbeɪbi","drive":"aɪ həv ˈnevə ___ ə bɪɡ kɑː","fall":"ðə praɪs həz ___ əˈɡen","fly":"həv juː ˈevə ___ ɪn ə smɔːl pleɪn","grow":"jɔː sʌn həz ___ səʊ mʌtʃ","hear":"aɪ həv ___ ðɪs sɒŋ bɪˈfɔː","keep":"həv juː ___ maɪ ˈletəz","lose":"aɪ həv ___ maɪ ˈɡlɑːsɪz əˈɡen","pay":"həv juː ___ fə ðə ˈkɒfi","put":"weə həv juː ___ maɪ kiːz","read":"həv juː ___ ðɪs ˈɑːtɪkl","run":"ʃiː həz ___ ə ˈmærəθɒn","sell":"wiː həv ___ ɔːl ðə ˈtɪkɪts","send":"həv juː ___ ði ˌɪnvɪˈteɪʃnz","sing":"ʃiː həz ___ ɪn ə ˈkwaɪə fə jɪəz","sit":"aɪ həv ___ hɪə ɔːl deɪ","sleep":"aɪ ˈhævnt ___ fə tuː deɪz","speak":"həv juː ___ tə jɔː ˈpeərənts","spend":"ʃiː həz ___ ɔːl hɜː ˈmʌni","stand":"aɪ həv ___ hɪə fər ˈeɪdʒɪz","swim":"aɪ həv ˈnevə ___ ɪn ə leɪk","teach":"hiː həz ___ ət ðɪs skuːl fə jɪəz","throw":"huː həz ___ ðɪs ˈpeɪpə ɒn ðə flɔː","understand":"həv juː ___ ðə ruːlz","wear":"aɪ həv ___ ðiːz ʃuːz ˈəʊnli wʌns","win":"ʃiː həz ___ θriː ˈmedlz"};
 const PERF_CS={"go":"Odjela na víkend do Londýna.","come":"Letos přišlo jaro brzy.","see":["Ten film jsem viděl dvakrát.","Ten film jsem viděla dvakrát."],"say":"Omluvili jste se jí?","buy":"Koupili jsme nové auto.","forget":["Zapomněl jsem jeho jméno.","Zapomněla jsem jeho jméno."],"meet":"Potkali jste moji sestru?","write":"Dnes napsala tři e-maily.","drink":["Dnes jsem vypil příliš mnoho kávy.","Dnes jsem vypila příliš mnoho kávy."],"take":"Někdo mi vzal deštník.","eat":"Jedli jste už někdy sushi?","find":["Našel jsem novou práci.","Našla jsem novou práci."],"give":"Dala mi dárek.","know":"Znám ji deset let.","think":"Přemýšleli jste o mé nabídce?","tell":"Řekl vám někdo něco o schůzce?","get":"Ceny letos stouply.","make":"Už jste uvařili večeři?","leave":"Autobus právě odjel.","feel":["Nikdy jsem se necítil tak šťastně.","Nikdy jsem se necítila tak šťastně."],"begin":"Začalo pršet.","break":"Někdo rozbil okno.","bring":["Přinesl jsem ti kávu.","Přinesla jsem ti kávu."],"build":"Postavili nový most.","choose":"Vybrali jste jméno pro miminko?","drive":["Nikdy jsem neřídil velké auto.","Nikdy jsem neřídila velké auto."],"fall":"Cena zase klesla.","fly":"Letěli jste někdy malým letadlem?","grow":"Tvůj syn tolik vyrostl!","hear":["Tu písničku jsem už slyšel.","Tu písničku jsem už slyšela."],"keep":"Nechali jste si moje dopisy?","lose":["Zase jsem ztratil brýle.","Zase jsem ztratila brýle."],"pay":"Zaplatili jste za kávu?","put":"Kam jste dali moje klíče?","read":"Četli jste tento článek?","run":"Zaběhla maraton.","sell":"Prodali jsme všechny lístky.","send":"Poslali jste pozvánky?","sing":"Už léta zpívá ve sboru.","sit":"Sedím tu celý den.","sleep":["Nespal jsem dva dny.","Nespala jsem dva dny."],"speak":"Mluvili jste se svými rodiči?","spend":"Utratila všechny své peníze.","stand":"Stojím tady už celé věky.","swim":["Nikdy jsem neplaval v jezeře.","Nikdy jsem neplavala v jezeře."],"teach":"Už léta učí na této škole.","throw":"Kdo hodil tento papír na podlahu?","understand":"Porozuměli jste pravidlům?","wear":["Tyhle boty jsem měl na sobě jen jednou.","Tyhle boty jsem měla na sobě jen jednou."],"win":"Vyhrála tři medaile.","be":["Už jsem tu byl.","Už jsem tu byla."],"have":"Ten telefon mám už léta.","do":["Domácí úkol jsem už udělal.","Domácí úkol jsem už udělala."],"hold":"Tuto práci dělám už léta.","let":"Pustili nás dovnitř.","mean":["Chtěl jsem ti zavolat.","Chtěla jsem ti zavolat."],"set":["Prostřel jsem stůl.","Prostřela jsem stůl."],"lie":["Celou noc jsem ležel vzhůru.","Celou noc jsem ležela vzhůru."],"lead":"Vede tu skupinu už léta.","cut":["Říznul jsem se do prstu.","Říznula jsem se do prstu."],"rise":"Ceny zase vzrostly.","catch":"Nachladili jste se?","fight":"Tvrdě za to bojoval.","shut":["Zavřel jsem dveře.","Zavřela jsem dveře."],"wake":"Celý týden se budím brzy.","ring":"Někdo zazvonil na zvonek.","ride":["Jednou jsem jel na koni.","Jednou jsem jela na koni."],"shake":["Protřepal jsem láhev.","Protřepala jsem láhev."],"steal":"Někdo mi ukradl tašku.","stick":"Štítek se přilepil na krabici.","hurt":["Poranil jsem si koleno.","Poranila jsem si koleno."],"hit":["Udeřil jsem se do hlavy.","Udeřila jsem se do hlavy."],"cost":"Stálo to příliš mnoho.","spread":"Nemoc se široce rozšířila.","lend":["Půjčil jsem jí nějaké peníze.","Půjčila jsem jí nějaké peníze."],"feed":"Nakrmili jste psa?","deal":["Už jsem to řešil.","Už jsem to řešila."],"dig":"Pes vykopal díru.","hang":["Pověsil jsem obraz.","Pověsila jsem obraz."],"hide":["Schoval jsem dárek.","Schovala jsem dárek."],"shoot":"Pořídila několik skvělých fotek.","shine":"Hvězdy jasně zářily.","beat":"Porazili nás dvakrát.","blow":"Vítr zabouchl dveře.","burn":"Svíčka dohořela.","dream":["Snil jsem o tomto místě.","Snila jsem o tomto místě."],"learn":["Letos jsem se hodně naučil.","Letos jsem se hodně naučila."],"spell":["Teď jsem to napsal správně.","Teď jsem to napsala správně."],"smell":["Ucítil jsem kouř.","Ucítila jsem kouř."],"spill":"Někdo rozlil mléko.","tear":["Roztrhl jsem dopis.","Roztrhla jsem dopis."],"freeze":"Jídlo zamrzlo.","forgive":["Odpustil jsem ti.","Odpustila jsem ti."],"bite":"Kousl mě komár.","bend":["Ohnul jsem pravidla.","Ohnula jsem pravidla."],"bet":["Už jsem na tenhle tým sázel.","Už jsem na tenhle tým sázela."],"burst":"Trubka praskla.","become":"Stal se z něj dobrý přítel.","show":"Ukázali jste jí ty fotky?","draw":"Nakreslila krásný obrázek."};
+// Britská výslovnost pro sady 6–10: [1., 2., 3. tvar], věta k překladu (režim B), věta s have/has (režim D).
+const NEW_IPA={
+ be:[["biː","wɒz, wɜː","biːn"],"aɪ wɒz ət həʊm ˈjestədeɪ","aɪ həv ___ hɪə bɪˈfɔː"],have:[["hæv","hæd","hæd"],"aɪ hæd ə lɒt əv wɜːk ˈjestədeɪ","aɪ həv ___ ðɪs fəʊn fə jɪəz"],do:[["duː","dɪd","dʌn"],"aɪ dɪd maɪ ˈhəʊmwɜːk ˈɑːftə ˈdɪnə","aɪ həv ___ maɪ ˈhəʊmwɜːk ɔːlˈredi"],
+ hold:[["həʊld","held","held"],"ʃiː held maɪ hænd","aɪ həv ___ ðɪs dʒɒb fə jɪəz"],let:[["let","let","let"],"maɪ ˈpeərənts let miː ɡəʊ","ðeɪ həv ___ ʌs ɪn"],mean:[["miːn","ment","ment"],"aɪ ment wɒt aɪ sed","aɪ həv ___ tə kɔːl juː"],
+ set:[["set","set","set"],"aɪ set ði əˈlɑːm fə sɪks","aɪ həv ___ ðə ˈteɪbl"],lie:[["laɪ","leɪ","leɪn"],"hiː leɪ ɒn ðə ˈsəʊfə","aɪ həv ___ əˈweɪk ɔːl naɪt"],lead:[["liːd","led","led"],"ʃiː led ðə tiːm wel","hiː həz ___ ðə ɡruːp fə jɪəz"],
+ cut:[["kʌt","kʌt","kʌt"],"aɪ kʌt ðə bred ˈkeəfəli","aɪ həv ___ maɪ ˈfɪŋɡə"],rise:[["raɪz","rəʊz","ˈrɪzn"],"ðə sʌn rəʊz ˈɜːli","ˈpraɪsɪz həv ___ əˈɡen"],catch:[["kætʃ","kɔːt","kɔːt"],"aɪ kɔːt ði ˈɜːli bʌs","həv juː ___ ə kəʊld"],
+ fight:[["faɪt","fɔːt","fɔːt"],"ðeɪ fɔːt fə ðeə ˈkʌntri","hiː həz ___ hɑːd fə ðɪs"],shut:[["ʃʌt","ʃʌt","ʃʌt"],"aɪ ʃʌt ðə ˈwɪndəʊ bɪˈfɔː bed","aɪ həv ___ ðə dɔː"],wake:[["weɪk","wəʊk","ˈwəʊkən"],"aɪ wəʊk ʌp ət ˈsevn","aɪ həv ___ ʌp ˈɜːli ɔːl wiːk"],
+ ring:[["rɪŋ","ræŋ","rʌŋ"],"ðə fəʊn ræŋ twaɪs","ˈsʌmwʌn həz ___ ðə bel"],ride:[["raɪd","rəʊd","ˈrɪdn"],"aɪ rəʊd maɪ baɪk tə wɜːk","aɪ həv ___ ə hɔːs wʌns"],shake:[["ʃeɪk","ʃʊk","ˈʃeɪkən"],"hiː ʃʊk maɪ hænd","aɪ həv ___ ðə ˈbɒtl"],
+ steal:[["stiːl","stəʊl","ˈstəʊlən"],"ˈsʌmwʌn stəʊl maɪ baɪk","ˈsʌmwʌn həz ___ maɪ bæɡ"],stick:[["stɪk","stʌk","stʌk"],"ðə kiː stʌk ɪn ðə lɒk","ðə ˈleɪbl həz ___ tə ðə bɒks"],hurt:[["hɜːt","hɜːt","hɜːt"],"aɪ hɜːt maɪ bæk ˈjestədeɪ","aɪ həv ___ maɪ niː"],
+ hit:[["hɪt","hɪt","hɪt"],"hiː hɪt ðə bɔːl hɑːd","aɪ həv ___ maɪ hed"],cost:[["kɒst","kɒst","kɒst"],"ðə ˈtɪkɪt kɒst ten paʊndz","ɪt həz ___ tuː mʌtʃ"],spread:[["spred","spred","spred"],"ðə njuːz spred ˈkwɪkli","ðə dɪˈziːz həz ___ ˈwaɪdli"],
+ lend:[["lend","lent","lent"],"aɪ lent hɪm maɪ pen","aɪ həv ___ hɜː səm ˈmʌni"],feed:[["fiːd","fed","fed"],"aɪ fed ðə kæt ðɪs ˈmɔːnɪŋ","həv juː ___ ðə dɒɡ"],deal:[["diːl","delt","delt"],"wiː delt wɪð ðə ˈprɒbləm","aɪ həv ___ wɪð ðɪs bɪˈfɔː"],
+ dig:[["dɪɡ","dʌɡ","dʌɡ"],"ðeɪ dʌɡ ə həʊl ɪn ðə ˈɡɑːdn","ðə dɒɡ həz ___ ə həʊl"],hang:[["hæŋ","hʌŋ","hʌŋ"],"aɪ hʌŋ maɪ kəʊt baɪ ðə dɔː","aɪ həv ___ ðə ˈpɪktʃə ʌp"],hide:[["haɪd","hɪd","ˈhɪdn"],"ðə tʃaɪld hɪd bɪˈhaɪnd ðə ˈsəʊfə","aɪ həv ___ ðə ˈpreznt"],
+ shoot:[["ʃuːt","ʃɒt","ʃɒt"],"hiː ʃɒt ðə bɔːl ˈɪntə ðə ɡəʊl","ʃiː həz ___ səm ɡreɪt ˈfəʊtəʊz"],shine:[["ʃaɪn","ʃɒn","ʃɒn"],"ðə sʌn ʃɒn ɔːl deɪ","ðə stɑːz həv ___ ˈbraɪtli"],beat:[["biːt","biːt","ˈbiːtn"],"ˈaʊə tiːm biːt ðə ˈtʃæmpiənz","ðeɪ həv ___ ʌs twaɪs"],
+ blow:[["bləʊ","bluː","bləʊn"],"ðə wɪnd bluː ɔːl naɪt","ðə wɪnd həz ___ ðə dɔː ʃʌt"],burn:[["bɜːn","bɜːnt","bɜːnt"],"aɪ bɜːnt ðə təʊst ðɪs ˈmɔːnɪŋ","ðə ˈkændl həz ___ aʊt"],dream:[["driːm","dremt","dremt"],"aɪ dremt əˈbaʊt maɪ ˈhɒlədeɪ","aɪ həv ___ əˈbaʊt ðɪs pleɪs"],
+ learn:[["lɜːn","lɜːnt","lɜːnt"],"aɪ lɜːnt ə njuː wɜːd təˈdeɪ","aɪ həv ___ ə lɒt ðɪs jɪə"],spell:[["spel","spelt","spelt"],"aɪ spelt jɔː neɪm rɒŋ","aɪ həv ___ ɪt kəˈrektli naʊ"],smell:[["smel","smelt","smelt"],"ðə ˈflaʊəz smelt ˈwʌndəfl","aɪ həv ___ sməʊk"],
+ spill:[["spɪl","spɪlt","spɪlt"],"aɪ spɪlt ˈkɒfi ɒn maɪ ʃɜːt","ˈsʌmwʌn həz ___ ðə mɪlk"],tear:[["teə","tɔː","tɔːn"],"aɪ tɔː ðə ˈpeɪpə baɪ mɪˈsteɪk","aɪ həv ___ ðə ˈletə"],freeze:[["friːz","frəʊz","ˈfrəʊzn"],"ðə leɪk frəʊz lɑːst ˈwɪntə","ðə fuːd həz ___"],
+ forgive:[["fəˈɡɪv","fəˈɡeɪv","fəˈɡɪvn"],"ʃiː fəˈɡeɪv hɪm ˈkwɪkli","aɪ həv ___ juː"],bite:[["baɪt","bɪt","ˈbɪtn"],"ðə dɒɡ bɪt maɪ ʃuː","ə məˈskiːtəʊ həz ___ miː"],bend:[["bend","bent","bent"],"aɪ bent ðə ˈwaɪə ˈkeəfəli","aɪ həv ___ ðə ruːlz"],
+ bet:[["bet","bet","bet"],"hiː bet faɪv paʊndz ɒn ðə reɪs","aɪ həv ___ ɒn ðɪs tiːm bɪˈfɔː"],burst:[["bɜːst","bɜːst","bɜːst"],"ðə bəˈluːn bɜːst ˈsʌdnli","ðə paɪp həz ___"],become:[["bɪˈkʌm","bɪˈkeɪm","bɪˈkʌm"],"ʃiː bɪˈkeɪm ə ˈtiːtʃə lɑːst jɪə","hiː həz ___ ə ɡʊd frend"],
+ show:[["ʃəʊ","ʃəʊd","ʃəʊn"],"hiː ʃəʊd miː hɪz njuː fəʊn","həv juː ___ hɜː ðə ˈfəʊtəʊz"],draw:[["drɔː","druː","drɔːn"],"aɪ druː ə ˈpɪktʃə fə maɪ mʌm","ʃiː həz ___ ə ˈbjuːtɪfl ˈpɪktʃə"]};
+Object.assign(NEG_IPA,{be:"aɪ ___ ət həʊm ˈjestədeɪ",have:"aɪ ˈdɪdnt ___ ɪˈnʌf taɪm ˈjestədeɪ",do:"aɪ ˈdɪdnt ___ maɪ ˈhəʊmwɜːk ˈjestədeɪ"});
+NEG_CS.be=["Včera jsem nebyl doma.","Včera jsem nebyla doma."];
+for(const group of verbSets)for(const v of group){const x=NEW_IPA[v.base];if(!x)continue;
+ v.ipa3=x[0];v.ipa="/"+x[1]+"/";if(!PERF_IPA[v.base])PERF_IPA[v.base]=x[2];
+ // IPA záporné věty: z IPA výchozí věty, kde se minulý tvar nahradí „didn't ___“.
+ if(!NEG_IPA[v.base]){const src=v.neg.src.split(/\s+/),ipa=x[1].split(" "),gap=v.neg.gap.split(/\s+/);const pi=src.findIndex(w=>w.replace(/[^A-Za-z']/g,"").toLowerCase()===v.past);
+  if(src.length===ipa.length&&pi>=0&&gap.length===src.length+1&&gap[pi]==="didn't")NEG_IPA[v.base]=[...ipa.slice(0,pi),"ˈdɪdnt","___",...ipa.slice(pi+1)].join(" ");}
+}
+// Britsky jsou správné oba tvary (burnt i burned…); uznají se v režimech A a D. [2. tvar, 3. tvar]
+const ALT_FORMS={burn:[["burned"],["burned"]],dream:[["dreamed"],["dreamed"]],learn:[["learned"],["learned"]],spell:[["spelled"],["spelled"]],smell:[["smelled"],["smelled"]],spill:[["spilled"],["spilled"]]};
+// Cvičení A: jedno pole na všechny tři tvary („go went gone“, „go – went – gone“, „go, went, gone“).
+// Stačí i jen 2. a 3. tvar. U be se uzná was i were (případně obojí).
+function formsExpected(v){return `${v.base} ${v.base==="be"?"was":v.past} ${v.part}`;}
+function formsTokens(s){return String(s||"").toLowerCase().replace(/[’‘]/g,"'").split(/[\s,;/–—\-.!?]+/).filter(Boolean);}
+function checkForms(raw,v){
+ let t=formsTokens(raw);const pastList=v.base==="be"?["was","were"]:[v.past,...((ALT_FORMS[v.base]||[[],[]])[0])],partList=[v.part,...((ALT_FORMS[v.base]||[[],[]])[1])];
+ if(v.base==="be"&&t.length===4&&t[1]!==t[2]&&pastList.includes(t[1])&&pastList.includes(t[2]))t=[t[0],t[1],t[3]];
+ if(v.base==="be"&&t.length===3&&t[0]!=="be"&&pastList.includes(t[0])&&pastList.includes(t[1]))t=[t[0],t[2]];
+ // Dvě slova začínající 1. tvarem (např. „go went“) = chybí 3. tvar, ne posunuté tvary.
+ const startsWithBase=t.length===2&&t[0]===v.base&&!pastList.includes(t[0]);
+ const hasBase=t.length>=3||startsWithBase;const base=hasBase?t[0]:v.base,past=t[hasBase?1:0]||"",part=t[hasBase?2:1]||"";
+ const r={baseOk:base===v.base,pastOk:pastList.includes(past),partOk:partList.includes(part),count:hasBase?Math.max(t.length,3):t.length,base,past,part};
+ r.ok=r.baseOk&&r.pastOk&&r.partOk&&t.length<=3&&t.length>=2;
+ r.usedAlt=r.ok&&v.base!=="be"&&(past!==v.past||part!==v.part);
+ return r;
+}
+function altOk(v,m,i,x){const a=ALT_FORMS[v.base];if(!a)return false;if(m==="forms")return (a[i]||[]).includes(x);if(m==="third")return a[1].includes(x);return false;}
 const negCs=v=>{const e=NEG_CS[v.base];return Array.isArray(e)?(gender==="f"?e[1]:e[0]):(e||"");};
-const negFull=v=>v.base==="be"?v.neg.src:v.neg.gap.replace("___",v.base);
-const negWord=v=>v.base==="be"?"was":v.base;
+const negFull=v=>v.neg.gap.replace("___",negWord(v));
+const negWord=v=>v.base==="be"?"wasn't":v.base;
 // Věta s mezerou (režim C a D): před kontrolou s prázdnou mezerou, po kontrole s doplněným slovesem. Pod slovy je IPA (jen u ověřených sloves).
 function gapPrompt(sentence,fill,fillIpa,tplStr,filled,suffix){
  const words=sentence.split(/\s+/),gi=words.findIndex(w=>w.includes("___"));
@@ -564,8 +657,7 @@ function gapPrompt(sentence,fill,fillIpa,tplStr,filled,suffix){
  }else $("prompt").innerHTML=words.map(wordHtml).join(" ")+(suffix?" "+escapeHtml(suffix):"");
 }
 function negPrompt(v,filled){
- const fill=v.base==="be"?(v.neg.src.split(/\s+/)[v.neg.gap.split(/\s+/).findIndex(w=>w.includes("___"))]||v.base):v.base;
- gapPrompt(v.neg.gap,fill,v.ipa3[0],v.ipa3[0]!=="—"?NEG_IPA[v.base]:null,filled,"");
+ gapPrompt(v.neg.gap,negWord(v),v.base==="be"?"ˈwɒznt":v.ipa3[0],v.ipa3[0]!=="—"?NEG_IPA[v.base]:null,filled,"");
 }
 function perfPrompt(v,filled){gapPrompt(v.perf,v.part,v.ipa3[2],v.ipa3[2]!=="—"?PERF_IPA[v.base]:null,filled,`(${v.base})`);}
 const perfCs=v=>{const e=PERF_CS[v.base];return Array.isArray(e)?(gender==="f"?e[1]:e[0]):(e||"");};
@@ -574,22 +666,37 @@ const FEMININE={go:"Včera jsem šla do práce.",come:"Přišla jsem domů v še
  eat:"K snídani jsem snědla jablko.",find:"Našla jsem klíče pod gaučem.",give:"Dala jsem mámě květiny.",know:"Věděla jsem odpověď.",think:"Včera jsem na tebe myslela.",tell:"Řekla jsem jí pravdu.",get:"Dostala jsem pěkný dárek.",make:"Upekla jsem jí k narozeninám dort.",leave:"Odešla jsem z práce v pět.",feel:"Po práci jsem se cítila unavená.",
  break:"Včera jsem rozbila telefon.",bring:"Přinesla jsem na večírek víno.",choose:"Vybrala jsem si modrou košili.",drive:"Dnes jsem jela do práce autem.",fall:"Spadla jsem z kola.",grow:"Vyrostla jsem v malém městě.",hear:"Včera v noci jsem slyšela divný zvuk.",
  keep:"Nechala jsem si ty staré fotky.",lose:"Ztratila jsem v autobuse peněženku.",pay:"Zaplatila jsem za lístky.",put:"Dala jsem mléko do lednice.",read:"Minulý týden jsem četla dobrou knihu.",run:"Běžela jsem na zastávku.",sell:"Prodala jsem své staré auto.",send:"Dnes ráno jsem ti poslala e-mail.",sit:"Seděla jsem vedle sestry.",
- sleep:"V noci jsem spala velmi dobře.",speak:"Dnes jsem mluvila se šéfem.",spend:"Utratila jsem příliš mnoho peněz.",stand:"Hodinu jsem stála ve frontě.",throw:"Hodila jsem míček psovi.",understand:"Rozuměla jsem všemu, co řekl.",wear:"Na svatbu jsem si vzala kostým."};
+ sleep:"V noci jsem spala velmi dobře.",speak:"Dnes jsem mluvila se šéfem.",spend:"Utratila jsem příliš mnoho peněz.",stand:"Hodinu jsem stála ve frontě.",throw:"Hodila jsem míček psovi.",understand:"Rozuměla jsem všemu, co řekl.",wear:"Na svatbu jsem si vzala kostým.",
+ be:"Včera jsem byla doma.",have:"Včera jsem měla hodně práce.",do:"Po večeři jsem udělala domácí úkol.",mean:"Myslela jsem vážně to, co jsem řekla.",set:"Nastavila jsem budík na šest.",cut:"Opatrně jsem nakrájela chleba.",
+ catch:"Stihla jsem časný autobus.",shut:"Před spaním jsem zavřela okno.",wake:"Probudila jsem se v sedm.",ride:"Jela jsem do práce na kole.",hurt:"Včera jsem si poranila záda.",lend:"Půjčila jsem mu své pero.",
+ feed:"Dnes ráno jsem nakrmila kočku.",hang:"Pověsila jsem kabát u dveří.",burn:"Dnes ráno jsem spálila toast.",learn:"Dnes jsem se naučila nové slovo.",spell:"Napsala jsem tvé jméno špatně.",spill:"Vylila jsem si kávu na košili.",
+ tear:"Omylem jsem roztrhla papír.",bend:"Opatrně jsem ohnula drát.",draw:"Nakreslila jsem obrázek pro mámu."};
 let gender="m";
+// Jak byla odpověď zadána hlasem (slovo / celá věta) – sdílí ji hlasové zadávání i vyhodnocení.
+let dictationKind="default";
 window.setGender=function(g){const next=g==="f"?"f":"m";if(next===gender)return;gender=next;if(mode==="translate"&&!finished)render();};
 const setNames=verbSets.map((s,i)=>`Sada ${i+1}: ${s.slice(0,3).map(v=>v.base).join(", ")}…`);
 let setIdx=0,verbs=verbSets[0];
 const modeNames={forms:"A · Tři tvary",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
 const tasks={
-forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. tvar"},{ph:"3. tvar"}],answers:[v.past,v.part],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
+forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"Všechny tři tvary: 1. 2. 3."}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
 translate:{make(v){return {prompt:(gender==="f"&&FEMININE[v.base])||v.translation,fields:[{ph:"Napiš anglickou větu"}],answers:[v.sentence],ipa:v.ipa}}},
-negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[negWord(v)],explain:v.base==="be"?"Sloveso be má v minulosti tvary was (I, he, she, it) a were (we, you, they). Zápor a otázku tvoří bez did/didn't.":"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
+negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[negWord(v)],explain:v.base==="be"?"Sloveso be tvoří zápor bez did: I wasn't, you weren't (ne I didn't be). Otázka: Were you at home?":"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
 third:{make(v){return {prompt:`${v.perf} (${v.base})`,gap:v.perf,fields:[{ph:"3. tvar"}],answers:[v.part],explain:"Po have/has používáme 3. tvar slovesa (předpřítomný čas)."}}}
 };
 let mode="forms",index=0,answered=false,finished=false,tries=0;
 const recorded=new Map(); // klíč "režim:index" → výsledek prvního pokusu
 // První pokus se zapíše a ohlásí hlavní stránce kartiček (pokrok, týden, odznaky).
-function record(key,ok){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok},'*');}catch(e){}}
+// Se slovesem a režimem – hlavní stránka z toho vede „Moje chyby“ a opakování sloves.
+function record(key,ok){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok,verb:cur().base,mode},'*');}catch(e){}}
+// Vlastní výběr sloves (opakování na řadě, moje chyby) – volá ho hlavní stránka; sada má číslo -1.
+let customTitle="Opakování";
+function setLabel(){return setIdx<0?customTitle:`Sada ${setIdx+1}`;}
+window.lessonVerbs=function(){return verbSets.flat();};
+window.practiceVerbs=function(list,title){const all=verbSets.flat();const pick=[...new Set(list)].map(b=>all.find(v=>v.base===b)).filter(Boolean);if(!pick.length)return false;
+ verbs=pick;setIdx=-1;customTitle=title||"Opakování";for(const k of [...recorded.keys()])if(k.startsWith("-1:"))recorded.delete(k);
+ const sel=$("verbSet");let opt=sel.querySelector('option[value="-1"]');if(!opt){opt=document.createElement("option");opt.value="-1";sel.prepend(opt);}opt.textContent=`${customTitle} (${pick.length})`;sel.value="-1";
+ mode="forms";index=0;showExercise();return true;};
 const $=id=>document.getElementById(id);
 function showSelection(){ $("selectionPanel").classList.remove("hidden"); $("exercisePanel").classList.add("hidden"); $("scorePanel").classList.add("hidden"); $("tablePanel").classList.add("hidden"); window.scrollTo(0,0); }
 function showExercise(){ $("selectionPanel").classList.add("hidden"); $("exercisePanel").classList.remove("hidden"); $("scorePanel").classList.remove("hidden"); $("tablePanel").classList.remove("hidden"); renderTable();render();window.scrollTo(0,0); }
@@ -609,8 +716,8 @@ function canon(s){
 function formsIpa(v){return v.ipa3.every(x=>x==="—")?`${v.base} – ${v.past} – ${v.part} (IPA není ověřeno)`: `${v.base} /${v.ipa3[0]}/ – ${v.past} /${v.ipa3[1]}/ – ${v.part} /${v.ipa3[2]}/`}
 function modeStats(m){const rows=[...recorded].filter(([k])=>k.startsWith(setIdx+":"+m+":"));return {correct:rows.filter(([,ok])=>ok).length,total:rows.length};}
 let cloudHistory={correct:0,total:0,loaded:false};
-function scoreText(){const s=modeStats(mode),all=[...recorded.values()];const local=`Sada ${setIdx+1}, ${modeNames[mode]}: správně ${s.correct} z ${s.total} · Toto otevřené kolo: správně ${all.filter(Boolean).length} z ${all.length}`;return local+(cloudHistory.loaded?` · Online celkem: správně ${cloudHistory.correct} z ${cloudHistory.total}`:'');}
-window.addEventListener('message',function(e){if(!e.data||e.data.type!=='verb-history'||!e.data.stats)return;const s=e.data.stats;cloudHistory={correct:Number(s.correct)||0,total:Number(s.total)||0,loaded:!!s.loaded};const score=$('score');if(score)score.textContent=scoreText();});
+function scoreText(){const s=modeStats(mode),all=[...recorded.values()];const local=`${setLabel()}, ${modeNames[mode]}: správně ${s.correct} z ${s.total} · Toto otevřené kolo: správně ${all.filter(Boolean).length} z ${all.length}`;return local+(cloudHistory.loaded?` · Online celkem: správně ${cloudHistory.correct} z ${cloudHistory.total}`:'');}
+window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='verb-history'||!e.data.stats)return;const s=e.data.stats;cloudHistory={correct:Number(s.correct)||0,total:Number(s.total)||0,loaded:!!s.loaded};const score=$('score');if(score)score.textContent=scoreText();});
 function render(){
  answered=false;finished=false;tries=0;dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
  $("counter").textContent=`Otázka ${index+1} z ${verbs.length}`;
@@ -619,7 +726,7 @@ function render(){
  if(mode==="negative")negPrompt(v,false);else if(mode==="third")perfPrompt(v,false);
  $("ipa").textContent=mode==="forms"?`/${v.ipa3[0]}/`:"";$("ipa").classList.toggle("hidden",mode!=="forms");
  const context=$("context");context.classList.toggle("meaning-highlight",mode==="forms");context.classList.remove("cs-sentence");
- context.textContent=mode==="forms"?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?(v.base==="be"?"Doplň správný minulý tvar slovesa be.":`Doplň základní tvar slovesa „${v.past}“.`):"Po have/has následuje třetí tvar.";
+ context.textContent=mode==="forms"?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?(v.base==="be"?"Doplň zápor slovesa be v minulém čase (bez did).":`Doplň základní tvar slovesa „${v.past}“.`):"Po have/has následuje třetí tvar.";
  $("inputs").innerHTML=q.fields.map((f,i)=>`<input id="answer${i}" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="${f.ph}" placeholder="${f.ph}">`).join("");
  // Clear explicitly: Safari can restore values in freshly rendered inputs.
  q.fields.forEach((_,i)=>{const field=$("answer"+i);if(field){field.value="";delete field.dataset.dictationKind;}});
@@ -731,28 +838,35 @@ function evaluate(){
    ipaBox.classList.remove("hidden");
    message=!ok?translationSolution(v):exact?(tries>1?"Správně na druhý pokus!":"Správně! Výborně."):`Správně – i tato varianta zní přirozeně.\n${altNotes[v.base]||'Tvoje věta zachovává význam a je přirozenou alternativou ke vzoru.'}`;
  } else {
-   const vals=raw.map(norm);
-   if(mode==="forms"&&v.base==="be")ok=[vals[0]==="was"||vals[0]==="were",vals[1]===norm(v.part)].every(Boolean);
-   else if(mode==="negative"&&v.base==="be"&&!/\s/.test(raw[0].trim()))ok=vals[0]==="was";
+   const vals=raw.map(norm);let fr=null;
+   if(mode==="forms"){fr=checkForms(raw[0],v);ok=fr.ok;}
+   else if(mode==="negative"&&v.base==="be"&&raw[0].trim().split(/\s+/).length<=2)ok=["wasn't","was not"].includes(vals[0].replace(/[’‘]/g,"'"));
    else if((mode==="negative"||mode==="third")&&(dictationKind==="sentence"||$("answer0")?.dataset.dictationKind==="sentence"||/\s/.test(raw[0].trim()))){
      // Pokud je v poli celá věta, kontrolujeme celou větu i tehdy, když prohlížeč
      // nebo obnovený stav ztratil informaci, kterým tlačítkem byl diktát spuštěn.
      const expectedSentence=mode==="negative"?negFull(v):v.perf.replace("___",v.part);
      ok=canon(raw[0])===canon(expectedSentence);
-   }else ok=vals.every((x,i)=>x===norm(q.answers[i]));
+   }else ok=vals.every((x,i)=>x===norm(q.answers[i])||altOk(v,mode,i,x));
    answered=true;record(key,ok);
-   if(mode==="forms")message=ok?`Správně! Výborně.\n${formsIpa(v)}`:`Správné řešení: ${formsIpa(v)}\n${q.explain}`;
+   // Uznaný tvar typu „burned“: vysvětlení, že britsky je běžnější „burnt“.
+   const altNote=(mode==="forms"?fr.usedAlt:ok&&ALT_FORMS[v.base]&&mode==="third"&&vals.some((x,i)=>x!==norm(q.answers[i])))?`\nOba tvary jsou správně; v britské angličtině se častěji píše ${v.past} – ${v.part}.`:"";
+   if(mode==="forms"){
+     // U chyby ukážeme, který ze tří tvarů nesedí.
+     const mark=(okPart,label,given,right)=>`${okPart?"✓":"✗"} ${label}: ${given||"(chybí)"}${okPart?"":" → "+right}`;
+     const detail=fr.count<2?"Napiš všechny tři tvary za sebou, např. „1. 2. 3.“ oddělené mezerou.":fr.count>3?"Zadej jen tři tvary, nic navíc.":[fr.count>=3?mark(fr.baseOk,"1. tvar",fr.base,v.base):"",mark(fr.pastOk,"2. tvar",fr.past,v.past),mark(fr.partOk,"3. tvar",fr.part,v.part)].filter(Boolean).join("\n");
+     message=ok?`Správně! Výborně.\n${formsIpa(v)}${altNote}`:`${detail}\nSprávné řešení: ${formsIpa(v)}\n${q.explain}`;
+   }
    else{
      const full=q.gap.replace("___",q.answers[0]);
      const sound=mode==="third"?`${v.part} /${v.ipa3[2]}/`:`${v.base} /${v.ipa3[0]}/`;
      if(mode==="negative"){
        negPrompt(v,true);const c=$("context");c.textContent=negCs(v);c.classList.add("cs-sentence");
-       const snd=v.base==="be"?"was":(v.ipa3[0]!=="—"?`${v.base} /${v.ipa3[0]}/`:v.base);
+       const snd=v.base==="be"?"wasn't /ˈwɒznt/":(v.ipa3[0]!=="—"?`${v.base} /${v.ipa3[0]}/`:v.base);
        message=ok?"Správně! Výborně.":`Správné řešení: ${snd}\n${q.explain}`;
      }else if(mode==="third"){
        perfPrompt(v,true);const c=$("context");c.textContent=perfCs(v);c.classList.add("cs-sentence");
        const snd=v.ipa3[2]!=="—"?`${v.part} /${v.ipa3[2]}/`:v.part;
-       message=ok?"Správně! Výborně.":`Správné řešení: ${snd}\n${q.explain}`;
+       message=ok?`Správně! Výborně.${altNote}`:`Správné řešení: ${snd}\n${q.explain}`;
      }else message=ok?`Správně! Výborně.\n${full}`:`Správné řešení: ${sound}\n${full}\n${q.explain}`;
    }
  }
@@ -786,7 +900,7 @@ $("verbSet").innerHTML=setNames.map((n,i)=>`<option value="${i}">${escapeHtml(n)
 // Zvolená sada se pamatuje v tomto prohlížeči.
 try{const saved=+localStorage.getItem("irregularVerbSet");if(saved>=0&&saved<verbSets.length){setIdx=saved;verbs=verbSets[setIdx];}}catch(e){}
 $("verbSet").value=String(setIdx);
-$("verbSet").addEventListener("change",()=>{setIdx=+$("verbSet").value;verbs=verbSets[setIdx];index=0;try{localStorage.setItem("irregularVerbSet",String(setIdx));}catch(e){}if(!$("exercisePanel").classList.contains("hidden")){renderTable();render();}});
+$("verbSet").addEventListener("change",()=>{if(+$("verbSet").value<0)return;setIdx=+$("verbSet").value;verbs=verbSets[setIdx];index=0;try{localStorage.setItem("irregularVerbSet",String(setIdx));}catch(e){}if(!$("exercisePanel").classList.contains("hidden")){renderTable();render();}});
 renderTable();
 render();
 showSelection();
@@ -838,11 +952,10 @@ document.addEventListener('keydown',function(e){
 (function setupVerbDictation(){
  const mic=$("verbAnswerMic"), wordMic=$("verbWordMic"), sentenceMic=$("verbSentenceMic"), langSelect=$("verbVoiceLang"), status=$("verbVoiceStatus");
  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
- let lastAnswerId="answer0", dictationKind="default";
+ let lastAnswerId="answer0";
  try{const saved=localStorage.getItem("irregularVerbSpeechLang");if(saved==="en-GB"||saved==="en-US")langSelect.value=saved;}catch(e){}
  langSelect.addEventListener("change",()=>{try{localStorage.setItem("irregularVerbSpeechLang",langSelect.value);}catch(e){} });
  $("inputs").addEventListener("focusin",e=>{if(e.target&&/^answer\d+$/.test(e.target.id))lastAnswerId=e.target.id;});
- $("inputs").addEventListener("input",e=>{if(e.target&&/^answer\d+$/.test(e.target.id)&&!e.isTrusted===false){} });
  function showDictationComparison(spoken,expected,isExact){
    const box=$("dictationComparison");if(!box)return;box.replaceChildren();box.classList.remove("hidden");
    const a=String(spoken).match(/\S+/g)||[],b=String(expected).match(/\S+/g)||[];
@@ -900,7 +1013,8 @@ document.addEventListener('keydown',function(e){
  let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0,cool=false,coolTimer=null,lastEnd=0;
  const COOLDOWN=1200;
  // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
- const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
+ // Ladicí záznam událostí je skrytý; pro ladění na iPhonu ho lze zobrazit přidáním #debug na konec adresy.
+ const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";trace.hidden=!/debug/.test((window.parent&&window.parent.location?window.parent.location.hash:"")+location.hash);status.insertAdjacentElement("afterend",trace);
  const VOICE_VERSION="v11";
  let traceLog=[],t0=0;
  trace.textContent="Hlasové zadávání "+VOICE_VERSION;
@@ -934,11 +1048,16 @@ document.addEventListener('keydown',function(e){
      if(!alternatives.length){sayStatus("Nepodařilo se rozpoznat odpověď. Zkus to znovu nebo ji napiš.",true);return;}
      const v=cur();let transcript=alternatives[0];
      if(mode==="forms"){
-       const fieldIndex=Number((target.id.match(/answer(\d+)/)||[])[1]||0);
-       const expected=tasks.forms.make(v).answers[fieldIndex]||"";
+       // Tři tvary jde říct najednou („go went gone“), nebo postupně: každé další nadiktování se připojí za text v poli.
+       const all=formsExpected(v).split(" "),have=formsTokens(target.value);
+       const append=have.length>0&&have.length<3;
+       const expected=(append?all.slice(have.length):all).join(" ");
        transcript=chooseRecognitionAlternative(alternatives,expected);
-       target.value=transcript;
-       sayStatus(canon(transcript)===canon(expected)?"Rozpoznán správný tvar: “"+transcript+"”. Zkontroluj text a stiskni „Zkontrolovat“.":"Rozpoznáno: “"+transcript+"”. Pokud nesouhlasí s vyslovovaným tvarem, oprav text před kontrolou.");
+       let spoken=formsTokens(transcript);
+       if(!append&&spoken.length===2){const two=chooseRecognitionAlternative(alternatives,all.slice(1).join(" "));spoken=formsTokens(two);}
+       target.value=(append?have.concat(spoken):spoken).join(" ");
+       const n=formsTokens(target.value).length;
+       sayStatus(n>=3||(!append&&n===2)?"Rozpoznáno: “"+target.value+"”. Zkontroluj text a stiskni „Zkontrolovat“.":"Rozpoznáno: “"+target.value+"”. Řekni další tvar (klepni znovu na mikrofon), nebo dopiš zbytek.");
      }else if(mode==="translate"){
        transcript=chooseRecognitionAlternative(alternatives,v.sentence);
        target.value=transcript;
@@ -961,7 +1080,6 @@ document.addEventListener('keydown',function(e){
        sayStatus("Rozpoznáno: “"+transcript+"”. Zkontroluj text a stiskni „Zkontrolovat“.");
      }
      target.dispatchEvent(new Event("input",{bubbles:true}));
-     if(mode==="forms"){const idx=Number(target.id.replace("answer",""));const next=$("answer"+(idx+1));if(next&&!next.disabled){lastAnswerId=next.id;}}
  }
  // Přerušení poslechu při změně otázky, cvičení nebo sady: pozdní výsledek se zahodí.
  function stopDictation(message){
@@ -1104,6 +1222,35 @@ document.addEventListener('keydown',function(e){
   <div class="lesson-overlay-bar"><strong>Pokrok</strong><button type="button" id="closeProgress">← Zpět ke kartičkám</button></div>
   <div class="quiz-wrap"><div class="progress-body" id="progressBody"></div></div>
 </div>
+<div id="mistakesOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Moje chyby">
+  <div class="lesson-overlay-bar"><strong>Moje chyby</strong><button type="button" id="closeMistakes">← Zpět ke kartičkám</button></div>
+  <div class="quiz-wrap"><div class="progress-body" id="mistakesBody"></div></div>
+</div>
+<div id="listenOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Poslech bez rukou">
+  <div class="lesson-overlay-bar"><strong>Poslech bez rukou</strong><button type="button" id="closeListen">← Zpět ke kartičkám</button></div>
+  <div class="quiz-wrap"><div class="progress-body">
+    <section class="listen-now" aria-live="polite">
+      <div class="note" id="listenCount">Připraveno</div>
+      <div class="listen-word" id="listenWord">🎧</div>
+      <div class="listen-answer" id="listenAnswer"></div>
+      <div class="listen-phase" id="listenPhase">Nastav si poslech níže a stiskni Spustit.</div>
+      <div class="listen-controls"><button type="button" id="listenPrev" aria-label="Předchozí slovo">⏮</button><button type="button" class="primary" id="listenPlay">▶ Spustit</button><button type="button" id="listenNext" aria-label="Další slovo">⏭</button></div>
+      <p class="note" id="listenNote"></p>
+    </section>
+    <section class="listen-settings">
+      <h3>Nastavení</h3>
+      <label class="listen-field">Co poslouchat<select id="listenSrc"><option value="today">Dnešní nová slova</option><option value="due">Slova na řadě k opakování</option><option value="lesson">Aktuální lekce (50 slov)</option><option value="mistakes">Moje chyby</option><option value="starred">Oblíbená ★</option><option value="known">Naučená slova (náhodně 50)</option></select></label>
+      <div class="listen-field">Směr<div class="seg" id="listenDir" role="group" aria-label="Směr"><button type="button" data-dir="en-cs">Anglicky → česky</button><button type="button" data-dir="cs-en">Česky → anglicky</button><button type="button" data-dir="mix">Střídavě</button></div></div>
+      <div class="listen-field">Pauza na rozmyšlenou<div class="stepper"><button type="button" data-step="pause" data-d="-1" aria-label="Kratší pauza">−</button><output id="listenPauseVal">3 s</output><button type="button" data-step="pause" data-d="1" aria-label="Delší pauza">+</button></div></div>
+      <div class="listen-field">Mezera před dalším slovem<div class="stepper"><button type="button" data-step="gap" data-d="-1" aria-label="Kratší mezera">−</button><output id="listenGapVal">2 s</output><button type="button" data-step="gap" data-d="1" aria-label="Delší mezera">+</button></div></div>
+      <label class="listen-check"><input type="checkbox" id="listenSentence"> Přečíst i anglickou vzorovou větu</label>
+      <label class="listen-check"><input type="checkbox" id="listenSentenceCs"> … a její český překlad</label>
+      <label class="listen-check"><input type="checkbox" id="listenShuffle"> Náhodné pořadí</label>
+      <label class="listen-check"><input type="checkbox" id="listenLoop"> Po skončení začít znovu</label>
+      <p class="note">Displej zůstane zapnutý. Když telefon zamkneš nebo přepneš do jiné aplikace, poslech se zastaví – po návratu stiskni Pokračovat.</p>
+    </section>
+  </div></div>
+</div>
 <main>
 <section class="panel" id="todayPanel">
   <div class="today-head"><div><div class="today-greet" id="todayGreet">Dobrý den!</div><div class="note" id="todayDay">Den 1 · tvoje dnešní dávka</div></div>
@@ -1119,7 +1266,10 @@ document.addEventListener('keydown',function(e){
     <button type="button" class="today-btn" id="todayReview"><b>Opakování</b><span id="todayReviewInfo">0 slov na řadě</span></button>
     <button type="button" class="today-btn quiz" id="todayQuiz"><b>Kvíz dne</b><span id="todayQuizInfo">20 otázek</span></button>
     <button type="button" class="today-btn" id="todayDialogs"><b>Rozhovory</b><span id="todayDialogsInfo">obchod, restaurace, lékař…</span></button>
+    <button type="button" class="today-btn" id="todayVerbs"><b>Slovesa</b><span id="todayVerbsInfo">opakování sloves</span></button>
+    <button type="button" class="today-btn" id="todayMistakes"><b>Moje chyby</b><span id="todayMistakesInfo">Žádné chyby ✓</span></button>
   </div>
+  <button type="button" class="listen-launch" id="openListen">🎧 Poslech bez rukou <span>slovo – pauza – překlad, i bez dívání na displej</span></button>
   <p class="note hidden" id="placementHint" style="margin:0 0 10px">Část slov už možná znáš. <button type="button" class="link-btn" id="openPlacement">Vstupní test (3 min)</button> je přeskočí.</p>
   <div class="week" id="todayWeek"></div>
   <div class="today-path"><span>Cesta k 1 000</span><div class="bar"><span id="pathBar"></span></div><span id="pathInfo">0 naučených</span></div>
@@ -1164,7 +1314,8 @@ function migrateKeys(obj){const out={};for(const [k,v] of Object.entries(obj||{}
 // Plán (srs) se ukládá v prohlížeči; online se dál synchronizuje jen hodnocení Umím/Neumím.
 const SRS_STEPS=[10*6e4,1*864e5,3*864e5,7*864e5,14*864e5,30*864e5];
 let srs={};
-function srsGrade(word,grade){const cur=srs[word];const box=grade==='known'?Math.min((cur?cur.box:0)+1,SRS_STEPS.length-1):0;srs[word]={box,due:Date.now()+SRS_STEPS[box]};return srs[word];}
+// t = kdy bylo slovo naposledy ohodnoceno; při synchronizaci mezi zařízeními vyhrává novější plán.
+function srsGrade(word,grade){const cur=srs[word];const box=grade==='known'?Math.min((cur?cur.box:0)+1,SRS_STEPS.length-1):0;srs[word]={box,due:Date.now()+SRS_STEPS[box],t:Date.now()};return srs[word];}
 function hashDays(word){let h=0;for(const c of word)h=(h*31+c.charCodeAt(0))>>>0;return h%7;}
 // Hodnocení bez plánu (starší data, cloud, import) dostanou plán a plán se srovná s hodnocením z jiného zařízení.
 // Už známá slovíčka se rozloží do příštího týdne, aby nepřišla všechna najednou.
@@ -1177,11 +1328,14 @@ function nextDueText(){const now=Date.now();let min=Infinity;for(const s of Obje
 // Ukládá se jen v tomto prohlížeči (klíč engcards1000daily).
 // Oblíbená slovíčka (hvězdička) – ukládají se s hodnocením a jsou i v exportu.
 let starred={};
-// Osobní nastavení: oslovení jménem a zobrazení překladu vět. Jen v tomto prohlížeči.
+// starredT: kdy byla hvězdička naposledy přidána/odebrána (aby šlo odebrání synchronizovat mezi zařízeními).
+let starredT={},lessonT=0;
+function toggleStar(word){const on=!starred[word];if(on)starred[word]=true;else delete starred[word];starredT[word]={on,t:Date.now()};}
+// Osobní nastavení: oslovení, rod, překlad vět a vzhled. Synchronizují se s účtem (novější změna vyhrává).
 const PREFS_KEY='engcards1000prefs';
 let prefs={showTranslation:false,name:'',vocative:''};
 try{const p=JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');if(p&&typeof p==='object')prefs={...prefs,...p};}catch(e){}
-function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify(prefs));}catch(e){}}
+function savePrefs(bump){if(bump!==false)prefs.t=Date.now();try{localStorage.setItem(PREFS_KEY,JSON.stringify(prefs));}catch(e){}scheduleStateSync();}
 // Tmavý režim: „auto“ sleduje nastavení zařízení; platí i pro vloženou lekci sloves.
 const darkQuery=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
 function applyTheme(){const t=prefs.theme||'auto',dark=t==='dark'||(t==='auto'&&!!darkQuery&&darkQuery.matches);document.documentElement.classList.toggle('dark',dark);
@@ -1208,14 +1362,47 @@ function suggestVocative(name){
 }
 // Situační rozhovory (obchod, restaurace, lékař, hotel, cesta) – data pro obrazovku Rozhovory.
 const DIALOGS=[{"id": "shop-1","topic": "Obchod","title": "Nákup bot","situation": "Jste v obchodě s obuví a hledáte boty na procházky.","roles": {"A": "Prodavačka", "B": "Vy"},"lines": [{"who": "A", "en": "Hello, can I help you?", "cs": "Dobrý den, můžu vám pomoct?"},{"who": "B", "en": "Yes, please. I'm looking for some walking shoes.", "cs": "Ano, prosím. Hledám boty na procházky.", "gap": "looking", "options": ["looking", "watching", "seeing"]},{"who": "A", "en": "Of course. What size are you?", "cs": "Samozřejmě. Jakou máte velikost?"},{"who": "B", "en": "I'm a size six, I think.", "cs": "Myslím, že mám velikost šest.", "gap": "size", "options": ["size", "number", "length"]},{"who": "A", "en": "These ones are very comfortable. They're forty-five pounds.", "cs": "Tyhle jsou velmi pohodlné. Stojí čtyřicet pět liber."},{"who": "B", "en": "They look nice. Have you got them in brown?", "cs": "Vypadají hezky. Máte je v hnědé?", "gap": "brown", "options": ["brown", "round", "quiet"]},{"who": "A", "en": "Yes, we have. Would you like to try them on?", "cs": "Ano, máme. Chcete si je vyzkoušet?"}],"question": {"cs": "Prodavačka se ptá: „Would you like to try them on?“ Co odpovíte?","options": ["Yes, please. Where can I sit down?", "No, I don't like shoes.", "Yes, I'd like a coffee."],"answer": 0,"explain": "Prodavačka nabízí vyzkoušení bot, proto je vhodné souhlasit a zeptat se, kde si můžete sednout."}},{"id": "shop-2","topic": "Obchod","title": "Vrácení svetru","situation": "Koupili jste si svetr, ale je vám malý. Vracíte se do obchodu s oblečením.","roles": {"A": "Prodavač", "B": "Vy"},"lines": [{"who": "A", "en": "Hi there. Who's next, please?", "cs": "Dobrý den. Kdo je na řadě?"},{"who": "B", "en": "Me, please. I'd like to return this jumper.", "cs": "Já, prosím. Chci vrátit tenhle svetr.", "gap": "return", "options": ["return", "borrow", "rent"]},{"who": "A", "en": "Is there a problem with it?", "cs": "Je s ním nějaký problém?"},{"who": "B", "en": "Yes, it's too small for me.", "cs": "Ano, je mi moc malý.", "gap": "small", "options": ["small", "slow", "late"]},{"who": "A", "en": "Have you got the receipt?", "cs": "Máte účtenku?", "gap": "receipt", "options": ["receipt", "recipe", "ticket"]},{"who": "B", "en": "Yes, here you are. I paid by card.", "cs": "Ano, tady je. Platba proběhla kartou."},{"who": "A", "en": "Thank you. Would you like a refund or a different size?", "cs": "Děkuji. Chcete vrátit peníze, nebo jinou velikost?"}],"question": {"cs": "Prodavač se ptá: „Would you like a refund or a different size?“ Co odpovíte?","options": ["Yes, I would.", "A refund, please.", "It's very small."],"answer": 1,"explain": "Otázka nabízí dvě možnosti, proto musíte jednu vybrat – „A refund, please“ znamená „Vrácení peněz, prosím“."}},{"id": "restaurant-1","topic": "Restaurace","title": "Čaj v kavárně","situation": "Jste v malé kavárně v Londýně a objednáváte si čaj a něco k jídlu.","roles": {"A": "Číšnice", "B": "Vy"},"lines": [{"who": "A", "en": "Hello! What can I get you?", "cs": "Dobrý den! Co vám můžu přinést?"},{"who": "B", "en": "Can I have a cup of tea, please?", "cs": "Můžu dostat šálek čaje, prosím?", "gap": "cup", "options": ["cup", "plate", "bowl"]},{"who": "A", "en": "Of course. With milk?", "cs": "Samozřejmě. S mlékem?"},{"who": "B", "en": "Yes, please, but no sugar.", "cs": "Ano, prosím, ale bez cukru.", "gap": "sugar", "options": ["sugar", "salt", "pepper"]},{"who": "A", "en": "Anything to eat? We've got some lovely scones today.", "cs": "Něco k jídlu? Dnes máme výborné scones (anglické pečivo)."},{"who": "B", "en": "One scone with jam, please.", "cs": "Jeden scone s marmeládou, prosím.", "gap": "jam", "options": ["jam", "rice", "soup"]},{"who": "A", "en": "Lovely. Is that to eat in or take away?", "cs": "Výborně. Budete jíst tady, nebo s sebou?"}],"question": {"cs": "Číšnice se ptá: „Is that to eat in or take away?“ Co odpovíte, když zůstanete v kavárně?","options": ["To eat in, please.", "I'm eating, thanks.", "Take it, please."],"answer": 0,"explain": "„To eat in“ znamená, že budete jíst na místě v kavárně."}},{"id": "restaurant-2","topic": "Restaurace","title": "Placení v restauraci","situation": "Dojedli jste večeři v restauraci a chcete zaplatit.","roles": {"A": "Číšník", "B": "Vy"},"lines": [{"who": "A", "en": "Was everything all right with your meal?", "cs": "Bylo s jídlem všechno v pořádku?"},{"who": "B", "en": "Yes, it was delicious. Could we have the bill, please?", "cs": "Ano, bylo výborné. Můžeme dostat účet, prosím?", "gap": "bill", "options": ["bill", "menu", "table"]},{"who": "A", "en": "Certainly. Here you are.", "cs": "Samozřejmě. Tady je."},{"who": "B", "en": "Is service included?", "cs": "Je obsluha zahrnutá v ceně?", "gap": "included", "options": ["included", "invited", "closed"]},{"who": "A", "en": "No, it isn't. It's up to you.", "cs": "Ne, není. Je to na vás."},{"who": "B", "en": "OK. Can I pay by card?", "cs": "Dobře. Můžu platit kartou?", "gap": "card", "options": ["card", "bank", "coin"]},{"who": "A", "en": "Yes, of course. Here's the card machine.", "cs": "Ano, samozřejmě. Tady je platební terminál."}],"question": {"cs": "Po zaplacení se číšník ptá: „Would you like a receipt?“ Co odpovíte?","options": ["I'd like the fish.", "It was very nice.", "Yes, please. Thank you."],"answer": 2,"explain": "Na nabídku účtenky odpovíte „Yes, please“ – ostatní odpovědi na otázku nesedí."}},{"id": "doctor-1","topic": "U lékaře","title": "Bolest v krku","situation": "Několik dní vás bolí v krku a hlava. Jste v ordinaci u praktické lékařky.","roles": {"A": "Lékařka", "B": "Vy"},"lines": [{"who": "A", "en": "Good morning. Please sit down. What's the problem?", "cs": "Dobrý den. Posaďte se, prosím. Co vás trápí?"},{"who": "B", "en": "I've got a sore throat and a headache.", "cs": "Bolí mě v krku a bolí mě hlava.", "gap": "throat", "options": ["throat", "foot", "hair"]},{"who": "A", "en": "How long have you had it?", "cs": "Jak dlouho to máte?"},{"who": "B", "en": "For three days. I've also got a temperature.", "cs": "Tři dny. Mám také horečku.", "gap": "temperature", "options": ["temperature", "weather", "degree"]},{"who": "A", "en": "Let me have a look. Open your mouth, please.", "cs": "Podívám se. Otevřete, prosím, ústa."},{"who": "B", "en": "Is it serious?", "cs": "Je to něco vážného?", "gap": "serious", "options": ["serious", "famous", "expensive"]},{"who": "A", "en": "No, it's just a cold. Drink lots of water and rest.", "cs": "Ne, je to jen nachlazení. Pijte hodně vody a odpočívejte."}],"question": {"cs": "Lékařka říká: „Drink lots of water and rest.“ Co odpovíte?","options": ["Yes, I drink water every day.", "OK, thank you. Should I take any medicine?", "No, I'm not tired."],"answer": 1,"explain": "Poděkujete za radu a logicky se zeptáte, zda máte brát nějaké léky."}},{"id": "doctor-2","topic": "U lékaře","title": "V lékárně","situation": "Jdete do lékárny s receptem od lékaře a potřebujete také něco na kašel.","roles": {"A": "Lékárník", "B": "Vy"},"lines": [{"who": "A", "en": "Hello. Can I help?", "cs": "Dobrý den. Mohu pomoci?"},{"who": "B", "en": "Yes, I've got a prescription from my doctor.", "cs": "Ano, mám recept od lékaře.", "gap": "prescription", "options": ["prescription", "receipt", "ticket"]},{"who": "A", "en": "Thank you. It'll be ready in ten minutes.", "cs": "Děkuji. Bude to připravené za deset minut."},{"who": "B", "en": "Fine. Have you also got something for a cough?", "cs": "Dobře. Máte také něco na kašel?", "gap": "cough", "options": ["cough", "coat", "cake"]},{"who": "A", "en": "Yes. Try this syrup. Take one spoonful three times a day.", "cs": "Ano. Zkuste tento sirup. Berte jednu lžičku třikrát denně."},{"who": "B", "en": "Can I take it before bed?", "cs": "Můžu ho brát i před spaním?", "gap": "bed", "options": ["bed", "door", "bus"]},{"who": "A", "en": "Yes, that's fine. That's six pounds fifty, please.", "cs": "Ano, to je v pořádku. Dělá to šest liber padesát, prosím."}],"question": {"cs": "Lékárník říká: „That's six pounds fifty, please.“ Co odpovíte?","options": ["Six times a day, please.", "No, I'm not ill.", "Here you are. Can I pay by card?"],"answer": 2,"explain": "Lékárník chce zaplatit, takže podáte peníze nebo se zeptáte na platbu kartou."}},{"id": "hotel-1","topic": "Hotel","title": "Příjezd do hotelu","situation": "Večer přijíždíte do hotelu, kde máte rezervaci na dvě noci.","roles": {"A": "Recepční", "B": "Vy"},"lines": [{"who": "A", "en": "Good evening. Welcome to the hotel.", "cs": "Dobrý večer. Vítejte v hotelu."},{"who": "B", "en": "Good evening. I've got a reservation for two nights.", "cs": "Dobrý večer. Mám rezervaci na dvě noci.", "gap": "reservation", "options": ["reservation", "invitation", "permission"]},{"who": "A", "en": "Can I have your name and passport, please?", "cs": "Můžu poprosit o vaše jméno a pas?"},{"who": "B", "en": "Of course. Here's my passport.", "cs": "Samozřejmě. Tady je můj pas.", "gap": "passport", "options": ["passport", "postcard", "suitcase"]},{"who": "A", "en": "Thank you. You're in room 214, on the second floor.", "cs": "Děkuji. Máte pokoj 214 ve druhém patře."},{"who": "B", "en": "Is there a lift?", "cs": "Je tu výtah?", "gap": "lift", "options": ["lift", "garden", "bath"]},{"who": "A", "en": "Yes, just over there. Breakfast is from seven to ten.", "cs": "Ano, hned tamhle. Snídaně je od sedmi do deseti."},{"who": "B", "en": "Great. And what time is check-out?", "cs": "Výborně. A do kolika je třeba uvolnit pokoj?"},{"who": "A", "en": "Check-out is at eleven o'clock.", "cs": "Pokoj je třeba uvolnit do jedenácti hodin."}],"question": {"cs": "Recepční se ptá: „Do you need any help with your bags?“ Co odpovíte, když pomoc nepotřebujete?","options": ["No, thanks. I can manage.", "Yes, I've got a bag.", "My bag is blue."],"answer": 0,"explain": "„No, thanks. I can manage.“ znamená „Ne, děkuji, zvládnu to.“ – zdvořile odmítnete pomoc."}},{"id": "hotel-2","topic": "Hotel","title": "Problém na pokoji","situation": "V hotelovém pokoji nefunguje sprcha a chybí ručníky. Voláte na recepci.","roles": {"A": "Recepční", "B": "Vy"},"lines": [{"who": "A", "en": "Reception. How can I help you?", "cs": "Recepce. Jak vám mohu pomoci?"},{"who": "B", "en": "Hello. This is room 305. The shower doesn't work.", "cs": "Dobrý den. Tady pokoj 305. Nefunguje sprcha.", "gap": "shower", "options": ["shower", "pillow", "carpet"]},{"who": "A", "en": "Oh, I'm sorry. Is there any hot water?", "cs": "To se omlouvám. Teče aspoň teplá voda?"},{"who": "B", "en": "No, only cold water. And there aren't any towels.", "cs": "Ne, jen studená. A nejsou tu žádné ručníky.", "gap": "towels", "options": ["towels", "plates", "tickets"]},{"who": "A", "en": "I'm very sorry. I'll send someone up straight away.", "cs": "Moc se omlouvám. Hned někoho pošlu nahoru."},{"who": "B", "en": "Thank you. Could I have an extra pillow too?", "cs": "Děkuji. Mohu dostat i polštář navíc?", "gap": "pillow", "options": ["pillow", "garden", "ticket"]},{"who": "A", "en": "Of course. Or would you like to change rooms?", "cs": "Samozřejmě. Nebo chcete jiný pokoj?"}],"question": {"cs": "Recepční se ptá: „Would you like to change rooms?“ Co odpovíte, když chcete zůstat?","options": ["I'd like to change money.", "No, that's fine. Just fix the shower, please.", "Yes, I've got two rooms."],"answer": 1,"explain": "Odmítnete změnu pokoje a jen požádáte o opravu sprchy – ostatní odpovědi nedávají smysl."}},{"id": "travel-1","topic": "Cesta","title": "Jízdenka na vlak","situation": "Jste na nádraží v Londýně a kupujete si u pokladny jízdenku do Oxfordu a zpět.","roles": {"A": "Pokladní", "B": "Vy"},"lines": [{"who": "A", "en": "Next, please.", "cs": "Další, prosím."},{"who": "B", "en": "Hello. A return ticket to Oxford, please.", "cs": "Dobrý den. Zpáteční jízdenku do Oxfordu, prosím.", "gap": "return", "options": ["return", "double", "back"]},{"who": "A", "en": "When are you coming back?", "cs": "Kdy se vracíte?"},{"who": "B", "en": "Tomorrow evening.", "cs": "Zítra večer.", "gap": "evening", "options": ["evening", "weekend", "early"]},{"who": "A", "en": "That's twenty-four pounds. The next train leaves at ten fifteen.", "cs": "To dělá dvacet čtyři libry. Další vlak odjíždí v deset patnáct."},{"who": "B", "en": "Which platform does it leave from?", "cs": "Z kterého nástupiště odjíždí?", "gap": "platform", "options": ["platform", "floor", "gate"]},{"who": "A", "en": "Platform four. It's a direct train, so you don't need to change.", "cs": "Z nástupiště čtyři. Je to přímý vlak, takže nemusíte přestupovat."}],"question": {"cs": "Pokladní se ještě ptá: „Would you like a seat reservation?“ Co odpovíte, když místenku nechcete?","options": ["Yes, the train is late.", "Four, please.", "No, thanks. It's a short journey."],"answer": 2,"explain": "Zdvořile odmítnete místenku a vysvětlíte proč – cesta je krátká."}},{"id": "travel-2","topic": "Cesta","title": "Cesta k muzeu","situation": "Jste ve městě poprvé a hledáte muzeum. Ptáte se kolemjdoucího na cestu.","roles": {"A": "Kolemjdoucí", "B": "Vy"},"lines": [{"who": "B", "en": "Excuse me, could you help me? I'm looking for the museum.", "cs": "Promiňte, můžete mi pomoct? Hledám muzeum."},{"who": "A", "en": "The museum? Yes, it's not far from here.", "cs": "Muzeum? Ano, není to odsud daleko."},{"who": "B", "en": "Can I walk there?", "cs": "Dá se tam dojít pěšky?", "gap": "walk", "options": ["walk", "swim", "fly"]},{"who": "A", "en": "Yes. Go straight on and turn left at the traffic lights.", "cs": "Ano. Jděte rovně a na semaforu zahněte doleva."},{"who": "B", "en": "Straight on, then left at the traffic lights.", "cs": "Rovně a pak na semaforu doleva.", "gap": "left", "options": ["left", "up", "down"]},{"who": "A", "en": "That's right. Then it's on your right, opposite the bank.", "cs": "Přesně tak. Pak je to po pravé straně, naproti bance.", "gap": "opposite", "options": ["opposite", "inside", "under"]},{"who": "B", "en": "How long does it take?", "cs": "Jak dlouho to trvá?"},{"who": "A", "en": "About ten minutes on foot.", "cs": "Pěšky asi deset minut."}],"question": {"cs": "Kolemjdoucí říká: „About ten minutes on foot.“ Co odpovíte?","options": ["Ten minutes, please.", "Great, thank you very much!", "No, I'm not late."],"answer": 1,"explain": "Kolemjdoucí vám pomohl, takže je na místě poděkovat."}}];
+// Denní dávka, kvízy, rozhovory a statistiky Pokroku patří k účtu (host má původní klíč bez účtu).
 const DAILY_KEY='engcards1000daily';
-let daily={start:null,date:null,count:10,newWords:[],active:[],history:{}};
+function dailyKey(){return cloudUser&&cloudUser.id?DAILY_KEY+':user:'+cloudUser.id:DAILY_KEY;}
+function emptyDaily(){return {start:null,date:null,count:10,newWords:[],active:[],history:{}};}
+let daily=emptyDaily();
+// Výsledky kvízů a sloves se vedou zvlášť za každé zařízení (dev[id]) a sčítají se – tak se při synchronizaci nic nezapočítá dvakrát ani neztratí.
+const DEVICE_ID=(()=>{try{let id=localStorage.getItem('engcardsDeviceId');if(!id){id='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('engcardsDeviceId',id);}return id;}catch(e){return 'local';}})();
+function myDev(){daily.dev=daily.dev||{};return daily.dev[DEVICE_ID]=daily.dev[DEVICE_ID]||{history:{},verbs:{answered:0,correct:0},quizzes:0,perfect:false};}
+function recomputeTotals(){const h={},v={answered:0,correct:0};let q=0,p=false;for(const d of Object.values(daily.dev||{})){for(const [k,x] of Object.entries(d.history||{})){const c=h[k]||{correct:0,total:0};h[k]={correct:c.correct+(x.correct||0),total:c.total+(x.total||0)};}v.answered+=(d.verbs&&d.verbs.answered)||0;v.correct+=(d.verbs&&d.verbs.correct)||0;q+=d.quizzes||0;p=p||!!d.perfect;}daily.history=h;daily.verbs=v;daily.quizzes=q;daily.perfect=p;}
 function todayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function saveDaily(){try{localStorage.setItem(DAILY_KEY,JSON.stringify(daily));}catch(e){}}
+function saveDaily(){try{localStorage.setItem(dailyKey(),JSON.stringify(daily));}catch(e){}scheduleStateSync();}
 function fillNewWords(){daily.newWords=daily.newWords.filter(x=>words.some(w=>w.word===x)).slice(0,daily.count);for(const w of words){if(daily.newWords.length>=daily.count)break;if(!grades[w.word]&&!daily.newWords.includes(w.word))daily.newWords.push(w.word);}}
-function loadDaily(){try{const x=JSON.parse(localStorage.getItem(DAILY_KEY)||'{}');if(x&&typeof x==='object')daily={...daily,...x};}catch(e){}daily.count=[5,10,15,20,30].includes(+daily.count)?+daily.count:10;if(!Array.isArray(daily.active))daily.active=[];if(!daily.history||typeof daily.history!=='object')daily.history={};daily.newWords=Object.keys(migrateKeys(Object.fromEntries((Array.isArray(daily.newWords)?daily.newWords:[]).map(w=>[w,1]))));const t=todayKey();if(!daily.start)daily.start=t;if(daily.date!==t){daily.date=t;daily.newWords=[];}fillNewWords();saveDaily();}
+function loadDaily(){daily=emptyDaily();try{const x=JSON.parse(localStorage.getItem(dailyKey())||'{}');if(x&&typeof x==='object')daily={...daily,...x};}catch(e){}daily.count=[5,10,15,20,30].includes(+daily.count)?+daily.count:10;if(!Array.isArray(daily.active))daily.active=[];if(!daily.history||typeof daily.history!=='object')daily.history={};daily.newWords=Object.keys(migrateKeys(Object.fromEntries((Array.isArray(daily.newWords)?daily.newWords:[]).map(w=>[w,1]))));
+ // Starší data bez rozdělení podle zařízení patří tomuto zařízení.
+ if(!daily.dev||typeof daily.dev!=='object')daily.dev={[DEVICE_ID]:{history:daily.history||{},verbs:daily.verbs||{answered:0,correct:0},quizzes:daily.quizzes||0,perfect:!!daily.perfect}};
+ recomputeTotals();const t=todayKey();if(!daily.start)daily.start=t;if(daily.date!==t){daily.date=t;daily.newWords=[];}fillNewWords();saveDaily();}
 function todayWords(){return daily.newWords.map(x=>words.find(w=>w.word===x)).filter(Boolean);}
 function markActive(){const t=todayKey();if(!daily.active.includes(t)){daily.active.push(t);daily.active=daily.active.slice(-400);saveDaily();}}
+// Moje chyby: slova z kvízu (w:slovo), doplňovačky a otázky z rozhovorů (d:id:řádek / d:id:q) a slovesa (v:sloveso).
+// Chyba zmizí po dvou správných odpovědích za sebou. Smazaná položka zůstane jako {gone,t}, aby se smazání synchronizovalo.
+const MISTAKE_OK=2;
+function mistakesObj(){if(!daily.mistakes||typeof daily.mistakes!=='object')daily.mistakes={};return daily.mistakes;}
+function noteResult(key,ok,info){const m=mistakesObj(),cur=m[key],live=cur&&!cur.gone?cur:null;
+ if(!ok)m[key]={...(live||{}),...(info||{}),n:((live&&live.n)||0)+1,ok:0,t:Date.now(),last:todayKey()};
+ else if(live){const k=(live.ok||0)+1;m[key]=k>=MISTAKE_OK?{gone:true,t:Date.now()}:{...live,ok:k,t:Date.now()};}
+ else return;saveDaily();}
+function dropMistake(key){mistakesObj()[key]={gone:true,t:Date.now()};saveDaily();}
+function activeMistakes(){return Object.entries(mistakesObj()).filter(([,x])=>x&&!x.gone).map(([key,x])=>({key,...x})).sort((a,b)=>(b.t||0)-(a.t||0));}
+// Opakování sloves: stejné přihrádky jako u slov. Chyba → znovu za 10 minut; správně u slovesa na řadě (nebo nového) → o přihrádku dál.
+function verbSrsObj(){if(!daily.verbSrs||typeof daily.verbSrs!=='object')daily.verbSrs={};return daily.verbSrs;}
+function verbSrsGrade(base,ok){const v=verbSrsObj(),cur=v[base],now=Date.now();
+ if(!ok)v[base]={box:0,due:now+SRS_STEPS[0],t:now};
+ else if(!cur||cur.due<=now){const box=Math.min((cur?cur.box+1:1),SRS_STEPS.length-1);v[base]={box,due:now+SRS_STEPS[box],t:now};}
+ else return;saveDaily();}
+function dueVerbs(){const now=Date.now();return Object.entries(verbSrsObj()).filter(([,s])=>s&&s.due<=now).sort((a,b)=>a[1].due-b[1].due).map(([b])=>b);}
+function lessonWindow(){const f=document.getElementById('irregularLessonFrame');return f&&f.contentWindow;}
+function lessonVerbList(){try{const w=lessonWindow();return w&&w.lessonVerbs?w.lessonVerbs():[];}catch(e){return [];}}
+// Otevře lekci sloves rovnou s vybranými slovesy (cvičení Tři tvary).
+function practiceVerbList(list,title){if(!list.length){$('openIrregularLesson').click();return;}
+ const go=()=>{try{const w=lessonWindow();return !!(w&&w.practiceVerbs&&w.practiceVerbs(list,title));}catch(e){return false;}};
+ $('openIrregularLesson').click();if(!go())$('irregularLessonFrame').addEventListener('load',go,{once:true});}
 function dayNumber(){const a=new Date(daily.start+'T00:00:00'),b=new Date(todayKey()+'T00:00:00');return Math.round((b-a)/864e5)+1;}
 // Výška kartičky podle delší strany (zadní strana s příklady a spojeními bývá vyšší než pevná minimální výška).
 function fitCard(){const f=document.getElementById('flip');if(!f)return;f.style.minHeight='';f.parentElement.style.minHeight='';const h=Math.max(...[...f.querySelectorAll('.side')].map(s=>s.scrollHeight));f.style.minHeight=h+'px';f.parentElement.style.minHeight=h+'px';}
@@ -1233,6 +1420,8 @@ function renderToday(){
  const now=new Date(),dow=(now.getDay()+6)%7,names=['Po','Út','St','Čt','Pá','So','Ne'];let on=0;
  $('todayWeek').innerHTML=names.map((n,i)=>{const d=new Date(now);d.setDate(now.getDate()-dow+i);const k=todayKey(d),act=daily.active.includes(k);if(act)on++;return `<div class="week-day${i===dow?' today':''}"><span class="week-dot${act?' on':''}"></span>${n}</div>`;}).join('')+`<span class="week-count">${on}/7 dní tento týden</span>`;
  const dd=Object.keys(daily.dialogs||{}).length;$('todayDialogsInfo').textContent=dd?`${dd}/${DIALOGS.length||10} hotovo`:'obchod, restaurace, lékař…';$('todayDialogs').classList.toggle('done',!!DIALOGS.length&&dd>=DIALOGS.length);
+ const dv=dueVerbs().length,nv=Object.keys(verbSrsObj()).length;$('todayVerbsInfo').textContent=dv?`${dv} ${dv===1?'sloveso':dv<5?'slovesa':'sloves'} na řadě`:nv?'Nic na řadě ✓':'nepravidelná slovesa';$('todayVerbs').classList.toggle('done',!!nv&&!dv);
+ const mc=activeMistakes().length;$('todayMistakesInfo').textContent=mc?`${mc} k procvičení`:'Žádné chyby ✓';$('todayMistakes').classList.toggle('done',!mc);
  $('placementHint').classList.toggle('hidden',!!daily.placementDone||Object.keys(grades).length>=100);
  const k=Object.values(grades).filter(x=>x==='known').length;$('pathBar').style.width=(k/words.length*100)+'%';$('pathInfo').textContent=`${k} naučených`;
 }
@@ -1283,15 +1472,22 @@ let cloudUser=null,cloudReady=false,cloudBusy=false,cloudLoading=false,syncQueue
 let dirty={};
 // Výsledky nepravidelných sloves se ukládají odděleně od postupu kartiček.
 // Při výpadku připojení zůstávají ve frontě v tomto zařízení a odešlou se po přihlášení.
+// Fronta je vedená zvlášť pro každý účet, aby se odpovědi jiného člověka nepřipsaly přihlášenému účtu.
 const VERB_PENDING_KEY='verbPracticePending_v1';
-function readPendingVerbAnswers(){try{const x=JSON.parse(localStorage.getItem(VERB_PENDING_KEY)||'[]');return Array.isArray(x)?x:[];}catch(e){return [];}}
-function writePendingVerbAnswers(rows){try{localStorage.setItem(VERB_PENDING_KEY,JSON.stringify(rows));}catch(e){}}
+function verbPendingKey(){return cloudUser&&cloudUser.id?VERB_PENDING_KEY+':user:'+cloudUser.id:VERB_PENDING_KEY;}
+function readPendingVerbAnswers(key){try{const x=JSON.parse(localStorage.getItem(key||verbPendingKey())||'[]');return Array.isArray(x)?x:[];}catch(e){return [];}}
+function writePendingVerbAnswers(rows,key){try{localStorage.setItem(key||verbPendingKey(),JSON.stringify(rows));}catch(e){}}
 function queueVerbAnswer(ok){const id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():('v'+Date.now().toString(36)+Math.random().toString(36).slice(2));const row={event_id:id,is_correct:!!ok,created_at:new Date().toISOString()};const pending=readPendingVerbAnswers();pending.push(row);writePendingVerbAnswers(pending);if(cloudUser&&cloudReady)syncVerbPracticeAnswers();}
 const supabaseUrl='https://rmovoinsjuynkfsmrghz.supabase.co';
 const supabaseKey='sb_publishable_7pa5pOi6Jxx4ggasPuWtRA_3-x264BE';
 // Když se knihovna z CDN nenačte (offline, blokovač), kartičky musí fungovat dál – jen bez synchronizace.
 let cloud=null;try{if(window.supabase&&typeof window.supabase.createClient==='function')cloud=window.supabase.createClient(supabaseUrl,supabaseKey);}catch(e){cloud=null;}
-function localSave(){try{const key=cloudUser&&cloudUser.id?'engcards1000:user:'+cloudUser.id:'engcards1000:guest';localStorage.setItem(key,JSON.stringify({grades,lesson,dirty,srs,starred}));}catch(e){}}
+const GUEST_CARDS_KEY='engcards1000:guest',LEGACY_CARDS_KEY='engcards1000';
+function cardsKey(){return cloudUser&&cloudUser.id?'engcards1000:user:'+cloudUser.id:GUEST_CARDS_KEY;}
+function localSave(){try{localStorage.setItem(cardsKey(),JSON.stringify({grades,lesson,lessonT,dirty,srs,starred,starredT}));}catch(e){}scheduleStateSync();}
+// Postup bez účtu (i ze starších verzí, které ukládaly pod klíč „engcards1000“).
+function readGuestCards(){try{const raw=localStorage.getItem(GUEST_CARDS_KEY)||localStorage.getItem(LEGACY_CARDS_KEY);return raw?(JSON.parse(raw)||{}):{};}catch(e){return {};}}
+function applyLocalState(x){x=x||{};grades=migrateKeys(x.grades);for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';}dirty=x.dirty&&typeof x.dirty==='object'?migrateKeys(x.dirty):{};srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};starred=x.starred&&typeof x.starred==='object'?migrateKeys(x.starred):{};starredT=x.starredT&&typeof x.starredT==='object'?migrateKeys(x.starredT):{};for(const w of Object.keys(starred))if(!starredT[w])starredT[w]={on:true,t:0};lesson=x.lesson>=1&&x.lesson<=20?+x.lesson:1;lessonT=+x.lessonT||0;$('lesson').value=lesson;ensureSrs();}
 function save(){localSave();if(cloudUser&&cloudReady)syncOneCardChanges();}
 function cloudMessage(msg){const el=$('cloudStatus');if(el)el.textContent=msg;}
 let verbSyncBusy=false,verbSyncQueued=false;
@@ -1300,63 +1496,136 @@ function publishVerbCloudStats(){try{const frame=document.getElementById('irregu
 async function loadVerbPracticeHistory(){
  if(!cloud||!cloudUser||!cloudReady)return;
  try{
-  const {data,error}=await cloud.from('verb_practice_answers').select('is_correct').eq('user_id',cloudUser.id);
-  if(error)throw error;
-  const rows=data||[];
-  verbCloudStats={correct:rows.filter(r=>r.is_correct===true).length,total:rows.length,loaded:true};
+  // Jen počty (count), ne řádky: Supabase vrací nejvýš 1 000 řádků, počet ale platí pro libovolné množství odpovědí.
+  const q=()=>cloud.from('verb_practice_answers').select('event_id',{count:'exact',head:true}).eq('user_id',cloudUser.id);
+  const [all,right]=await Promise.all([q(),q().eq('is_correct',true)]);
+  if(all.error)throw all.error;if(right.error)throw right.error;
+  verbCloudStats={correct:right.count||0,total:all.count||0,loaded:true};
   publishVerbCloudStats();
  }catch(err){verbCloudStats={...verbCloudStats,loaded:false};cloudMessage('Kartičky se synchronizují; načtení historie nepravidelných sloves se nezdařilo: '+(err.message||'zkus to znovu'));}
 }
+// --- Synchronizace všeho ostatního mezi zařízeními (tabulka user_state: jeden JSON na účet) ---
+// Plán opakování, hvězdičky, dny učení, kvízy, rozhovory, statistiky sloves, denní dávka, jméno a nastavení.
+// Slučuje se bez přepisování: dny se sjednotí, statistiky se sčítají po zařízeních, jinde vyhrává novější změna.
+let applyingRemote=false,stateSyncTimer=null,stateSyncBusy=false,stateSyncAgain=false,stateSyncWarned=false;
+function scheduleStateSync(){if(applyingRemote||!cloud||!cloudUser||!cloudReady)return;clearTimeout(stateSyncTimer);stateSyncTimer=setTimeout(syncUserState,1500);}
+function stateFromLocal(){return {v:1,dev:daily.dev||{},active:daily.active||[],dialogs:daily.dialogs||{},placementDone:!!daily.placementDone,start:daily.start||null,
+ count:{v:daily.count,t:daily.countT||0},newWords:{date:daily.date,list:daily.newWords||[]},srs,starred:starredT,mistakes:daily.mistakes||{},verbSrs:daily.verbSrs||{},
+ prefs:{name:prefs.name||'',vocative:prefs.vocative||'',gender:prefs.gender||'',showTranslation:!!prefs.showTranslation,theme:prefs.theme||'auto',listen:prefs.listen||null,t:prefs.t||0},lesson:{v:lesson,t:lessonT||0}};}
+function devSize(d){return d?(d.quizzes||0)+((d.verbs&&d.verbs.answered)||0)+Object.values(d.history||{}).reduce((a,x)=>a+(x.total||0),0):0;}
+function newerOf(x,y){return ((y&&y.t)||0)>((x&&x.t)||0)?y:x;}
+function mergeState(a,b){b=b&&typeof b==='object'?b:{};const out={v:1};
+ out.dev={...(b.dev||{})};for(const [id,d] of Object.entries(a.dev||{}))if(!out.dev[id]||devSize(d)>=devSize(out.dev[id]))out.dev[id]=d;
+ out.active=[...new Set([...(a.active||[]),...(b.active||[])])].sort().slice(-400);
+ out.dialogs={...(b.dialogs||{})};for(const [id,x] of Object.entries(a.dialogs||{})){const y=out.dialogs[id];if(!y||String(x.date||'')>String(y.date||'')||(x.date===y.date&&(x.correct||0)>=(y.correct||0)))out.dialogs[id]=x;}
+ out.placementDone=!!(a.placementDone||b.placementDone);
+ out.start=[a.start,b.start].filter(Boolean).sort()[0]||null;
+ out.count=newerOf(a.count,b.count);
+ const today=todayKey(),na=a.newWords||{},nb=b.newWords||{};
+ out.newWords=na.date===today&&nb.date===today?{date:today,list:[...new Set([...(nb.list||[]),...(na.list||[])])]}:(nb.date===today?nb:na);
+ out.srs={...(b.srs||{})};for(const [w,s] of Object.entries(a.srs||{})){const r=out.srs[w];if(!r||((s&&s.t)||0)>=((r&&r.t)||0))out.srs[w]=s;}
+ out.starred={...(b.starred||{})};for(const [w,s] of Object.entries(a.starred||{})){const r=out.starred[w];if(!r||((s&&s.t)||0)>=((r&&r.t)||0))out.starred[w]=s;}
+ // Chyby a opakování sloves: u každé položky vyhrává novější změna (i smazání chyby).
+ for(const f of ['mistakes','verbSrs']){out[f]={...(b[f]||{})};for(const [k,x] of Object.entries(a[f]||{})){const r=out[f][k];if(!r||((x&&x.t)||0)>=((r&&r.t)||0))out[f][k]=x;}}
+ out.prefs=newerOf(a.prefs,b.prefs);out.lesson=newerOf(a.lesson,b.lesson);
+ return out;}
+function applyState(m){applyingRemote=true;try{
+ daily.dev=m.dev||{};daily.active=m.active||[];daily.dialogs=m.dialogs||{};daily.mistakes=m.mistakes||{};daily.verbSrs=m.verbSrs||{};daily.placementDone=!!m.placementDone;if(m.start)daily.start=m.start;
+ if(m.count&&[5,10,15,20,30].includes(+m.count.v)){daily.count=+m.count.v;daily.countT=m.count.t||0;$('dailyCount').value=String(daily.count);}
+ if(m.newWords&&m.newWords.date===todayKey()){daily.date=todayKey();daily.newWords=(m.newWords.list||[]).filter(x=>words.some(w=>w.word===x));}
+ recomputeTotals();
+ srs=m.srs||{};starredT=m.starred||{};starred={};for(const [w,s] of Object.entries(starredT))if(s&&s.on)starred[w]=true;
+ if(m.prefs&&(m.prefs.t||0)>(prefs.t||0)){prefs={...prefs,name:m.prefs.name||'',vocative:m.prefs.vocative||'',gender:m.prefs.gender||'',showTranslation:!!m.prefs.showTranslation,theme:m.prefs.theme||'auto',listen:m.prefs.listen||prefs.listen||null,t:m.prefs.t};savePrefs(false);
+  $('prefShowTr').checked=!!prefs.showTranslation;$('prefTheme').value=prefs.theme||'auto';$('prefGender').value=genderOf();applyTheme();applyGenderToLesson();}
+ if(m.lesson&&(m.lesson.t||0)>(lessonT||0)&&m.lesson.v>=1&&m.lesson.v<=20){lesson=+m.lesson.v;lessonT=m.lesson.t;$('lesson').value=lesson;}
+ ensureSrs();fillNewWords();localSave();saveDaily();
+}finally{applyingRemote=false;}render();}
+async function syncUserState(){
+ if(!cloud||!cloudUser||!cloudReady)return;if(stateSyncBusy){stateSyncAgain=true;return;}stateSyncBusy=true;clearTimeout(stateSyncTimer);
+ const uid=cloudUser.id;
+ try{
+  const {data,error}=await cloud.from('user_state').select('data').eq('user_id',uid).maybeSingle();if(error)throw error;
+  if(!cloudUser||cloudUser.id!==uid)return;
+  const merged=mergeState(stateFromLocal(),data&&data.data);applyState(merged);
+  const {error:e2}=await cloud.from('user_state').upsert({user_id:uid,data:merged,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(e2)throw e2;
+  stateSyncWarned=false;
+ }catch(err){if(!stateSyncWarned){stateSyncWarned=true;cloudMessage('Hodnocení kartiček se synchronizuje, ale dny učení, plán a další údaje zatím ne: '+(err.message||'chyba spojení')+'. Je v Supabase spuštěný aktualizovaný SQL skript (tabulka user_state)?');}}
+ finally{stateSyncBusy=false;if(stateSyncAgain){stateSyncAgain=false;syncUserState();}}
+}
+// Načtení změn z jiného zařízení: hodnocení kartiček (neodeslané místní změny mají přednost) a ostatní stav.
+async function pullCloudGrades(){
+ if(!cloud||!cloudUser||!cloudReady)return;const uid=cloudUser.id;
+ const {data,error}=await cloud.from('card_progress').select('word_index,grade').eq('user_id',uid);if(error||!cloudUser||cloudUser.id!==uid)return;
+ const merged={};for(const row of (data||[]))if(Number.isInteger(row.word_index)&&words[row.word_index]&&['known','uncertain','review'].includes(row.grade))merged[words[row.word_index].word]=row.grade==='uncertain'?'review':row.grade;
+ for(const [w,g] of Object.entries(grades))if(dirty[w]||!(w in merged)){merged[w]=g;dirty[w]=true;}
+ if(JSON.stringify(merged)!==JSON.stringify(grades)){grades=merged;ensureSrs();localSave();render();}
+ if(Object.keys(dirty).length)await syncOneCardChanges();
+}
+let lastRefresh=0;
+async function refreshFromCloud(){if(!cloud||!cloudUser||!cloudReady||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();try{await pullCloudGrades();await syncUserState();await loadVerbPracticeHistory();}catch(e){}}
+// Po návratu do aplikace (přepnutí z jiného zařízení, odemčení telefonu) se načtou změny.
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshFromCloud();});
+window.addEventListener('focus',()=>refreshFromCloud());
 async function syncVerbPracticeAnswers(){if(!cloud||!cloudUser||!cloudReady)return;if(verbSyncBusy){verbSyncQueued=true;return;}const pending=readPendingVerbAnswers();if(!pending.length)return;verbSyncBusy=true;const sent=pending.slice();try{const rows=sent.map(r=>({user_id:cloudUser.id,event_id:r.event_id,is_correct:!!r.is_correct,created_at:r.created_at||new Date().toISOString()}));const {error}=await cloud.from('verb_practice_answers').upsert(rows,{onConflict:'user_id,event_id'});if(error)throw error;const sentIds=new Set(sent.map(r=>r.event_id));writePendingVerbAnswers(readPendingVerbAnswers().filter(r=>!sentIds.has(r.event_id)));cloudMessage('Synchronizace zapnutá. Kartičky i výsledky nepravidelných sloves se ukládají online.');}catch(err){cloudMessage('Výsledky nepravidelných sloves se zatím nepodařilo uložit online: '+(err.message||'zkus to znovu')+'. Zůstávají uložené v tomto zařízení a odešlou se později.');}finally{verbSyncBusy=false;if(verbSyncQueued){verbSyncQueued=false;syncVerbPracticeAnswers();}}}
 async function syncOneCardChanges(){if(!cloud||!cloudUser||!cloudReady)return;if(cloudBusy){syncQueued=true;return;}cloudBusy=true;const sent={...dirty};try{const rows=Object.entries(grades).filter(([word,grade])=>['known','review'].includes(grade)).map(([word,grade])=>({user_id:cloudUser.id,word_index:words.findIndex(w=>w.word===word),grade,updated_at:new Date().toISOString()})).filter(r=>r.word_index>=0);if(rows.length){const {error}=await cloud.from('card_progress').upsert(rows,{onConflict:'user_id,word_index'});if(error)throw error;}for(const word of Object.keys(sent))delete dirty[word];localSave();cloudMessage('Synchronizace zapnutá. Změny se ukládají online.');}catch(err){cloudMessage('Online uložení se nezdařilo: '+(err.message||'zkus to znovu')+' Hodnocení zůstává uložené v tomto prohlížeči a odešle se při další změně.');}finally{cloudBusy=false;if(syncQueued){syncQueued=false;syncOneCardChanges();}}}
 async function loadCloudProgress(user){
  if(!cloud||cloudLoading)return;
  if(cloudUser&&cloudUser.id===user.id&&cloudReady)return;
  cloudLoading=true;cloudReady=false;
- // Switch account context before any save/sync; never reuse another account's in-memory state.
- cloudUser=user;
+ const accountKey='engcards1000:user:'+user.id;
+ let accountLocal=null;
+ try{const raw=localStorage.getItem(accountKey);if(raw)accountLocal=JSON.parse(raw)||{};}catch(e){}
+ // Účet se na tomto zařízení přihlašuje poprvé: převezme dosavadní postup bez účtu (i ze starších verzí)
+ // a ten se přesune do účtu. Další účty na stejném zařízení už postup hosta nepřeberou.
+ const firstOnDevice=!accountLocal;
+ const base=firstOnDevice?readGuestCards():accountLocal;
  try{
-  const accountKey='engcards1000:user:'+user.id;
-  let accountLocal={};
-  try{const raw=localStorage.getItem(accountKey);if(raw)accountLocal=JSON.parse(raw)||{};}catch(e){}
   const {data,error}=await cloud.from('card_progress').select('word_index,grade').eq('user_id',user.id);
   if(error)throw error;
   const serverGrades={};
   for(const row of (data||[])){
    if(Number.isInteger(row.word_index)&&words[row.word_index]&&['known','uncertain','review'].includes(row.grade))serverGrades[words[row.word_index].word]=row.grade==='uncertain'?'review':row.grade;
   }
-  // Cloud is authoritative for this account. Only unsynced changes saved under THIS user ID may merge.
-  const accountDirty=accountLocal.dirty&&typeof accountLocal.dirty==='object'?migrateKeys(accountLocal.dirty):{};
-  const accountGrades=accountLocal.grades&&typeof accountLocal.grades==='object'?migrateKeys(accountLocal.grades):{};
-  const merged={...serverGrades};
-  dirty={};
-  for(const [word,pending] of Object.entries(accountDirty)){
-   if(pending&&Object.prototype.hasOwnProperty.call(accountGrades,word)&&words.some(w=>w.word===word)){
-    merged[word]=accountGrades[word];dirty[word]=true;
-   }
+  // Cloud platí pro účet; z místního postupu se přidá to, co v cloudu chybí (jen při prvním přihlášení na zařízení)
+  // a to, co bylo ohodnoceno bez připojení a ještě se neodeslalo.
+  const localGrades=migrateKeys(base.grades),localDirty=base.dirty&&typeof base.dirty==='object'?migrateKeys(base.dirty):{};
+  const merged={...serverGrades};let kept=0;
+  cloudUser=user;dirty={};
+  for(const [word,g] of Object.entries(localGrades)){
+   if(!words.some(w=>w.word===word)||!['known','review','uncertain'].includes(g))continue;
+   if(localDirty[word]||(firstOnDevice&&!(word in serverGrades))){const grade=g==='uncertain'?'review':g;if(merged[word]!==grade)kept++;merged[word]=grade;dirty[word]=true;}
   }
-  grades=merged;
-  srs=accountLocal.srs&&typeof accountLocal.srs==='object'?migrateKeys(accountLocal.srs):{};
-  starred=accountLocal.starred&&typeof accountLocal.starred==='object'?migrateKeys(accountLocal.starred):{};
-  lesson=accountLocal.lesson>=1&&accountLocal.lesson<=20?+accountLocal.lesson:1;
-  $('lesson').value=lesson;
-  ensureSrs();render();cloudReady=true;localSave();
+  applyLocalState({...base,grades:merged,dirty});
+  if(firstOnDevice){
+   // Denní dávka, statistiky a neodeslané odpovědi ze sloves se přesunou z hosta do účtu.
+   try{const d=localStorage.getItem(DAILY_KEY);if(d&&!localStorage.getItem(DAILY_KEY+':user:'+user.id))localStorage.setItem(DAILY_KEY+':user:'+user.id,d);}catch(e){}
+   const guestVerbs=readPendingVerbAnswers(VERB_PENDING_KEY);if(guestVerbs.length)writePendingVerbAnswers(readPendingVerbAnswers().concat(guestVerbs));
+   try{[GUEST_CARDS_KEY,LEGACY_CARDS_KEY,DAILY_KEY,VERB_PENDING_KEY].forEach(k=>localStorage.removeItem(k));}catch(e){}
+  }
+  loadDaily();$('dailyCount').value=String(daily.count);
+  cloudReady=true;localSave();render();
   await syncOneCardChanges();
   await syncVerbPracticeAnswers();
   await loadVerbPracticeHistory();
-  if(!Object.keys(dirty).length)cloudMessage(((data||[]).length?'Postup načten z cloudu: '+Object.keys(grades).length+' ohodnocených slovíček.':'Tento účet zatím nemá uložený postup kartiček.')+' Výsledky nepravidelných sloves se také synchronizují.');
+  await syncUserState();lastRefresh=Date.now();
+  if(!Object.keys(dirty).length&&!stateSyncWarned)cloudMessage(((data||[]).length?'Postup načten z cloudu: '+Object.keys(grades).length+' ohodnocených slovíček'+(kept?' (z toho '+kept+' doplněno z tohoto zařízení).':'.'):'První synchronizace: postup z tohoto zařízení byl uložen do účtu.')+' Synchronizují se i dny učení, plán opakování, hvězdičky, kvízy, slovesa a nastavení.');
   $('signIn').classList.add('hidden');$('signUp').classList.add('hidden');$('signOut').classList.remove('hidden');$('authEmail').disabled=true;$('authPassword').disabled=true;
- }catch(err){cloudUser=null;cloudReady=false;cloudMessage('Nepodařilo se načíst online postup: '+(err.message||'zkontroluj nastavení'));}
+ }catch(err){cloudUser=null;cloudReady=false;cloudMessage('Nepodařilo se načíst online postup: '+(err.message||'zkontroluj nastavení')+' Postup v tomto zařízení zůstává beze změny.');}
  finally{cloudLoading=false;}
 }
 async function handleAuth(kind){if(!cloud){cloudMessage('Online synchronizace teď není dostupná (nepodařilo se načíst knihovnu). Kartičky fungují dál a hodnocení se ukládá v tomto prohlížeči.');return;}const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password){cloudMessage('Vyplň e-mail a heslo.');return;}if(kind==='signup'&&password.length<6){cloudMessage('Heslo musí mít alespoň 6 znaků.');return;}cloudMessage('Pracuji…');try{let result;if(kind==='signup'){result=await cloud.auth.signUp({email,password,options:{emailRedirectTo:window.location.href.split('#')[0]}});}else{result=await cloud.auth.signInWithPassword({email,password});}if(result.error)throw result.error;if(kind==='signup'&&!result.data.session){cloudMessage('Účet byl vytvořen. Zkontroluj e-mail a potvrď registraci. Potom se vrať sem a přihlas se.');return;}if(result.data.user)await loadCloudProgress(result.data.user);}catch(err){cloudMessage('Chyba: '+(err.message||'přihlášení se nezdařilo'));}}
-$('signIn').onclick=()=>handleAuth('signin');$('signUp').onclick=()=>handleAuth('signup');$('signOut').onclick=async()=>{if(cloud)await cloud.auth.signOut();cloudUser=null;cloudReady=false;cloudLoading=false;grades={};dirty={};srs={};starred={};lesson=1;$('lesson').value='1';localSave();render();$('signIn').classList.remove('hidden');$('signUp').classList.remove('hidden');$('signOut').classList.add('hidden');$('authEmail').disabled=false;$('authPassword').disabled=false;cloudMessage('Odhlášeno. Účet je odpojen; přihlášením se načte pouze postup příslušného uživatele.');};
+$('signIn').onclick=()=>handleAuth('signin');$('signUp').onclick=()=>handleAuth('signup');$('signOut').onclick=async()=>{clearTimeout(stateSyncTimer);if(cloudUser&&cloudReady){try{await syncUserState();}catch(e){}}if(cloud){try{await cloud.auth.signOut();}catch(e){}}cloudUser=null;cloudReady=false;cloudLoading=false;
+ // Po odhlášení se zobrazí postup bez účtu uložený v zařízení; nic se nepřepisuje ani nemaže.
+ applyLocalState(readGuestCards());loadDaily();$('dailyCount').value=String(daily.count);verbCloudStats={correct:0,total:0,loaded:false};publishVerbCloudStats();render();
+ $('signIn').classList.remove('hidden');$('signUp').classList.remove('hidden');$('signOut').classList.add('hidden');$('authEmail').disabled=false;$('authPassword').disabled=false;cloudMessage('Odhlášeno. Postup účtu zůstává uložený a po přihlášení se znovu načte; teď se zobrazuje postup bez účtu.');};
 if(cloud){cloud.auth.getSession().then(({data})=>{if(data.session?.user)loadCloudProgress(data.session.user);}).catch(()=>{});
 cloud.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session?.user&&!cloudUser)loadCloudProgress(session.user);});}
 else{cloudMessage('Online synchronizace teď není dostupná (nepodařilo se načíst knihovnu – zkontroluj připojení). Kartičky fungují a hodnocení se ukládá v tomto prohlížeči.');$('signIn').disabled=true;$('signUp').disabled=true;}
 // ZMĚNA Fáze 2: ovládání záložek na kartičce.
 function resetCardTabs(){const tabs=[...document.querySelectorAll('[data-card-tab]')];tabs.forEach(b=>{const active=b.dataset.cardTab==='example';b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));});document.querySelectorAll('[data-card-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.cardPanel!=='example'));const extraTab=document.querySelector('[data-card-tab="extra"]');if(extraTab)extraTab.disabled=!((document.getElementById('extraExamples')?.children.length)||0);const collocTab=document.querySelector('[data-card-tab="colloc"]');if(collocTab)collocTab.disabled=!(document.getElementById('colloc')?.textContent.trim());}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-card-tab]');if(!b||b.disabled)return;const name=b.dataset.cardTab;document.querySelectorAll('[data-card-tab]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active));});document.querySelectorAll('[data-card-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.cardPanel!==name));});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-card-tab]');if(!b||b.disabled)return;const name=b.dataset.cardTab;document.querySelectorAll('[data-card-tab]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active));});document.querySelectorAll('[data-card-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.cardPanel!==name));
+ // Jiná záložka má jinou výšku obsahu – kartička se jí přizpůsobí, aby tlačítka nepřetékala.
+ if(typeof fitCard==='function')fitCard();});
 function render(){resetCardTabs();mode=$('mode').value;$('listNote').textContent='';document.querySelectorAll('[data-mic-result]').forEach(p=>{p.textContent='';p.className='mic-result';});const fm=document.querySelector('.front [data-mic]');if(fm)fm.classList.toggle('hidden',$('direction').value==='cs-en');let a=set();index=Math.max(0,Math.min(index,Math.max(0,a.length-1)));let w=a[index];$('flip').classList.remove('turned');$('jump').innerHTML='';a.forEach((x,i)=>{let o=document.createElement('option');o.value=i;o.textContent=`${i+1}. ${x.word}`;$('jump').append(o)});$('jump').value=index;
 if(w){let n=words.indexOf(w)+1;$('word').textContent=w.word;$('ipa').textContent=w.ipa;const frontAligned=alignedWordsMarkup(w.sentence,w.sentence_ipa,w.word);$('sample').innerHTML=frontAligned||highlightSentence(w.sentence,w.word);$('sample').classList.toggle('aligned-words',!!frontAligned);$('bw').textContent=w.word;$('bipa').textContent=w.ipa||'';$('meaning').textContent=w.cs;const backAligned=alignedWordsMarkup(w.sentence,w.sentence_ipa,w.word);$('backSentence').innerHTML=backAligned||esc(w.sentence);$('backSentence').classList.toggle('aligned-words',!!backAligned);$('scs').textContent=csText(w);$('scs').classList.toggle('hidden',!prefs.showTranslation);$('showTr').classList.toggle('hidden',prefs.showTranslation||!w.sentence_cs);document.querySelectorAll('[data-star]').forEach(b=>{const on=!!starred[w.word];b.textContent=on?'★':'☆';b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));b.disabled=false;});const fm=$('focusMeaning');fm.textContent=w.primary_meaning?'Význam v této větě: '+w.primary_meaning:'';fm.classList.toggle('hidden',!w.primary_meaning);// Další příklady: druhá vzorová věta (ex2) a věty s dalšími významy slova.
 const exList=(w.ex2?[{...w.ex2,isEx2:true}]:[]).concat(w.extra_examples||[]);
@@ -1369,7 +1638,7 @@ $('turn').onclick=()=> $('flip').classList.toggle('turned');$('flip').onclick=e=
 // Když ohodnocená kartička ze seznamu vypadne (režim „Pouze Neumím“ → „Umím“), na stejné pozici už je další kartička – index se nesmí posunout.
 document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{let w=set()[index];if(!w)return;grades[w.word]=b.dataset.grade;dirty[w.word]=true;const s=srsGrade(w.word,b.dataset.grade);markActive();save();$('srsNote').textContent=`„${w.word}“ – znovu ${inTime(s.due-Date.now())}`;let a=set();index=!a.length?0:a.includes(w)?(index+1)%a.length:index%a.length;render()});
 $('prev').onclick=()=>{index=Math.max(0,index-1);render()};$('next').onclick=()=>{let a=set();index=a.length?(index+1)%a.length:0;render()};$('repeat').onclick=()=>{index=0;$('mode').value='all';render()};
-$('lesson').onchange=()=>{lesson=+$('lesson').value;index=0;save();render()};$('mode').onchange=()=>{index=0;render()};$('jump').onchange=()=>{index=+$('jump').value;render()};$('direction').onchange=()=>{render()};$('checkAnswer').onclick=()=>{const w=set()[index];if(!w)return;const raw=$('answerInput').value;if(!raw.trim()){$('answerFeedback').textContent='Nejdřív napiš svůj překlad.';$('answerFeedback').style.color='';return;}const r=judgeAnswer(raw,w);$('answerFeedback').textContent=r.text;$('answerFeedback').style.color=r.color;$('checkAnswer').disabled=true;};$('answerInput').addEventListener('click',e=>e.stopPropagation());$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('checkAnswer').disabled)$('checkAnswer').click()});$('list').onclick=e=>{let b=e.target.closest('[data-word]');if(!b)return;const word=b.dataset.word;let i=set().findIndex(w=>w.word===word);if(i>=0){index=i;render();return;}const item=words.find(w=>w.word===word);const reverse=$('direction').value==='cs-en';let why;if(reverse&&item&&(!item.cs||item.cs==='význam podle kontextu'))why=`„${word}“ zatím nemá český význam, proto se v režimu Česky → anglicky nezobrazuje.`;else if(mode==='due')why=`„${word}“ dnes není na řadě k opakování.`;else if(mode==='review')why=`„${word}“ není mezi slovíčky „Neumím“. Pro zobrazení přepni režim na „Všechna slovíčka lekce“.`;else why=`„${word}“ se v aktuálním režimu nezobrazuje.`;$('listNote').textContent=why;};
+$('lesson').onchange=()=>{lesson=+$('lesson').value;lessonT=Date.now();index=0;save();render()};$('mode').onchange=()=>{index=0;render()};$('jump').onchange=()=>{index=+$('jump').value;render()};$('direction').onchange=()=>{render()};$('checkAnswer').onclick=()=>{const w=set()[index];if(!w)return;const raw=$('answerInput').value;if(!raw.trim()){$('answerFeedback').textContent='Nejdřív napiš svůj překlad.';$('answerFeedback').style.color='';return;}const r=judgeAnswer(raw,w);$('answerFeedback').textContent=r.text;$('answerFeedback').style.color=r.color;$('checkAnswer').disabled=true;};$('answerInput').addEventListener('click',e=>e.stopPropagation());$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('checkAnswer').disabled)$('checkAnswer').click()});$('list').onclick=e=>{let b=e.target.closest('[data-word]');if(!b)return;const word=b.dataset.word;let i=set().findIndex(w=>w.word===word);if(i>=0){index=i;render();return;}const item=words.find(w=>w.word===word);const reverse=$('direction').value==='cs-en';let why;if(reverse&&item&&(!item.cs||item.cs==='význam podle kontextu'))why=`„${word}“ zatím nemá český význam, proto se v režimu Česky → anglicky nezobrazuje.`;else if(mode==='due')why=`„${word}“ dnes není na řadě k opakování.`;else if(mode==='review')why=`„${word}“ není mezi slovíčky „Neumím“. Pro zobrazení přepni režim na „Všechna slovíčka lekce“.`;else why=`„${word}“ se v aktuálním režimu nezobrazuje.`;$('listNote').textContent=why;};
 const voiceSelect=$('voiceSelect'),speechRate=$('speechRate'),speechRateValue=$('speechRateValue'),voiceStatus=$('voiceStatus');
 let audioSettings={voiceURI:'auto',rate:0.85};
 try{const savedAudio=JSON.parse(localStorage.getItem('engcards1000audio')||'{}');if(typeof savedAudio.voiceURI==='string')audioSettings.voiceURI=savedAudio.voiceURI;if(Number.isFinite(savedAudio.rate))audioSettings.rate=Math.min(1,Math.max(.65,savedAudio.rate));}catch(e){}
@@ -1390,9 +1659,9 @@ $('frontSpeak').onclick=e=>{e.stopPropagation();speakCurrentSentence()};$('backS
 $('export').onclick=()=>{let blob=new Blob([JSON.stringify({grades,lesson,srs,starred,daily,prefs},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='vysledky-karticek.json';document.body.appendChild(a);a.click();a.remove();
  // Safari (iPhone) potřebuje, aby odkaz chvíli existoval – okamžité uvolnění stahování zruší.
  setTimeout(()=>URL.revokeObjectURL(a.href),4000)};$('importBtn').onclick=()=>$('file').click();$('file').onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());grades=migrateKeys(x.grades);dirty={};for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';dirty[key]=true;}srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};ensureSrs();if(x.starred&&typeof x.starred==='object')starred=migrateKeys(x.starred);if(x.daily&&typeof x.daily==='object'){daily={...daily,...x.daily};saveDaily();loadDaily();}if(x.prefs&&typeof x.prefs==='object'){prefs={...prefs,...x.prefs};savePrefs();$('prefShowTr').checked=!!prefs.showTranslation;$('prefTheme').value=prefs.theme||'auto';applyTheme();}lesson=x.lesson>=1&&x.lesson<=20?+x.lesson:1;$('lesson').value=lesson;save();index=0;render();$('status').textContent='Výsledky importovány.'}catch(err){$('status').textContent='Soubor se nepodařilo načíst.'}};
-try{let raw=localStorage.getItem('engcards1000:guest');if(!raw)raw=localStorage.getItem('engcards1000')||'{}';let x=JSON.parse(raw);grades=migrateKeys(x.grades);dirty=x.dirty&&typeof x.dirty==='object'?migrateKeys(x.dirty):{};for(const key of Object.keys(grades)){if(grades[key]==='uncertain')grades[key]='review';}srs=x.srs&&typeof x.srs==='object'?migrateKeys(x.srs):{};starred=x.starred&&typeof x.starred==='object'?migrateKeys(x.starred):{};lesson=x.lesson>=1&&x.lesson<=20?+x.lesson:1}catch(e){}ensureSrs();loadDaily();$('dailyCount').value=String(daily.count);$('lesson').value=lesson;render();
+applyLocalState(readGuestCards());loadDaily();$('dailyCount').value=String(daily.count);$('lesson').value=lesson;render();
 // --- Ovládání obrazovky Dnes ---
-$('dailyCount').onchange=()=>{daily.count=+$('dailyCount').value;fillNewWords();saveDaily();render();};
+$('dailyCount').onchange=()=>{daily.count=+$('dailyCount').value;daily.countT=Date.now();fillNewWords();saveDaily();render();};
 function showCards(m){$('mode').value=m;mode=m;const a=set();const first=a.findIndex(w=>!grades[w.word]);index=first>=0?first:0;render();document.querySelector('.stage').scrollIntoView({behavior:'smooth',block:'start'});}
 $('todayLearn').onclick=()=>showCards('today');$('todayReview').onclick=()=>showCards('due');$('todayQuiz').onclick=()=>openQuiz();
 // --- Kvíz dne: 20 otázek, střídá 4 typy (význam, překlad, doplnění do věty, poslech) ---
@@ -1414,9 +1683,21 @@ function makeQuestion(w,kind){
 function openQuiz(){
  const pool=quizPool();if(pool.length<4){alert('Na kvíz je potřeba aspoň pár slovíček s českým významem.');return;}
  const kinds=['meaning','reverse','gap','listen'];
- quiz={qs:pool.map((w,i)=>makeQuestion(w,kinds[i%4])),i:0,correct:0,answered:false,mistakes:[]};
- $('quizOverlay').hidden=false;document.body.style.overflow='hidden';renderQuiz();
+ startQuiz(pool.map((w,i)=>makeQuestion(w,kinds[i%4])),false);
 }
+function startQuiz(qs,practice){quiz={qs,i:0,correct:0,answered:false,mistakes:[],practice:!!practice};$('quizOverlay').hidden=false;document.body.style.overflow='hidden';renderQuiz();}
+// Otázka s textovými možnostmi (doplňovačka nebo odpověď z rozhovoru) pro procvičení chyb.
+function choiceQuestion(key,title,text,sub,options,answer,explain){const opts=options.slice();return {kind:'choice',key,title,text,sub,explain,opts,answer,label:x=>x,w:{word:opts[answer],cs:sub||explain||'',ipa:''}};}
+function escRe(s){return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function mistakeQuestions(){const out=[],kinds=['meaning','reverse','gap','listen'];
+ for(const m of activeMistakes()){
+  if(m.key.startsWith('w:')){const w=words.find(x=>x.word===m.key.slice(2));if(w&&w.cs&&w.cs!==PLACEHOLDER)out.push(makeQuestion(w,kinds[out.length%4]));}
+  else if(m.key.startsWith('d:')){const p=m.key.split(':'),d=DIALOGS.find(x=>x.id===p[1]);if(!d)continue;
+   if(p[2]==='q'){const q=d.question,order=shuffle(q.options.map((o,i)=>i));out.push(choiceQuestion(m.key,'Co odpovíte? · '+d.title,q.cs,'',order.map(i=>q.options[i]),order.indexOf(q.answer),q.explain));}
+   else{const l=d.lines[+p[2]];if(!l||!l.gap)continue;const opts=shuffle(l.options);out.push(choiceQuestion(m.key,'Doplň slovo · '+d.title,l.en.replace(new RegExp('\\b'+escRe(l.gap)+'\\b'),'_____'),csText(l)||l.cs,opts,opts.indexOf(l.gap),l.en));}}
+ }
+ return shuffle(out).slice(0,30);}
+function openMistakeQuiz(){const qs=mistakeQuestions();if(!qs.length){alert('Mezi chybami teď nejsou slovíčka ani rozhovory k procvičení.');return;}closeMistakes(true);startQuiz(qs,true);}
 function closeQuiz(){$('quizOverlay').hidden=true;document.body.style.overflow='';if('speechSynthesis' in window)window.speechSynthesis.cancel();render();$('todayQuiz').focus();}
 $('closeQuiz').onclick=closeQuiz;
 function renderQuiz(){
@@ -1427,6 +1708,7 @@ function renderQuiz(){
  if(q.kind==='meaning'){$('quizKind').textContent='Co znamená?';Q.textContent=q.w.word;$('quizSub').textContent=q.w.ipa||'';}
  else if(q.kind==='reverse'){$('quizKind').textContent='Jak se řekne anglicky?';Q.textContent=q.w.cs;$('quizSub').textContent='';}
  else if(q.kind==='gap'){$('quizKind').textContent='Doplň slovo do věty';const t=q.w.sentence.split(/\s+/),i=gapIndex(q.w);t[i]=t[i].replace(/[A-Za-z0-9']+/,'_____');Q.textContent=t.join(' ');$('quizSub').textContent=csText(q.w);}
+ else if(q.kind==='choice'){$('quizKind').textContent=q.title;Q.classList.add('sentence');Q.textContent=q.text;$('quizSub').textContent=q.sub||'';}
  else{$('quizKind').textContent='Poslech – které slovo slyšíš?';Q.innerHTML='<button type="button" class="audio-btn icon-audio" id="quizPlay" aria-label="Přehrát znovu" title="Přehrát znovu">🔊</button>';$('quizSub').textContent='Klikni na reproduktor pro opakované přehrání.';$('quizPlay').onclick=()=>speakText(q.w.word);setTimeout(()=>speakText(q.w.word),250);}
  $('quizOptions').innerHTML=q.opts.map((o,i)=>`<button type="button" class="quiz-opt" data-opt="${i}"><kbd>${i+1}</kbd><span>${esc(q.label(o))}</span></button>`).join('');
  $('quizFeedback').className='quiz-feedback hidden';$('quizNext').classList.add('hidden');
@@ -1438,35 +1720,37 @@ function answerQuiz(i){
  if(!quiz||quiz.answered)return;const q=quiz.qs[quiz.i];quiz.answered=true;const ok=i===q.answer;
  if(ok)quiz.correct++;else quiz.mistakes.push(q.w);
  $('quizOptions').querySelectorAll('.quiz-opt').forEach((b,j)=>{b.disabled=true;if(j===q.answer)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
- const extra=q.kind==='gap'?`\n${q.w.sentence}`:'';
+ if(q.kind==='choice'){$('quizFeedback').textContent=(ok?'✓ Správně!':'✗ Správně je: '+q.opts[q.answer])+(q.explain?`\n${q.explain}`:'');noteResult(q.key,ok);}
+ else{const extra=q.kind==='gap'?`\n${q.w.sentence}`:'';
  $('quizFeedback').textContent=(ok?'✓ Správně!':'✗ Správně je: '+q.label(q.w))+`\n${q.w.word} ${q.w.ipa||''} – ${q.w.cs}`+extra;
+ noteResult('w:'+q.w.word,ok);applyQuizResult(q.w,ok);}
  $('quizFeedback').className='quiz-feedback';$('quizScore').textContent=`Správně: ${quiz.correct}`;
- applyQuizResult(q.w,ok);
  $('quizNext').textContent=quiz.i===quiz.qs.length-1?'Zobrazit výsledek →':'Další →';$('quizNext').classList.remove('hidden');$('quizNext').focus({preventScroll:true});
 }
 $('quizOptions').addEventListener('click',e=>{const b=e.target.closest('[data-opt]');if(b)answerQuiz(+b.dataset.opt);});
 $('quizNext').onclick=()=>{if(!quiz)return;if(quiz.i<quiz.qs.length-1){quiz.i++;renderQuiz();}else finishQuiz();};
 function finishQuiz(){
  // Výsledky kvízů se za den sčítají (graf úspěšnosti); počet kvízů a kvíz bez chyby jsou pro odznaky.
- const total=quiz.qs.length,prev=daily.history[todayKey()]||{correct:0,total:0};daily.history[todayKey()]={correct:prev.correct+quiz.correct,total:prev.total+total};
- daily.quizzes=(daily.quizzes||0)+1;if(quiz.correct===total)daily.perfect=true;saveDaily();
+ const total=quiz.qs.length,me=myDev(),prev=me.history[todayKey()]||{correct:0,total:0};me.history[todayKey()]={correct:prev.correct+quiz.correct,total:prev.total+total};
+ if(!quiz.practice){me.quizzes=(me.quizzes||0)+1;if(quiz.correct===total)me.perfect=true;}recomputeTotals();saveDaily();
  $('quizProgress').style.width='100%';$('quizCounter').textContent='Kvíz dokončen';$('quizKind').textContent='';
  const pct=Math.round(quiz.correct/total*100);
  $('quizQuestion').classList.remove('sentence');$('quizQuestion').textContent=pct>=90?'Výborně! 🎉':pct>=70?'Dobrá práce!':'Hotovo – tohle chce ještě procvičit.';
- $('quizSub').textContent=`Správně ${quiz.correct} z ${total} (${pct} %). Chybná slovíčka se ti vrátí v opakování.`;
+ const left=activeMistakes().length;
+ $('quizSub').textContent=`Správně ${quiz.correct} z ${total} (${pct} %). `+(quiz.practice?(left?`V Mých chybách zbývá ${left}. Chyba zmizí po ${MISTAKE_OK} správných odpovědích za sebou.`:'Všechny chyby máš vyřešené 🎉'):'Chybná slovíčka se ti vrátí v opakování a najdeš je v Mých chybách.');
  $('quizOptions').innerHTML=quiz.mistakes.length?'<strong>K procvičení:</strong><ul class="quiz-mistakes">'+quiz.mistakes.map(w=>`<li><b>${esc(w.word)}</b> – ${esc(w.cs)}</li>`).join('')+'</ul>':'';
  $('quizFeedback').className='quiz-feedback hidden';$('quizNext').classList.add('hidden');
  quiz.done=true;
  $('quizOptions').insertAdjacentHTML('beforeend','<div class="quiz-nav"><button type="button" id="quizAgain">Nový kvíz</button><button type="button" class="primary" id="quizClose2">Zpět ke kartičkám</button></div>');
- $('quizAgain').onclick=openQuiz;$('quizClose2').onclick=closeQuiz;$('quizClose2').focus({preventScroll:true});
+ $('quizAgain').textContent=quiz.practice?'Procvičit znovu':'Nový kvíz';$('quizAgain').onclick=quiz.practice?()=>{const qs=mistakeQuestions();if(qs.length)startQuiz(qs,true);else closeQuiz();}:()=>openQuiz();$('quizClose2').onclick=closeQuiz;$('quizClose2').focus({preventScroll:true});
 }
 // --- Klávesy: v kvízu 1–4 a Enter; u kartiček mezerník otočí, → Umím, ← Neumím ---
 // --- Hvězdička, skrytý překlad, oslovení ---
-document.querySelectorAll('[data-star]').forEach(b=>b.onclick=e=>{e.stopPropagation();const w=set()[index];if(!w)return;if(starred[w.word])delete starred[w.word];else starred[w.word]=true;localSave();render();});
+document.querySelectorAll('[data-star]').forEach(b=>b.onclick=e=>{e.stopPropagation();const w=set()[index];if(!w)return;toggleStar(w.word);localSave();render();});
 $('showTr').onclick=e=>{e.stopPropagation();$('scs').classList.remove('hidden');$('showTr').classList.add('hidden');fitCard();};
 $('extraExamples').addEventListener('click',e=>{const b=e.target.closest('[data-show-tr]');if(!b)return;e.stopPropagation();const s=b.previousElementSibling;if(s)s.classList.remove('hidden');b.remove();fitCard();});
 $('prefTheme').value=prefs.theme||'auto';$('prefTheme').onchange=()=>{prefs.theme=$('prefTheme').value;savePrefs();applyTheme();};
-$('irregularLessonFrame').addEventListener('load',()=>{applyTheme();applyGenderToLesson();});
+$('irregularLessonFrame').addEventListener('load',()=>{applyTheme();applyGenderToLesson();publishVerbCloudStats();});
 $('prefGender').value=genderOf();$('prefGender').onchange=()=>{prefs.gender=$('prefGender').value;savePrefs();applyGenderToLesson();render();};
 $('prefShowTr').checked=!!prefs.showTranslation;$('prefShowTr').onchange=()=>{prefs.showTranslation=$('prefShowTr').checked;savePrefs();render();};
 let vocEdited=false;
@@ -1565,13 +1849,103 @@ $('dlgBody').addEventListener('click',e=>{
  if(t.closest('#dlgCs')){dlg.showCs=!dlg.showCs;renderDialog();return;}
  if(t.closest('#dlgPlayAll')){const lines=dlg.d.lines.slice(0,dlg.shown);window.speechSynthesis&&window.speechSynthesis.cancel();let i=0;const next=()=>{if(i<lines.length){const l=lines[i++];speakText(l.en,{pitch:l.who==='B'?1.15:0.95,queue:true,onend:next});}};next();return;}
  const lb=t.closest('[data-line]');if(lb){dlgSpeak(dlg.d.lines[+lb.dataset.line]);return;}
- const gb=t.closest('[data-gap]');if(gb){const i=+gb.dataset.gap,l=dlg.d.lines[i],ok=gb.dataset.val===l.gap;dlg.gaps[i]={ok};if(ok)dlg.correct++;renderDialog();dlgSpeak(l);return;}
+ const gb=t.closest('[data-gap]');if(gb){const i=+gb.dataset.gap,l=dlg.d.lines[i],ok=gb.dataset.val===l.gap;dlg.gaps[i]={ok};if(ok)dlg.correct++;noteResult('d:'+dlg.d.id+':'+i,ok);renderDialog();dlgSpeak(l);return;}
  // Replika s mezerou se přečte až po doplnění, jinak by poslech prozradil odpověď.
  if(t.closest('#dlgNext')){dlg.shown++;renderDialog();const l=dlg.d.lines[dlg.shown-1];if(!l.gap)dlgSpeak(l);return;}
- const qb=t.closest('[data-q]');if(qb&&!dlg.answered){dlg.answered=true;dlg.qChoice=+qb.dataset.q;if(dlg.qChoice===dlg.d.question.answer)dlg.correct++;
+ const qb=t.closest('[data-q]');if(qb&&!dlg.answered){dlg.answered=true;dlg.qChoice=+qb.dataset.q;if(dlg.qChoice===dlg.d.question.answer)dlg.correct++;noteResult('d:'+dlg.d.id+':q',dlg.qChoice===dlg.d.question.answer);
   daily.dialogs=daily.dialogs||{};daily.dialogs[dlg.d.id]={correct:dlg.correct,total:dlg.total,date:todayKey()};markActive();saveDaily();markQuestion();speakText(dlg.d.question.options[dlg.d.question.answer],{pitch:1.15});}
 });
 $('closeDialogs').onclick=closeDialogs;$('todayDialogs').onclick=openDialogs;
+// --- Moje chyby: přehled a procvičení ---
+function mistakeView(m){
+ if(m.key.startsWith('w:')){const w=words.find(x=>x.word===m.key.slice(2));return w?{group:'w',main:w.word,ipa:w.ipa||'',cs:w.cs,say:w.word}:null;}
+ if(m.key.startsWith('v:')){const b=m.key.slice(2),v=lessonVerbList().find(x=>x.base===b);return {group:'v',main:v?`${v.base} – ${v.past} – ${v.part}`:b,ipa:'',cs:v?v.cs:'',say:v?`${v.base}, ${v.past}, ${v.part}`:b};}
+ if(m.key.startsWith('d:')){const p=m.key.split(':'),d=DIALOGS.find(x=>x.id===p[1]);if(!d)return null;
+  if(p[2]==='q'){const q=d.question;return {group:'d',main:q.options[q.answer],ipa:'',cs:`${d.title}: ${q.cs}`,say:q.options[q.answer]};}
+  const l=d.lines[+p[2]];return l?{group:'d',main:l.en,ipa:'',cs:`${d.title}: ${csText(l)||l.cs} · chybělo „${l.gap}“`,say:l.en}:null;}
+ return null;}
+function renderMistakes(){
+ const all=activeMistakes().map(m=>({m,v:mistakeView(m)})).filter(x=>x.v);
+ const groups=[['w','Slovíčka (kvíz)'],['d','Rozhovory'],['v','Nepravidelná slovesa']];
+ const nQuiz=all.filter(x=>x.v.group!=='v').length,nVerb=all.filter(x=>x.v.group==='v').length;
+ let html=`<section><h3>Co ti zatím nejde</h3><p class="note" style="margin-top:0">Sbírají se sem chyby z kvízu, rozhovorů a lekce sloves. Každá chyba zmizí, až ji ${MISTAKE_OK}× za sebou zodpovíš správně (nebo ji smažeš tlačítkem ✕).</p>
+  <div class="mis-actions"><button type="button" class="primary" id="misQuiz" ${nQuiz?'':'disabled'}>Procvičit slovíčka a rozhovory (${nQuiz})</button><button type="button" class="primary" id="misVerbs" ${nVerb?'':'disabled'}>Procvičit slovesa (${nVerb})</button><button type="button" id="misListen" ${all.some(x=>x.v.group==='w')?'':'disabled'}>🎧 Poslechnout slovíčka</button></div></section>`;
+ if(!all.length)html+='<section><p style="margin:0">Žádné chyby k procvičení 🎉 Až se v kvízu, rozhovoru nebo ve slovesech spleteš, najdeš to tady.</p></section>';
+ for(const [g,title] of groups){const rows=all.filter(x=>x.v.group===g);if(!rows.length)continue;
+  html+=`<section><h3>${title} (${rows.length})</h3>`+rows.map(({m,v})=>`<div class="mis-row"><div class="mis-main"><b>${esc(v.main)}</b>${v.ipa?` <span class="ipa">${esc(v.ipa)}</span>`:''}<span class="cs">${esc(v.cs)}</span></div><span class="mis-meta">${m.n||1}× chyba${m.ok?`<br>✓ ${m.ok}/${MISTAKE_OK}`:''}</span><span><button type="button" class="audio-btn extra-audio" data-mis-say="${esc(v.say)}" aria-label="Přehrát">🔊</button> <button type="button" class="mis-del" data-mis-del="${esc(m.key)}" aria-label="Smazat z chyb" title="Už umím – smazat">✕</button></span></div>`).join('')+'</section>';}
+ $('mistakesBody').innerHTML=html;
+}
+function openMistakes(){renderMistakes();$('mistakesOverlay').hidden=false;document.body.style.overflow='hidden';$('closeMistakes').focus();}
+function closeMistakes(keepLocked){$('mistakesOverlay').hidden=true;if(!keepLocked)document.body.style.overflow='';render();}
+$('todayMistakes').onclick=openMistakes;$('closeMistakes').onclick=()=>closeMistakes();
+$('mistakesBody').addEventListener('click',e=>{const t=e.target;
+ const say=t.closest('[data-mis-say]');if(say){speakText(say.dataset.misSay);return;}
+ const del=t.closest('[data-mis-del]');if(del){dropMistake(del.dataset.misDel);renderMistakes();return;}
+ if(t.closest('#misQuiz')){openMistakeQuiz();return;}
+ if(t.closest('#misVerbs')){const list=activeMistakes().filter(m=>m.key.startsWith('v:')).map(m=>m.key.slice(2));closeMistakes();practiceVerbList(list,'Moje chyby');return;}
+ if(t.closest('#misListen')){closeMistakes();openListen('mistakes');return;}
+});
+// Dlaždice Slovesa: slovesa na řadě k opakování (jinak běžná lekce).
+$('todayVerbs').onclick=()=>practiceVerbList(dueVerbs(),'Slovesa na řadě');
+// --- Poslech bez rukou: slovo – pauza – překlad (a věta), oběma směry; pauza se nastavuje ---
+const LISTEN_DEF={src:'today',dir:'en-cs',pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
+let listen={items:[],i:0,playing:false,token:0,wake:null};
+function listenCfg(){prefs.listen={...LISTEN_DEF,...(prefs.listen||{})};return prefs.listen;}
+function saveListenCfg(){savePrefs();renderListenCfg();}
+function renderListenCfg(){const c=listenCfg();$('listenSrc').value=c.src;document.querySelectorAll('#listenDir [data-dir]').forEach(b=>{b.classList.toggle('on',b.dataset.dir===c.dir);b.setAttribute('aria-pressed',b.dataset.dir===c.dir);});
+ $('listenPauseVal').textContent=c.pause+' s';$('listenGapVal').textContent=c.gap+' s';$('listenSentence').checked=c.sentence;$('listenSentenceCs').checked=c.sentenceCs;$('listenSentenceCs').disabled=!c.sentence;$('listenShuffle').checked=c.shuffle;$('listenLoop').checked=c.loop;}
+function listenWords(src){const ok=w=>w&&w.cs&&w.cs!==PLACEHOLDER;let a;
+ if(src==='today')a=todayWords();else if(src==='due')a=dueWords();else if(src==='lesson')a=base();else if(src==='starred')a=words.filter(w=>starred[w.word]);
+ else if(src==='mistakes')a=activeMistakes().filter(m=>m.key.startsWith('w:')).map(m=>words.find(w=>w.word===m.key.slice(2)));
+ else a=shuffle(words.filter(w=>grades[w.word]==='known')).slice(0,50);
+ return a.filter(ok).slice(0,100);}
+function csSay(s){return String(s||'').replace(/\([^)]*\)/g,'').replace(/;/g,',').replace(/\s+/g,' ').trim();}
+function czechVoice(){try{return window.speechSynthesis.getVoices().find(v=>/^cs/i.test(v.lang))||null;}catch(e){return null;}}
+// Přečte text a počká na konec; pojistka pro prohlížeče, které konec řeči neohlásí.
+function say(text,lang){return new Promise(res=>{let done=false;const fin=()=>{if(!done){done=true;clearTimeout(tm);res();}};
+ const tm=setTimeout(fin,2500+String(text).length*110/(audioSettings.rate||1));
+ if(!text||!('speechSynthesis' in window)){fin();return;}
+ if(lang==='cs'){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='cs-CZ';const v=czechVoice();if(v)u.voice=v;u.rate=Math.min(1,audioSettings.rate||1);u.onend=fin;u.onerror=fin;window.speechSynthesis.speak(u);}
+ else speakText(text,{onend:fin});});}
+function listenAlive(tok){return listen.playing&&tok===listen.token;}
+function listenWait(ms,tok){return new Promise(res=>{const end=Date.now()+ms;const step=()=>{if(!listenAlive(tok)||Date.now()>=end){res();return;}setTimeout(step,100);};step();});}
+async function listenCountdown(sec,tok){for(let s=sec;s>0&&listenAlive(tok);s--){$('listenPhase').textContent=`⏳ Přemýšlej… ${s} s`;await listenWait(1000,tok);}}
+function listenShow(w,dir,reveal){const c=listen.items.length;$('listenCount').textContent=`${listen.i+1} / ${c}`;
+ $('listenWord').textContent=dir==='en-cs'?w.word:w.cs;
+ $('listenAnswer').innerHTML=reveal?(dir==='en-cs'?esc(w.cs):`${esc(w.word)} <span class="ipa">${esc(w.ipa||'')}</span>`)+(listenCfg().sentence&&w.sentence?`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.sentence)}</div>`:''):'';}
+async function listenRun(){const tok=++listen.token;listen.playing=true;updateListenBtn();requestWake();
+ while(listenAlive(tok)){
+  if(listen.i>=listen.items.length){if(listenCfg().loop&&listen.items.length){listen.i=0;if(listenCfg().shuffle)listen.items=shuffle(listen.items);}else break;}
+  const c=listenCfg(),w=listen.items[listen.i],dir=c.dir==='mix'?(listen.i%2?'cs-en':'en-cs'):c.dir;
+  listenShow(w,dir,false);$('listenPhase').textContent='🔊 Poslouchej';
+  if(dir==='en-cs')await say(w.word,'en');else await say(csSay(w.cs),'cs');if(!listenAlive(tok))return;
+  await listenCountdown(c.pause,tok);if(!listenAlive(tok))return;
+  listenShow(w,dir,true);$('listenPhase').textContent='✓ Odpověď';
+  if(dir==='en-cs')await say(csSay(w.cs),'cs');else await say(w.word,'en');if(!listenAlive(tok))return;
+  if(c.sentence&&w.sentence){await listenWait(400,tok);await say(w.sentence,'en');if(!listenAlive(tok))return;if(c.sentenceCs&&csText(w)){await say(csText(w),'cs');if(!listenAlive(tok))return;}}
+  await listenWait(c.gap*1000,tok);if(!listenAlive(tok))return;listen.i++;
+ }
+ if(tok===listen.token){listen.playing=false;listen.i=0;$('listenPhase').textContent='Hotovo 🎉 Stiskni Spustit pro další kolo.';updateListenBtn();releaseWake();markActive();}}
+function updateListenBtn(){$('listenPlay').textContent=listen.playing?'⏸ Pauza':(listen.i>0?'▶ Pokračovat':'▶ Spustit');}
+function listenStop(){listen.playing=false;listen.token++;try{window.speechSynthesis.cancel();}catch(e){}updateListenBtn();releaseWake();}
+function listenLoad(){const c=listenCfg();listen.items=listenWords(c.src);if(c.shuffle)listen.items=shuffle(listen.items);listen.i=0;
+ $('listenWord').textContent='🎧';$('listenAnswer').textContent='';$('listenCount').textContent=listen.items.length?`${listen.items.length} slov připraveno`:'Žádná slova';
+ $('listenPhase').textContent=listen.items.length?'Stiskni Spustit.':'V tomto výběru teď nejsou žádná slova – zvol jiný.';$('listenPlay').disabled=!listen.items.length;
+ const cz=czechVoice();$('listenNote').textContent=('speechSynthesis' in window)?(cz?'':'V zařízení není český hlas – česká slova může přečíst anglický hlas. Na iPhonu/Macu ho přidáš v Nastavení → Zpřístupnění → Předčítaný obsah → Hlasy → Čeština.'):'Tento prohlížeč neumí předčítat.';updateListenBtn();}
+async function requestWake(){try{if('wakeLock' in navigator&&!listen.wake){listen.wake=await navigator.wakeLock.request('screen');listen.wake.addEventListener('release',()=>{listen.wake=null;});}}catch(e){listen.wake=null;}}
+function releaseWake(){try{if(listen.wake)listen.wake.release();}catch(e){}listen.wake=null;}
+function openListen(src){if(src){listenCfg().src=src;savePrefs();}renderListenCfg();listenLoad();$('listenOverlay').hidden=false;document.body.style.overflow='hidden';$('listenPlay').focus();}
+function closeListen(){listenStop();$('listenOverlay').hidden=true;document.body.style.overflow='';render();}
+$('openListen').onclick=()=>openListen();$('closeListen').onclick=closeListen;
+$('listenPlay').onclick=()=>{if(listen.playing)listenStop();else if(listen.items.length)listenRun();};
+$('listenNext').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.min(listen.i+1,listen.items.length-1);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
+$('listenPrev').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.max(listen.i-1,0);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
+$('listenSrc').onchange=()=>{listenStop();listenCfg().src=$('listenSrc').value;saveListenCfg();listenLoad();};
+$('listenDir').addEventListener('click',e=>{const b=e.target.closest('[data-dir]');if(!b)return;listenCfg().dir=b.dataset.dir;saveListenCfg();});
+document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const c=listenCfg(),k=b.dataset.step,max=k==='pause'?15:10,min=k==='pause'?1:0;c[k]=Math.max(min,Math.min(max,(+c[k]||0)+ +b.dataset.d));saveListenCfg();});
+[['listenSentence','sentence'],['listenSentenceCs','sentenceCs'],['listenShuffle','shuffle'],['listenLoop','loop']].forEach(([id,k])=>$(id).onchange=()=>{listenCfg()[k]=$(id).checked;saveListenCfg();if(k==='shuffle'&&!listen.playing)listenLoad();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&listen.playing)listenStop();});
+if('speechSynthesis' in window&&window.speechSynthesis.addEventListener)window.speechSynthesis.addEventListener('voiceschanged',()=>{if(!$('listenOverlay').hidden&&!listen.playing)listenLoad();});
 // --- Vstupní test: 2 neprobraná slova z každé lekce (od nejlehčích); „Znám“ je označí jako naučená ---
 let placement=null;
 function openPlacement(){
@@ -1647,7 +2021,7 @@ $('dictSearch').addEventListener('input',renderDict);
 $('dictFilters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;dictFilter=b.dataset.f;$('dictFilters').querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));renderDict();});
 $('dictList').addEventListener('click',e=>{const row=e.target.closest('.dict-row');if(!row)return;const i=+row.dataset.i,w=words[i];
  if(e.target.closest('[data-say]')){speakText(w.word);return;}
- if(e.target.closest('[data-dstar]')){if(starred[w.word])delete starred[w.word];else starred[w.word]=true;localSave();renderDict();render();return;}
+ if(e.target.closest('[data-dstar]')){toggleStar(w.word);localSave();renderDict();render();return;}
  if(e.target.closest('[data-open]')){
   // Otevře kartičku ve své lekci (režim všech slov); v režimu Česky → anglicky jen pokud má český význam.
   lesson=Math.floor(i/50)+1;$('lesson').value=lesson;$('mode').value='all';mode='all';let idx=set().indexOf(w);if(idx<0){$('direction').value='en-cs';idx=set().indexOf(w);}index=Math.max(0,idx);save();render();closeDict();document.querySelector('.stage').scrollIntoView({block:'start'});setNav('cards');}
@@ -1662,6 +2036,8 @@ document.querySelector('.bottom-nav').addEventListener('click',e=>{const b=e.tar
 window.addEventListener('scroll',()=>{const r=document.querySelector('.stage').getBoundingClientRect();setNav(r.top<window.innerHeight*0.5?'cards':'today');},{passive:true});
 document.addEventListener('keydown',e=>{
  if(!$('progressOverlay').hidden){if(e.key==='Escape')closeProgress();return;}
+ if(!$('mistakesOverlay').hidden){if(e.key==='Escape')closeMistakes();return;}
+ if(!$('listenOverlay').hidden){if(e.key==='Escape')closeListen();else if(e.key===' '&&!(e.target&&e.target.closest('button,select,input'))){e.preventDefault();$('listenPlay').click();}return;}
  if(!$('dictOverlay').hidden){if(e.key==='Escape')closeDict();return;}
  if(!$('dialogOverlay').hidden){if(e.key==='Escape')closeDialogs();return;}
  if(!$('placementOverlay').hidden){if(e.key==='Escape')closePlacement();else if(placement&&!placement.done&&e.key==='ArrowRight'){e.preventDefault();answerPlacement(true);}else if(placement&&!placement.done&&e.key==='ArrowLeft'){e.preventDefault();answerPlacement(false);}return;}
@@ -1707,7 +2083,9 @@ document.addEventListener('keydown',e=>{
  // V lekci nepravidelných sloves se používá vlastní navigace uvnitř iframe.
  // Odpovědi z lekce sloves se počítají do pokroku: aktivní den v týdnu, statistika a odznaky.
  window.addEventListener('message',function(e){if(e.source!==frame.contentWindow||!e.data)return;
- if(e.data.type==='verb-answer'){const v=daily.verbs=daily.verbs||{answered:0,correct:0};v.answered++;if(e.data.ok)v.correct++;markActive();saveDaily();renderToday();queueVerbAnswer(!!e.data.ok);
+ if(e.data.type==='verb-answer'){const me=myDev();me.verbs=me.verbs||{answered:0,correct:0};me.verbs.answered++;if(e.data.ok)me.verbs.correct++;recomputeTotals();markActive();
+   if(e.data.verb){noteResult('v:'+e.data.verb,!!e.data.ok,{mode:e.data.mode||''});verbSrsGrade(e.data.verb,!!e.data.ok);}
+   saveDaily();renderToday();queueVerbAnswer(!!e.data.ok);
   if(verbCloudStats.loaded){verbCloudStats.total++;if(e.data.ok)verbCloudStats.correct++;publishVerbCloudStats();}
  }
 });
