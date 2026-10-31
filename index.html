@@ -899,8 +899,10 @@ document.addEventListener('keydown',function(e){
  let sess=null,state="idle",watchdog=null,finishTimer=null,failStreak=0;
  // Drobný ladicí záznam událostí pod stavovým řádkem (pomáhá zjistit, kde se poslech na iPhonu zasekne).
  const trace=document.createElement("div");trace.style.cssText="font-size:.72rem;color:var(--muted);opacity:.8;word-break:break-word;margin-top:2px";status.insertAdjacentElement("afterend",trace);
+ const VOICE_VERSION="v9";
  let traceLog=[],t0=0;
- function tr(ev){traceLog.push(((Date.now()-t0)/1000).toFixed(1)+" s "+ev);if(traceLog.length>14)traceLog.shift();trace.textContent="Ladění: "+traceLog.join(" · ");}
+ trace.textContent="Hlasové zadávání "+VOICE_VERSION;
+ function tr(ev){traceLog.push(((Date.now()-t0)/1000).toFixed(1)+" s "+ev);if(traceLog.length>14)traceLog.shift();trace.textContent="Ladění "+VOICE_VERSION+": "+traceLog.join(" · ");}
  function paintButtons(activeBtn){MIC_BTNS.forEach(b=>{b.disabled=(state==="finishing");b.classList.toggle("listening",state==="listening");b.textContent=(state==="listening"&&b===activeBtn)?"⏹ Zastavit":MIC_LABELS.get(b);});}
  function detach(x){const r=x.rec;try{r.onresult=r.onerror=r.onend=r.onnomatch=r.onspeechend=r.onspeechstart=r.onaudiostart=r.onaudioend=null;}catch(e){}}
  // Jediné místo, kde se poslech uzavírá – vždy vrátí tlačítka i stav do výchozího stavu.
