@@ -395,7 +395,15 @@ html.dark .plan-row{border-color:#33352f;color:var(--ink)}html.dark .pi{backgrou
 }
 body.view-today{padding-bottom:0}body.view-today main{padding-bottom:calc(var(--bnH,70px) + 4px)}
 #todayPanel{min-height:var(--todayMin,calc(100dvh - 172px))}
-</style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+/* iPhone: stránka se nesmí dát posunout do strany (jinak se s ní posunou i Kvíz, Rozhovory a spodní lišta,
+   protože pevně umístěné vrstvy se roztáhnou na celou šířku stránky). Pomáhá i při zvětšení stránky v Safari (aA). */
+html,body{overflow-x:hidden;max-width:100%}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+.lesson-overlay,.bottom-nav{left:0;right:0;width:100%;max-width:100%}
+.lesson-overlay .quiz-wrap,.lesson-overlay .progress-body,.lesson-overlay .quiz-card{max-width:100%;min-width:0}
+.lesson-overlay-bar>*{min-width:0;max-width:100%}
+/* Hotová položka plánu: místo ikony jen zaškrtnutí (ikona se dřív kreslila přes zaškrtnutí). */
+.plan-row.done .pi svg{display:none}</style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -484,6 +492,7 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
   #scorePanel p{margin:4px 0;font-size:.86rem}
   #scorePanel button{padding:6px 9px;font-size:.86rem}
 }
+html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&display=swap" rel="stylesheet">
 <style>
@@ -505,6 +514,7 @@ html.dark #prompt .aligned-highlight{background:#1d5a47;color:#e1f5ee}
 html.dark #context.cs-sentence{background:#173a30;border-color:#1d6b55;color:#e1f5ee}html.dark #context.cs-sentence::before{color:#9fe1cb}
 input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(93,202,165,.55)}
 #verbAnswerMic.listening,#verbWordMic.listening,#verbSentenceMic.listening{background:#c33c48;border-color:#c33c48;color:#fff}
+html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}
 </style>
 </head>
 <body>
