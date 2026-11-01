@@ -403,7 +403,14 @@ html,body{overflow-x:hidden;max-width:100%}
 .lesson-overlay .quiz-wrap,.lesson-overlay .progress-body,.lesson-overlay .quiz-card{max-width:100%;min-width:0}
 .lesson-overlay-bar>*{min-width:0;max-width:100%}
 /* Hotová položka plánu: místo ikony jen zaškrtnutí (ikona se dřív kreslila přes zaškrtnutí). */
-.plan-row.done .pi svg{display:none}</style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+.plan-row.done .pi svg{display:none}/* Kvíz, Diktát, Rozhovory: tlačítko Další / Zkontrolovat zůstává vždy vidět dole, i když je otázka dlouhá
+   (dřív bylo na iPhonu schované pod okrajem a muselo se k němu posouvat). */
+.lesson-overlay .quiz-card>.quiz-nav,#dtRun>.quiz-nav{position:sticky;bottom:-16px;z-index:3;margin:14px -22px -22px;padding:12px 22px calc(14px + env(safe-area-inset-bottom));background:inherit;border-radius:0 0 20px 20px;box-shadow:0 -8px 12px -10px rgba(0,0,0,.25)}
+#dtRun{background:inherit}
+.lesson-overlay .quiz-card>.quiz-nav:has(>.hidden:only-child){display:none}
+#dlgBody .dlg-nav:has(#dlgNext){position:sticky;bottom:-16px;z-index:3;margin:10px -16px -16px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
+/* Záhlaví překryvných obrazovek na telefonu v jednom řádku – nadpis vlevo, malé „← Zpět“ vpravo. */
+@media(max-width:520px){.lesson-overlay-bar{flex-direction:row;align-items:center}.lesson-overlay-bar button{width:auto;flex:0 0 auto}.lesson-overlay-bar strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}</style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -2083,7 +2090,7 @@ function answerQuiz(i){
  $('quizFeedback').textContent=(ok?'✓ Správně!':'✗ Správně je: '+q.label(q.w))+`\n${q.w.word} ${q.w.ipa||''} – ${q.w.cs}`+extra;
  noteResult('w:'+q.w.word,ok);applyQuizResult(q.w,ok);}
  $('quizFeedback').className='quiz-feedback';$('quizScore').textContent=`Správně: ${quiz.correct}`;
- $('quizNext').textContent=quiz.i===quiz.qs.length-1?'Zobrazit výsledek →':'Další →';$('quizNext').classList.remove('hidden');$('quizNext').focus({preventScroll:true});
+ $('quizNext').textContent=quiz.i===quiz.qs.length-1?'Zobrazit výsledek →':'Další →';$('quizNext').classList.remove('hidden');setTimeout(()=>$('quizFeedback').scrollIntoView({block:'nearest',behavior:'smooth'}),30);$('quizNext').focus({preventScroll:true});
 }
 $('quizOptions').addEventListener('click',e=>{const b=e.target.closest('[data-opt]');if(b)answerQuiz(+b.dataset.opt);});
 $('quizNext').onclick=()=>{if(!quiz)return;if(quiz.i<quiz.qs.length-1){quiz.i++;renderQuiz();}else finishQuiz();};
