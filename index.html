@@ -434,7 +434,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.33</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.34</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -547,8 +547,8 @@ input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(
 #verbAnswerMic.listening,#verbWordMic.listening,#verbSentenceMic.listening{background:#c33c48;border-color:#c33c48;color:#fff}
 html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}
 /* v33: výrazný ukazatel správně / špatně vpravo nahoře (vidět i při vysunuté klávesnici). */
-.counter-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px}
-.verdict{display:none;flex:0 0 auto;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;line-height:1;color:#fff}
+.prompt-wrap{position:relative}.prompt-wrap #prompt{padding-right:52px;min-height:40px}
+.verdict{display:none;position:absolute;top:6px;right:0;z-index:2;flex:0 0 auto;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;line-height:1;color:#fff}
 .verdict.show{display:inline-flex;animation:verdictPop .28s ease-out}
 .verdict.good{background:#0f6e56}
 .verdict.bad{background:#b3261e}
@@ -578,9 +578,10 @@ html,body{touch-action:manipulation}
 </section>
 <section class="panel hidden" id="exercisePanel">
   <button type="button" id="backToSelection" style="margin-bottom:8px">← Zpět k výběru cvičení</button>
-  <div class="counter-row"><div class="counter" id="counter">Otázka 1</div><span class="verdict" id="verdict" role="status" aria-live="polite"></span></div>
+  <div class="counter" id="counter">Otázka 1</div>
+  <div class="prompt-wrap"><span class="verdict" id="verdict" role="status" aria-live="polite"></span>
   <div id="prompt" class="question">Doplň zbývající dva tvary:</div>
-  <div id="ipa" class="ipa"></div>
+  <div id="ipa" class="ipa"></div></div>
   <div id="context" class="muted"></div>
   <div class="inputs" id="inputs"></div>
   <div id="submittedPreview" class="submitted-preview hidden" aria-live="polite"></div>
@@ -1070,7 +1071,7 @@ function evaluate(){
   if(!st){vd.className="verdict";vd.textContent="";vd.removeAttribute("aria-label");last="";return;}
   const key=st+"|"+fb.textContent;if(key===last)return;last=key;
   vd.textContent=st==="good"?"✓":"👎";vd.setAttribute("aria-label",st==="good"?"Správně":"Špatně");
-  vd.className="verdict "+st;void vd.offsetWidth;vd.className="verdict show "+st;}
+  vd.className="verdict "+st;void vd.offsetWidth;vd.className="verdict show "+st;try{const r=vd.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)vd.scrollIntoView({block:"nearest"});}catch(e){}}
  new MutationObserver(sync).observe(fb,{attributes:true,attributeFilter:["class"],childList:true,characterData:true,subtree:true});sync();})();
 document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;showExercise()}));
 $("check").addEventListener("click",evaluate);
