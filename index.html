@@ -420,6 +420,11 @@ html,body{touch-action:manipulation}
 #dialogOverlay.lesson-overlay .lesson-overlay-bar strong{display:block;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1rem}
 .lesson-overlay .quiz-wrap{padding-top:calc(12px + env(safe-area-inset-top))}
 #dialogOverlay.lesson-overlay .quiz-wrap{padding-top:12px}
+/* v31: karta kvízu / vstupního testu / diktátu se vejde nad lištu; obsah se posouvá uvnitř karty a tlačítko dole je pořád vidět. */
+.lesson-overlay .quiz-wrap:has(>.quiz-card:only-child){display:flex;flex-direction:column;overflow:hidden}
+.lesson-overlay .quiz-wrap>.quiz-card:only-child{flex:0 1 auto;min-height:0;width:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.lesson-overlay .quiz-card>.quiz-nav,#dtRun>.quiz-nav{bottom:-22px}
+.lesson-overlay .quiz-wrap>.quiz-card:only-child{scroll-padding-bottom:96px}
 /* v29: spodní lišta zůstává vidět i ve cvičeních; cvičení se zastaví nad ní. */
 :root{--nav-h:calc(62px + env(safe-area-inset-bottom))}
 .lesson-overlay{bottom:var(--nav-h);height:auto}
