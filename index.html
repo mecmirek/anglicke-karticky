@@ -420,9 +420,14 @@ html,body{touch-action:manipulation}
 #dialogOverlay.lesson-overlay .lesson-overlay-bar button{order:-1}
 #dialogOverlay.lesson-overlay .lesson-overlay-bar strong{display:block;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1rem}
 .lesson-overlay:not(:has(#irregularLessonFrame)) .quiz-wrap{padding-top:12px}
+/* v29: spodní lišta zůstává vidět i ve cvičeních; cvičení se zastaví nad ní. */
+:root{--nav-h:calc(62px + env(safe-area-inset-bottom))}
+.lesson-overlay{bottom:var(--nav-h);height:auto}
+body.kbd-open .lesson-overlay{bottom:0}
+body.kbd-open .bottom-nav{display:none}
 </style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
-<div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Lekce nepravidelných sloves">
+<div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
   <iframe id="irregularLessonFrame" title="Lekce nepravidelných sloves" allow="microphone; speech-recognition"></iframe>
 <script type="text/plain" id="lessonSource"><!doctype html>
@@ -1400,7 +1405,7 @@ document.addEventListener('keydown',function(e){
   <button type="button" data-nav="verbs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/><path d="M8 7h7"/></svg>Slovesa</button>
   <button type="button" data-nav="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>Pokrok</button>
 </nav>
-<div id="quizOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Kvíz dne">
+<div id="quizOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Kvíz dne">
   <div class="lesson-overlay-bar"><strong>Kvíz dne</strong><button type="button" id="closeQuiz">← Zpět</button></div>
   <div class="quiz-wrap"><div class="quiz-card">
     <div class="quiz-top"><span id="quizCounter"></span><span id="quizScore"></span></div>
@@ -1413,11 +1418,11 @@ document.addEventListener('keydown',function(e){
     <div class="quiz-nav"><button type="button" class="primary hidden" id="quizNext">Další →</button></div>
   </div></div>
 </div>
-<div id="dialogOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Rozhovory">
+<div id="dialogOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Rozhovory">
   <div class="lesson-overlay-bar"><strong id="dlgBarTitle">Rozhovory</strong><button type="button" id="closeDialogs">← Zpět</button></div>
   <div class="quiz-wrap"><div class="dict-body" id="dlgBody"></div></div>
 </div>
-<div id="placementOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Vstupní test">
+<div id="placementOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Vstupní test">
   <div class="lesson-overlay-bar"><strong>Vstupní test</strong><button type="button" id="closePlacement">← Zpět</button></div>
   <div class="quiz-wrap"><div class="quiz-card" id="placementCard">
     <div class="quiz-top"><span id="plCounter"></span><span id="plKnown"></span></div>
@@ -1430,7 +1435,7 @@ document.addEventListener('keydown',function(e){
     <p class="note" style="text-align:center">Klávesy: → znám · ← neznám. Slova, která znáš, se ti v denní dávce nebudou nabízet.</p>
   </div></div>
 </div>
-<div id="dictOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Slovník">
+<div id="dictOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Slovník">
   <div class="lesson-overlay-bar"><strong>Slovník</strong><button type="button" id="closeDict">← Zpět</button></div>
   <div class="quiz-wrap"><div class="dict-body">
     <input id="dictSearch" type="search" placeholder="Hledej anglicky nebo česky…" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Hledat ve slovníku">
@@ -1441,15 +1446,15 @@ document.addEventListener('keydown',function(e){
     <div id="dictList"></div>
   </div></div>
 </div>
-<div id="progressOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Pokrok">
+<div id="progressOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Pokrok">
   <div class="lesson-overlay-bar"><strong>Pokrok</strong><button type="button" id="closeProgress">← Zpět</button></div>
   <div class="quiz-wrap"><div class="progress-body" id="progressBody"></div></div>
 </div>
-<div id="mistakesOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Moje chyby">
+<div id="mistakesOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Moje chyby">
   <div class="lesson-overlay-bar"><strong>Moje chyby</strong><button type="button" id="closeMistakes">← Zpět</button></div>
   <div class="quiz-wrap"><div class="progress-body" id="mistakesBody"></div></div>
 </div>
-<div id="dictationOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Diktát">
+<div id="dictationOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Diktát">
   <div class="lesson-overlay-bar"><strong>Diktát</strong><button type="button" id="closeDictation">← Zpět</button></div>
   <div class="quiz-wrap"><div class="quiz-card" id="dictCard">
     <div class="quiz-top"><span id="dtCounter"></span><span id="dtScore"></span></div>
@@ -1472,7 +1477,7 @@ document.addEventListener('keydown',function(e){
     <div id="dtDone" class="hidden"></div>
   </div></div>
 </div>
-<div id="listenOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="true" aria-label="Poslech bez rukou">
+<div id="listenOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Poslech bez rukou">
   <div class="lesson-overlay-bar"><strong>Poslech bez rukou</strong><button type="button" id="closeListen">← Zpět</button></div>
   <div class="quiz-wrap"><div class="progress-body">
     <section class="listen-now" aria-live="polite">
@@ -2454,8 +2459,25 @@ $('dictList').addEventListener('click',e=>{const row=e.target.closest('.dict-row
 // --- Spodní navigace ---
 function setNav(k){document.querySelectorAll('[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===k));}
 document.querySelector('.bottom-nav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(!b)return;const k=b.dataset.nav;
- if(k==='today'||k==='cards')setView(k);
+ const own={quiz:'quizOverlay',dict:'dictOverlay',verbs:'irregularLessonOverlay',progress:'progressOverlay'};
+ if(own[k]&&document.getElementById(own[k]) && !document.getElementById(own[k]).hidden)return; /* už je otevřeno */
+ closeOpenOverlays();
+ if(k==='today'||k==='cards'){const same=(k===view);setView(k);if(same&&k==='cards')focusAnswer();}
  else if(k==='quiz')openQuiz();else if(k==='dict')openDict();else if(k==='verbs')$('openIrregularLesson').click();else if(k==='progress')openProgress();});
+/* v29: zavře právě otevřené cvičení jeho vlastním tlačítkem (zastaví tak i hlas a mikrofon) */
+function closeOpenOverlays(){document.querySelectorAll('.lesson-overlay:not([hidden])').forEach(o=>{const bt=o.querySelector('.lesson-overlay-bar button');try{if(bt)bt.click();}catch(e){}if(!o.hidden)o.hidden=true;});document.body.style.overflow='';}
+/* v29: zvýraznění ikony ve spodní liště podle otevřeného cvičení (jinak podle obrazovky Dnes / Kartičky) */
+function syncNav(){const o=document.querySelector('.lesson-overlay:not([hidden])');const m={quizOverlay:'quiz',dictOverlay:'dict',progressOverlay:'progress',irregularLessonOverlay:'verbs'};const base=(view==='settings'?'':view);setNav(o?(m[o.id]||base):base);}
+(function(){const mo=new MutationObserver(syncNav);document.querySelectorAll('.lesson-overlay').forEach(o=>mo.observe(o,{attributes:true,attributeFilter:['hidden']}));})();
+/* v29: výška lišty pro cvičení + skrytí lišty, když je na dotykovém telefonu vysunutá klávesnice */
+(function(){const coarse=window.matchMedia('(pointer:coarse)');let baseH=0,lastW=window.innerWidth;
+ function setNavH(){const n=document.querySelector('.bottom-nav');if(n&&n.offsetHeight)document.documentElement.style.setProperty('--nav-h',n.offsetHeight+'px');}
+ function upd(){const vv=window.visualViewport;const h=vv?vv.height:window.innerHeight;if(window.innerWidth!==lastW){lastW=window.innerWidth;baseH=0;}baseH=Math.max(baseH,window.innerHeight,h);
+  const a=document.activeElement;const typing=!!a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&!/^(checkbox|radio|button|range|file|submit|reset|color)$/.test(a.type||'');
+  const open=coarse.matches&&typing&&(!vv||vv.scale<=1.01)&&h<baseH-120;document.body.classList.toggle('kbd-open',open);if(!open)setNavH();}
+ window.addEventListener('resize',upd);if(window.visualViewport)window.visualViewport.addEventListener('resize',upd);
+ document.addEventListener('focusin',()=>setTimeout(upd,50));document.addEventListener('focusout',()=>setTimeout(upd,120));
+ window.addEventListener('load',setNavH);setTimeout(setNavH,300);})();
 // --- Tři obrazovky hlavní stránky (Dnes / Kartičky / Nastavení); obrazovka Dnes se vejde na displej bez posouvání ---
 let view='today';
 function setView(v,fromHistory){if(v===view){window.scrollTo(0,0);return;}const prev=view;view=v;document.body.classList.remove('view-today','view-cards','view-settings');document.body.classList.add('view-'+v);
