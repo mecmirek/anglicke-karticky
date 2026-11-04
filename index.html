@@ -420,6 +420,10 @@ html,body{touch-action:manipulation}
 #dialogOverlay.lesson-overlay .lesson-overlay-bar strong{display:block;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1rem}
 .lesson-overlay .quiz-wrap{padding-top:calc(12px + env(safe-area-inset-top))}
 #dialogOverlay.lesson-overlay .quiz-wrap{padding-top:12px}
+/* v32: číslo verze vedle nadpisu. */
+header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1}
+.app-title{white-space:nowrap}
+.app-ver{font-family:system-ui,-apple-system,sans-serif;font-size:.5em;font-weight:600;color:var(--muted);margin-left:6px;white-space:nowrap;letter-spacing:.02em;vertical-align:.15em}
 /* v31: karta kvízu / vstupního testu / diktátu se vejde nad lištu; obsah se posouvá uvnitř karty a tlačítko dole je pořád vidět. */
 .lesson-overlay .quiz-wrap:has(>.quiz-card:only-child){display:flex;flex-direction:column;overflow:hidden}
 .lesson-overlay .quiz-wrap>.quiz-card:only-child{flex:0 1 auto;min-height:0;width:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
@@ -430,7 +434,7 @@ html,body{touch-action:manipulation}
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1>Anglické kartičky</h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.32</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
