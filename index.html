@@ -405,21 +405,21 @@ html,body{overflow-x:hidden;max-width:100%}
 /* Hotová položka plánu: místo ikony jen zaškrtnutí (ikona se dřív kreslila přes zaškrtnutí). */
 .plan-row.done .pi svg{display:none}/* Kvíz, Diktát, Rozhovory: tlačítko Další / Zkontrolovat zůstává vždy vidět dole, i když je otázka dlouhá
    (dřív bylo na iPhonu schované pod okrajem a muselo se k němu posouvat). */
-.lesson-overlay .quiz-card>.quiz-nav,#dtRun>.quiz-nav{position:sticky;bottom:-16px;z-index:3;margin:14px -22px -22px;padding:12px 22px calc(14px + env(safe-area-inset-bottom));background:inherit;border-radius:0 0 20px 20px;box-shadow:0 -8px 12px -10px rgba(0,0,0,.25)}
+.lesson-overlay .quiz-card>.quiz-nav,#dtRun>.quiz-nav{position:sticky;bottom:-16px;z-index:3;margin:14px -22px -22px;padding:12px 22px 14px;background:inherit;border-radius:0 0 20px 20px;box-shadow:0 -8px 12px -10px rgba(0,0,0,.25)}
 #dtRun{background:inherit}
 .lesson-overlay .quiz-card>.quiz-nav:has(>.hidden:only-child){display:none}
-#dlgBody .dlg-nav:has(#dlgNext){position:sticky;bottom:-16px;z-index:3;margin:10px -16px -16px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
+#dlgBody .dlg-nav:has(#dlgNext){position:sticky;bottom:-16px;z-index:3;margin:10px -16px -16px;padding:10px 16px 12px;background:var(--bg)}
 /* Záhlaví překryvných obrazovek na telefonu v jednom řádku – nadpis vlevo, malé „← Zpět“ vpravo. */
 @media(max-width:520px){.lesson-overlay-bar{flex-direction:row;align-items:center}.lesson-overlay-bar button{width:auto;flex:0 0 auto}.lesson-overlay-bar strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}/* v28 iPhone: pole formulářů min. 16 px (jinak Safari při klepnutí přiblíží stránku) a bez přiblížení dvojklepnutím. */
 html,body{touch-action:manipulation}
 @media(max-width:820px){input,select,textarea{font-size:16px!important}}
-/* v28: místo zeleného pruhu jen malé tlačítko „← Zpět“ nahoře (stejně jako u sloves). */
-.lesson-overlay:not(:has(#irregularLessonFrame)) .lesson-overlay-bar{background:transparent;color:var(--ink);flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 0}
-.lesson-overlay:not(:has(#irregularLessonFrame)) .lesson-overlay-bar button{width:auto;flex:0 0 auto;padding:10px}
-.lesson-overlay:not(:has(#irregularLessonFrame)) .lesson-overlay-bar strong{display:none}
-#dialogOverlay.lesson-overlay .lesson-overlay-bar button{order:-1}
+/* v30: cvičení nemají horní pruh ani tlačítko „Zpět“ – přepíná se spodní lištou. Prvky zůstávají skryté v kódu, aby fungovaly jejich funkce. */
+.lesson-overlay-bar{display:none!important}
+#dialogOverlay.lesson-overlay .lesson-overlay-bar{display:flex!important;background:transparent;color:var(--ink);flex-direction:row;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 0}
+#dialogOverlay.lesson-overlay .lesson-overlay-bar button{display:none}
 #dialogOverlay.lesson-overlay .lesson-overlay-bar strong{display:block;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1rem}
-.lesson-overlay:not(:has(#irregularLessonFrame)) .quiz-wrap{padding-top:12px}
+.lesson-overlay .quiz-wrap{padding-top:calc(12px + env(safe-area-inset-top))}
+#dialogOverlay.lesson-overlay .quiz-wrap{padding-top:12px}
 /* v29: spodní lišta zůstává vidět i ve cvičeních; cvičení se zastaví nad ní. */
 :root{--nav-h:calc(62px + env(safe-area-inset-bottom))}
 .lesson-overlay{bottom:var(--nav-h);height:auto}
@@ -537,6 +537,9 @@ html.dark #context.cs-sentence{background:#173a30;border-color:#1d6b55;color:#e1
 input.dictation-target{border-color:#5dcaa5!important;box-shadow:0 0 0 3px rgba(93,202,165,.55)}
 #verbAnswerMic.listening,#verbWordMic.listening,#verbSentenceMic.listening{background:#c33c48;border-color:#c33c48;color:#fff}
 html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}
+/* v30: lekce se zavírá spodní lištou aplikace, tlačítko „Zpět ke kartičkám“ je skryté; dole rezerva, ať je vidět poslední řádek. */
+#exitLesson{display:none}
+body{padding-bottom:16px}
 /* v28 iPhone: pole formulářů min. 16 px, bez přiblížení dvojklepnutím. */
 html,body{touch-action:manipulation}
 @media(max-width:820px){input,select,textarea{font-size:16px!important}}
@@ -2467,17 +2470,21 @@ document.querySelector('.bottom-nav').addEventListener('click',e=>{const b=e.tar
 /* v29: zavře právě otevřené cvičení jeho vlastním tlačítkem (zastaví tak i hlas a mikrofon) */
 function closeOpenOverlays(){document.querySelectorAll('.lesson-overlay:not([hidden])').forEach(o=>{const bt=o.querySelector('.lesson-overlay-bar button');try{if(bt)bt.click();}catch(e){}if(!o.hidden)o.hidden=true;});document.body.style.overflow='';}
 /* v29: zvýraznění ikony ve spodní liště podle otevřeného cvičení (jinak podle obrazovky Dnes / Kartičky) */
-function syncNav(){const o=document.querySelector('.lesson-overlay:not([hidden])');const m={quizOverlay:'quiz',dictOverlay:'dict',progressOverlay:'progress',irregularLessonOverlay:'verbs'};const base=(view==='settings'?'':view);setNav(o?(m[o.id]||base):base);}
+function syncNav(){if(window.__setNavH)window.__setNavH();const o=document.querySelector('.lesson-overlay:not([hidden])');const m={quizOverlay:'quiz',dictOverlay:'dict',progressOverlay:'progress',irregularLessonOverlay:'verbs'};const base=(view==='settings'?'':view);setNav(o?(m[o.id]||base):base);}
 (function(){const mo=new MutationObserver(syncNav);document.querySelectorAll('.lesson-overlay').forEach(o=>mo.observe(o,{attributes:true,attributeFilter:['hidden']}));})();
 /* v29: výška lišty pro cvičení + skrytí lišty, když je na dotykovém telefonu vysunutá klávesnice */
 (function(){const coarse=window.matchMedia('(pointer:coarse)');let baseH=0,lastW=window.innerWidth;
- function setNavH(){const n=document.querySelector('.bottom-nav');if(n&&n.offsetHeight)document.documentElement.style.setProperty('--nav-h',n.offsetHeight+'px');}
+ let lastNavH=0;function setNavH(){const n=document.querySelector('.bottom-nav');const hh=n?n.offsetHeight:0;if(hh&&hh!==lastNavH){lastNavH=hh;document.documentElement.style.setProperty('--nav-h',hh+'px');}}
  function upd(){const vv=window.visualViewport;const h=vv?vv.height:window.innerHeight;if(window.innerWidth!==lastW){lastW=window.innerWidth;baseH=0;}baseH=Math.max(baseH,window.innerHeight,h);
   const a=document.activeElement;const typing=!!a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&!/^(checkbox|radio|button|range|file|submit|reset|color)$/.test(a.type||'');
   const open=coarse.matches&&typing&&(!vv||vv.scale<=1.01)&&h<baseH-120;document.body.classList.toggle('kbd-open',open);if(!open)setNavH();}
  window.addEventListener('resize',upd);if(window.visualViewport)window.visualViewport.addEventListener('resize',upd);
  document.addEventListener('focusin',()=>setTimeout(upd,50));document.addEventListener('focusout',()=>setTimeout(upd,120));
- window.addEventListener('load',setNavH);setTimeout(setNavH,300);})();
+ window.addEventListener('load',setNavH);setTimeout(setNavH,300);
+ window.addEventListener('orientationchange',()=>setTimeout(setNavH,200));window.addEventListener('pageshow',setNavH);document.addEventListener('visibilitychange',setNavH);
+ if(window.ResizeObserver){const n=document.querySelector('.bottom-nav');if(n){try{new ResizeObserver(setNavH).observe(n,{box:'border-box'});}catch(e){new ResizeObserver(setNavH).observe(n);}}}
+ if(window.visualViewport)window.visualViewport.addEventListener('scroll',setNavH);setInterval(setNavH,1000);
+ window.__setNavH=setNavH;})();
 // --- Tři obrazovky hlavní stránky (Dnes / Kartičky / Nastavení); obrazovka Dnes se vejde na displej bez posouvání ---
 let view='today';
 function setView(v,fromHistory){if(v===view){window.scrollTo(0,0);return;}const prev=view;view=v;document.body.classList.remove('view-today','view-cards','view-settings');document.body.classList.add('view-'+v);
