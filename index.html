@@ -45,6 +45,7 @@
 .quiz-sub{color:#5f5e5a;margin-bottom:12px}
 .quiz-opt{display:flex;gap:10px;align-items:center;width:100%;text-align:left;margin:8px 0;padding:13px 14px;font-weight:600}
 .quiz-opt kbd{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:6px;background:#f2f0ea;color:var(--muted);font:600 .8rem system-ui}
+.quiz-opt:focus-visible{outline:3px solid #0f6e56;outline-offset:2px}
 .quiz-opt.correct{background:#e1f5ee;border-color:#5dcaa5;color:#0f6e56}.quiz-opt.wrong{background:#fff5f5;border-color:#f0bdc2;color:#c33c48}
 .quiz-feedback{margin-top:10px;padding:12px;border-radius:12px;background:#f2f0ea;white-space:pre-line}
 .quiz-nav{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
@@ -434,7 +435,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.35</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.36</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -2573,6 +2574,7 @@ document.addEventListener('keydown',e=>{
  if(!$('quizOverlay').hidden){
   if(e.key==='Escape'){closeQuiz();return;}
   if(quiz&&!quiz.done&&!quiz.answered&&/^[1-4]$/.test(e.key)){e.preventDefault();answerQuiz(+e.key-1);return;}
+  if(quiz&&!quiz.done&&!quiz.answered&&/^Arrow(Up|Down|Left|Right)$/.test(e.key)){const bs=[...$('quizOptions').querySelectorAll('.quiz-opt:not(:disabled)')];if(bs.length){e.preventDefault();const k=bs.indexOf(document.activeElement),d=(e.key==='ArrowDown'||e.key==='ArrowRight')?1:-1;bs[k<0?(d>0?0:bs.length-1):(k+d+bs.length)%bs.length].focus({preventScroll:false});}return;}
   if(quiz&&quiz.answered&&(e.key==='Enter'||e.key==='ArrowRight')&&document.activeElement!==$('quizNext')){e.preventDefault();$('quizNext').click();}
   return;
  }
