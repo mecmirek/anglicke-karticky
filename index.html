@@ -435,7 +435,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.39</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.40</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1177,7 +1177,7 @@ document.addEventListener('keydown',function(e){
      status.textContent="Tento prohlížeč nepodporuje přehrávání výslovnosti.";return;
    }
    const v=cur(); let lines=[];
-   if(mode==="quick") lines=quickRevealed?[v.base,v.past,v.part]:[v.base];
+   if(mode==="quick") lines=[v.base,v.past,v.part];
    else if(mode==="forms") lines=[v.base,v.past,v.part];
    else if(mode==="translate") lines=[v.sentence];
    else if(mode==="negative") lines=[negFull(v)];
@@ -1188,7 +1188,7 @@ document.addEventListener('keydown',function(e){
    lines.forEach((line,i)=>{
      const u=new SpeechSynthesisUtterance(line);u.lang=langSelect.value;u.rate=0.85;
      if(voice)u.voice=voice;
-     if(i===0)u.onstart=()=>{status.textContent=mode==="forms"?"Posloucháš 1., 2. a 3. tvar…":"Přehrávám anglickou větu…";};
+     if(i===0)u.onstart=()=>{status.textContent=(mode==="forms"||mode==="quick")?"Posloucháš 1., 2. a 3. tvar…":"Přehrávám anglickou větu…";};
      if(i===lines.length-1)u.onend=()=>{status.textContent="Poslech dokončen.";};
      window.speechSynthesis.speak(u);
    });
