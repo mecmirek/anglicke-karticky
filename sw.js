@@ -1,6 +1,6 @@
 // Offline režim kartiček: soubory aplikace se uloží do mezipaměti, takže kartičky i lekce fungují bez internetu.
 // Při každé nové verzi aplikace zvyš CACHE_VERSION, aby si zařízení stáhla nové soubory.
-const CACHE_VERSION = 'karticky-v49';
+const CACHE_VERSION = 'karticky-v50';
 // Celá aplikace (kartičky, lekce sloves, ikona) je v jednom souboru index.html.
 const APP_FILES = [
   './',
@@ -39,7 +39,7 @@ self.addEventListener('fetch', event => {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_VERSION);
       try {
-        const fresh = await fetch(req);
+        const fresh = await fetch(req, { cache: 'no-cache' });
         if (fresh.ok) cache.put(req, fresh.clone());
         return fresh;
       } catch (e) {
