@@ -435,7 +435,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.37</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.39</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -558,6 +558,33 @@ html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{o
 /* v30: lekce se zavírá spodní lištou aplikace, tlačítko „Zpět ke kartičkám“ je skryté; dole rezerva, ať je vidět poslední řádek. */
 #exitLesson{display:none}
 body{padding-bottom:16px}
+/* v39: režim E – rychlé opakování bez psaní (Ukázat tvary → ✓ Umím / ✗ Neumím). */
+#modes .mode[data-mode="quick"]{grid-column:1/-1}
+body.quick-mode #verbAnswerMic,body.quick-mode #verbWordMic,body.quick-mode #verbSentenceMic{display:none!important}
+#quickGrade{margin-top:10px;gap:8px}
+#exercisePanel #quickGrade button{flex:1 1 0;width:auto;padding:12px 10px;font-size:1rem;font-weight:700;white-space:nowrap}
+#quickNo{border-color:#c33c48;color:#c33c48}
+html.dark #quickNo{color:#f0a3aa;border-color:#7a2a31}
+/* v38: kompaktnější rozložení na telefonu, aby se cvičení i průběžný výsledek vešly bez scrollování. */
+.vl-short{display:none}#verbListenStatus:empty{display:none}.vl-lang{display:inline-flex;align-items:center;gap:6px}
+@media(max-width:600px){
+ .vl-full{display:none}.vl-short{display:inline}
+ #exercisePanel #verbListen{flex:1 1 auto}
+ #exercisePanel #verbVoiceControls{gap:6px;margin-top:6px!important}
+ .vl-lang{flex:1 1 100%;display:flex}
+ #exercisePanel #verbVoiceControls label{flex:0 0 auto}
+ #exercisePanel #verbVoiceLang{flex:1 1 auto;min-width:0}
+ #exercisePanel #verbListenStatus{flex:1 1 100%}
+ #exercisePanel .question{margin:6px 0 2px}
+ #exercisePanel .ipa{margin:0;line-height:1.25}
+ #exercisePanel .inputs{margin:8px 0}
+ #exercisePanel .toolbar button{white-space:nowrap}
+ #scorePanel{display:grid;grid-template-columns:1fr auto;align-items:center;gap:0 8px;padding:9px 12px}
+ #scorePanel strong,#scorePanel p{grid-column:1}
+ #scorePanel p{margin:2px 0 0;font-size:.8rem;line-height:1.3}
+ #scorePanel .toolbar{grid-column:2;grid-row:1/3;margin:0}
+ #scorePanel .toolbar button{padding:7px 10px;font-size:.84rem}
+}
 /* v28 iPhone: pole formulářů min. 16 px, bez přiblížení dvojklepnutím. */
 html,body{touch-action:manipulation}
 @media(max-width:820px){input,select,textarea{font-size:16px!important}}
@@ -573,6 +600,7 @@ html,body{touch-action:manipulation}
     <button class="mode" data-mode="translate">B · Překlad vět</button>
     <button class="mode" data-mode="negative">C · Zápory a otázky</button>
     <button class="mode" data-mode="third">D · Třetí tvar</button>
+    <button class="mode" data-mode="quick">E · Rychlé opakování (bez psaní)</button>
   </div>
   <div class="toolbar" style="margin-top:10px;align-items:center"><label for="verbSet" class="muted">Sada sloves:</label><select id="verbSet"></select></div>
   <p class="muted">Odpovídej bez nápovědy. Po kontrole vysvětlím chybu a můžeš pokračovat. U překladu vět máš dva pokusy.</p>
@@ -587,6 +615,10 @@ html,body{touch-action:manipulation}
   <div class="inputs" id="inputs"></div>
   <div id="submittedPreview" class="submitted-preview hidden" aria-live="polite"></div>
   <div id="translateIpa" class="aligned-ipa hidden" aria-live="polite"></div>
+  <div class="toolbar hidden" id="quickGrade">
+    <button type="button" id="quickNo">✗ Neumím</button>
+    <button type="button" class="primary" id="quickYes">✓ Umím</button>
+  </div>
   <div class="toolbar">
     <button class="primary" id="check">Zkontrolovat</button>
     <button id="prev" type="button" disabled>← Zpět</button>
@@ -594,16 +626,14 @@ html,body{touch-action:manipulation}
   </div>
   
   
-  <div class="toolbar" style="margin-top:8px;align-items:center">
-    <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost">🔊 Poslechnout výslovnost</button>
-    <span class="muted" id="verbListenStatus" aria-live="polite"></span>
-  </div>
   <div class="toolbar" id="verbVoiceControls" style="margin-top:8px;align-items:center">
+    <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost"><span class="vl-full">🔊 Poslechnout výslovnost</span><span class="vl-short">🔊 Poslech</span></button>
     <button type="button" id="verbAnswerMic" aria-label="Nadiktovat odpověď">🎤 Hlasová odpověď</button>
     <button type="button" id="verbWordMic" class="hidden" aria-label="Řekni pouze slovo">🎤 Řekni slovo</button>
     <button type="button" id="verbSentenceMic" class="hidden" aria-label="Řekni celou větu">🗣️ Řekni větu</button>
-    <label for="verbVoiceLang" class="muted">Výslovnost:</label>
-    <select id="verbVoiceLang" aria-label="Jazyk rozpoznávání řeči"><option value="en-GB">Britská (en-GB)</option><option value="en-US">Americká (en-US)</option></select>
+    <span class="vl-lang"><label for="verbVoiceLang" class="muted">Výslovnost:</label>
+    <select id="verbVoiceLang" aria-label="Jazyk rozpoznávání řeči"><option value="en-GB">Britská (en-GB)</option><option value="en-US">Americká (en-US)</option></select></span>
+    <span class="muted" id="verbListenStatus" aria-live="polite"></span>
   </div>
   <p id="verbVoiceStatus" class="muted" aria-live="polite" style="margin:6px 0 0"></p>
   <p id="dictationComparison" class="note hidden" aria-live="polite" style="margin:6px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:10px"></p>
@@ -870,18 +900,19 @@ let dictationKind="default";
 window.setGender=function(g){const next=g==="f"?"f":"m";if(next===gender)return;gender=next;if(mode==="translate"&&!finished)render();};
 const setNames=verbSets.map((s,i)=>`Sada ${i+1}: ${s.slice(0,3).map(v=>v.base).join(", ")}…`);
 let setIdx=0,verbs=verbSets[0];
-const modeNames={forms:"A · Tři tvary",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
+const modeNames={forms:"A · Tři tvary",quick:"E · Rychlé opakování",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
 const tasks={
-forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"Všechny tři tvary: 1. 2. 3."}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
+forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. a 3. tvar (oddělené mezerou)"}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
+quick:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[],answers:[]}}},
 translate:{make(v){return {prompt:(gender==="f"&&FEMININE[v.base])||v.translation,fields:[{ph:"Napiš anglickou větu"}],answers:[v.sentence],ipa:v.ipa}}},
 negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[negWord(v)],explain:v.base==="be"?"Sloveso be tvoří zápor bez did: I wasn't, you weren't (ne I didn't be). Otázka: Were you at home?":"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
 third:{make(v){return {prompt:`${v.perf} (${v.base})`,gap:v.perf,fields:[{ph:"3. tvar"}],answers:[v.part],explain:"Po have/has používáme 3. tvar slovesa (předpřítomný čas)."}}}
 };
-let mode="forms",index=0,answered=false,finished=false,tries=0;
+let mode="forms",index=0,answered=false,finished=false,tries=0,quickRevealed=false;
 const recorded=new Map(); // klíč "režim:index" → výsledek prvního pokusu
 // První pokus se zapíše a ohlásí hlavní stránce kartiček (pokrok, týden, odznaky).
 // Se slovesem a režimem – hlavní stránka z toho vede „Moje chyby“ a opakování sloves.
-function record(key,ok){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok,verb:cur().base,mode},'*');}catch(e){}}
+function record(key,ok){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok,verb:cur().base,mode:mode==='quick'?'forms':mode},'*');}catch(e){}}
 // Vlastní výběr sloves (opakování na řadě, moje chyby) – volá ho hlavní stránka; sada má číslo -1.
 let customTitle="Opakování";
 function setLabel(){return setIdx<0?customTitle:`Sada ${setIdx+1}`;}
@@ -912,14 +943,14 @@ let cloudHistory={correct:0,total:0,loaded:false};
 function scoreText(){const s=modeStats(mode),all=[...recorded.values()];const local=`${setLabel()}, ${modeNames[mode]}: správně ${s.correct} z ${s.total} · Toto otevřené kolo: správně ${all.filter(Boolean).length} z ${all.length}`;return local+(cloudHistory.loaded?` · Online celkem: správně ${cloudHistory.correct} z ${cloudHistory.total}`:'');}
 window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='verb-history'||!e.data.stats)return;const s=e.data.stats;cloudHistory={correct:Number(s.correct)||0,total:Number(s.total)||0,loaded:!!s.loaded};const score=$('score');if(score)score.textContent=scoreText();});
 function render(){
- answered=false;finished=false;tries=0;dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
+ answered=false;finished=false;tries=0;quickRevealed=false;$("quickGrade").classList.add("hidden");document.body.classList.toggle("quick-mode",mode==="quick");dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
  $("counter").textContent=`Otázka ${index+1} z ${verbs.length}`;
  $("prev").disabled=index===0;
  $("prompt").textContent=q.prompt;
  if(mode==="negative")negPrompt(v,false);else if(mode==="third")perfPrompt(v,false);
- $("ipa").textContent=mode==="forms"?`/${v.ipa3[0]}/`:"";$("ipa").classList.toggle("hidden",mode!=="forms");
- const context=$("context");context.classList.toggle("meaning-highlight",mode==="forms");context.classList.remove("cs-sentence");
- context.textContent=mode==="forms"?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?(v.base==="be"?"Doplň zápor slovesa be v minulém čase (bez did).":`Doplň základní tvar slovesa „${v.past}“.`):"Po have/has následuje třetí tvar.";
+ $("ipa").textContent=(mode==="forms"||mode==="quick")?`/${v.ipa3[0]}/`:"";$("ipa").classList.toggle("hidden",!(mode==="forms"||mode==="quick"));
+ const context=$("context");context.classList.toggle("meaning-highlight",mode==="forms"||mode==="quick");context.classList.remove("cs-sentence");
+ context.textContent=(mode==="forms"||mode==="quick")?v.cs:mode==="translate"?"Napiš celou větu.":mode==="negative"?(v.base==="be"?"Doplň zápor slovesa be v minulém čase (bez did).":`Doplň základní tvar slovesa „${v.past}“.`):"Po have/has následuje třetí tvar.";
  $("inputs").innerHTML=q.fields.map((f,i)=>`<input id="answer${i}" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="${f.ph}" placeholder="${f.ph}">`).join("");
  // Clear explicitly: Safari can restore values in freshly rendered inputs.
  q.fields.forEach((_,i)=>{const field=$("answer"+i);if(field){field.value="";delete field.dataset.dictationKind;}});
@@ -941,7 +972,7 @@ function render(){
  }
  $("feedback").className="feedback hidden";$("feedback").textContent="";
  $("check").classList.remove("hidden");$("check").disabled=false;$("next").disabled=false;
- $("check").textContent="Zkontrolovat";$("next").textContent=index===verbs.length-1?"Dokončit kolo →":"Další otázka →";
+ $("check").textContent=mode==="quick"?"Ukázat tvary":"Zkontrolovat";if(mode==="quick")requestAnimationFrame(()=>{try{$("check").focus({preventScroll:true});}catch(e){}});$("next").textContent=index===verbs.length-1?"Dokončit kolo →":"Další otázka →";
  $("score").textContent=scoreText();
 }
 function renderFinished(){
@@ -955,7 +986,7 @@ function renderFinished(){
  $("inputs").innerHTML="";
  $("translateIpa").classList.add("hidden");$("submittedPreview").classList.add("hidden");
  $("feedback").className="feedback hidden";
- $("check").classList.add("hidden");$("prev").disabled=false;
+ $("check").classList.add("hidden");$("quickGrade").classList.add("hidden");$("prev").disabled=false;
  $("next").textContent="Nové kolo →";$("next").focus({preventScroll:true});
  $("score").textContent=scoreText();
 }
@@ -1001,7 +1032,22 @@ function translationHint(v,typed){
  return `Ještě ne. ${hint}\nZkus to ještě jednou – oprav větu a znovu klikni na „Zkontrolovat“. (Do skóre se počítá první pokus.)`;
 }
 function translationSolution(v){return `Přirozený vzor: “${v.sentence}”\n${tips[v.base]||`${v.base} – ${v.past} – ${v.part}. Pro minulý děj použij 2. tvar: ${v.past}.`}`;}
+function revealQuick(){
+ const v=cur();quickRevealed=true;answered=true;
+ $("prompt").textContent=`${v.base} – ${v.base==="be"?"was / were":v.past} – ${v.part}`;
+ $("ipa").textContent=formsIpa(v);$("ipa").classList.remove("hidden");
+ $("check").classList.add("hidden");$("quickGrade").classList.remove("hidden");
+ requestAnimationFrame(()=>{try{$("quickYes").focus({preventScroll:true});}catch(e){}});
+}
+function gradeQuick(ok){
+ if(mode!=="quick"||!quickRevealed||finished)return;
+ record(`${setIdx}:quick:${index}`,ok);quickRevealed=false;goNext();
+}
+$("quickYes").addEventListener("click",()=>gradeQuick(true));
+$("quickNo").addEventListener("click",()=>gradeQuick(false));
+document.addEventListener("keydown",e=>{if(mode!=="quick"||!quickRevealed||finished||e.repeat)return;if(e.key==="ArrowRight"){e.preventDefault();gradeQuick(true);}else if(e.key==="ArrowLeft"){e.preventDefault();gradeQuick(false);}});
 function evaluate(){
+ if(mode==="quick"&&!finished){if(!quickRevealed)revealQuick();return;}
  if(answered||finished)return;
  const v=cur(),q=tasks[mode].make(v);
  const raw=q.fields.map((_,i)=>$("answer"+i)?.value||"");
@@ -1046,7 +1092,7 @@ function evaluate(){
    if(mode==="forms"){
      // U chyby ukážeme, který ze tří tvarů nesedí.
      const mark=(okPart,label,given,right)=>`${okPart?"✓":"✗"} ${label}: ${given||"(chybí)"}${okPart?"":" → "+right}`;
-     const detail=fr.count<2?"Napiš všechny tři tvary za sebou, např. „1. 2. 3.“ oddělené mezerou.":fr.count>3?"Zadej jen tři tvary, nic navíc.":[fr.count>=3?mark(fr.baseOk,"1. tvar",fr.base,v.base):"",mark(fr.pastOk,"2. tvar",fr.past,v.past),mark(fr.partOk,"3. tvar",fr.part,v.part)].filter(Boolean).join("\n");
+     const detail=fr.count<2?"Napiš 2. a 3. tvar za sebou, oddělené mezerou.":fr.count>3?"Zadej jen tři tvary, nic navíc.":[fr.count>=3?mark(fr.baseOk,"1. tvar",fr.base,v.base):"",mark(fr.pastOk,"2. tvar",fr.past,v.past),mark(fr.partOk,"3. tvar",fr.part,v.part)].filter(Boolean).join("\n");
      message=ok?`Správně! Výborně.\n${formsIpa(v)}${altNote}`:`${detail}\nSprávné řešení: ${formsIpa(v)}\n${q.explain}`;
    }
    else{
@@ -1131,7 +1177,8 @@ document.addEventListener('keydown',function(e){
      status.textContent="Tento prohlížeč nepodporuje přehrávání výslovnosti.";return;
    }
    const v=cur(); let lines=[];
-   if(mode==="forms") lines=[v.base,v.past,v.part];
+   if(mode==="quick") lines=quickRevealed?[v.base,v.past,v.part]:[v.base];
+   else if(mode==="forms") lines=[v.base,v.past,v.part];
    else if(mode==="translate") lines=[v.sentence];
    else if(mode==="negative") lines=[negFull(v)];
    else lines=[v.perf.replace("___",v.part)];
