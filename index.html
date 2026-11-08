@@ -435,7 +435,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.42</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.43</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -614,6 +614,7 @@ html,body{touch-action:manipulation}
   <div id="ipa" class="ipa"></div></div>
   <div id="context" class="muted"></div>
   <div class="inputs" id="inputs"></div>
+  <div class="fb-wrap"><span class="verdict" id="verdict" role="status" aria-live="polite"></span><div id="feedback" class="feedback hidden" aria-live="polite"></div></div>
   <div id="submittedPreview" class="submitted-preview hidden" aria-live="polite"></div>
   <div id="translateIpa" class="aligned-ipa hidden" aria-live="polite"></div>
   <div class="toolbar hidden" id="quickGrade">
@@ -639,7 +640,7 @@ html,body{touch-action:manipulation}
   </div>
   <p id="verbVoiceStatus" class="muted" aria-live="polite" style="margin:6px 0 0"></p>
   <p id="dictationComparison" class="note hidden" aria-live="polite" style="margin:6px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:10px"></p>
-  <div class="fb-wrap"><span class="verdict" id="verdict" role="status" aria-live="polite"></span><div id="feedback" class="feedback hidden" aria-live="polite"></div></div>
+  
 </section>
 <section class="panel hidden" id="scorePanel">
   <strong>Průběžný výsledek</strong>
