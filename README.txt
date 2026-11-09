@@ -1,4 +1,16 @@
-Anglické kartičky – verze v44
+NOVÉ VE v46
+- Opravy příkladových vět a častých spojení (kontrola proti slovníkům):
+  chair: "comfortable chair" = pohodlná židle (bylo křeslo); cousin: "first cousin" = bratranec / sestřenice;
+  flat: "a flat tyre" = píchlá pneumatika; arrangement: "flower arrangement" = aranžmá z květin;
+  test: "pass a test" = složit test (+ věta o řidičské zkoušce); work: "začíná pracovat v devět";
+  between: "mezi jednou a druhou hodinou"; arm: "pod paží"; common: "in common" = společné.
+
+Anglické kartičky – verze v45
+
+NOVÉ VE v45
+- Kontrola slovíček: opraveny 4 nálezy. service (nový překlad „služba; obsluha“, česká věta „Obsluha je tady velmi dobrá.“), age (nová věta „He started school at the age of six.“ včetně výslovnosti a překladu; výslovnost věty NEJISTÉ – ověř), long (česká věta „Na nádraží je to dlouhá cesta.“), miss (do překladu přidáno „stýskat se“).
+- sw.js: CACHE_VERSION karticky-v58, verze v.45.
+
 
 NOVÉ VE v44
 - Kartičky „Nová slova“ (dnešní slova): po ohodnocení poslední kartičky se zobrazí „Hotovo!“ s textem „Dnešní nová slova jsou hotová.“ a tlačítkem „Zpět na Dnes“ (dřív se vracelo na první kartičku).
