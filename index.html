@@ -435,7 +435,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.46</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.47</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -485,13 +485,6 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
   #exercisePanel > button#backToSelection{font-size:.88rem;padding:7px 10px;margin-bottom:5px!important;line-height:1.25}
   #exercisePanel .toolbar{gap:6px}
   #exercisePanel .toolbar button{flex:0 1 auto;width:auto;min-width:0;padding:8px 9px;font-size:.88rem;line-height:1.25;white-space:normal}
-  #exercisePanel .toolbar button#check{flex:1 1 34%}
-  #exercisePanel .toolbar button#prev{flex:0 1 24%}
-  #exercisePanel .toolbar button#next{flex:1 1 34%}
-  #exercisePanel #verbListen{flex:1 1 100%;}
-  #exercisePanel #verbVoiceControls button{flex:1 1 auto;}
-  #exercisePanel #verbVoiceControls label{font-size:.82rem}
-  #exercisePanel #verbVoiceLang{max-width:100%;font-size:.88rem;padding:7px 8px}
   #exercisePanel .inputs{gap:6px;margin:10px 0}
   #exercisePanel .inputs input{min-width:0;width:100%;padding:9px 10px;font-size:.95rem}
   #exercisePanel .question{font-size:clamp(1.2rem,5.2vw,1.65rem);margin:12px 0 6px;line-height:1.3}
@@ -567,15 +560,16 @@ body.quick-mode #verbAnswerMic,body.quick-mode #verbWordMic,body.quick-mode #ver
 #quickNo{border-color:#c33c48;color:#c33c48}
 html.dark #quickNo{color:#f0a3aa;border-color:#7a2a31}
 /* v38: kompaktnější rozložení na telefonu, aby se cvičení i průběžný výsledek vešly bez scrollování. */
-.vl-short{display:none}#verbListenStatus:empty{display:none}.vl-lang{display:inline-flex;align-items:center;gap:6px}
+#verbListenStatus:empty{display:none}
+/* v47: čtyři kompaktní tlačítka v jednom řádku (Zpět – Kontrola – Poslech – Další). */
+#verbMainBar{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#translateIpa.aligned-ipa{margin-top:10px!important}
+#exercisePanel #verbMainBar button{flex:1 1 0;min-width:0;width:auto;padding:11px 2px;font-size:.9rem;font-weight:700;white-space:nowrap}
+#exercisePanel #verbMainBar #verbToday{flex:1 1 100%}
+#exercisePanel .inputs input{flex:1 1 0;min-width:0;width:auto}
 @media(max-width:600px){
- .vl-full{display:none}.vl-short{display:inline}
- #exercisePanel #verbListen{flex:1 1 auto}
- #exercisePanel #verbVoiceControls{gap:6px;margin-top:6px!important}
- .vl-lang{flex:1 1 100%;display:flex}
- #exercisePanel #verbVoiceControls label{flex:0 0 auto}
- #exercisePanel #verbVoiceLang{flex:1 1 auto;min-width:0}
- #exercisePanel #verbListenStatus{flex:1 1 100%}
+ /* Na telefonu se hlasová odpověď nepoužívá (diktuje se mikrofonem na klávesnici). */
+ #verbVoiceControls,#verbVoiceStatus{display:none!important}
  #exercisePanel .question{margin:6px 0 2px}
  #exercisePanel .ipa{margin:0;line-height:1.25}
  #exercisePanel .inputs{margin:8px 0}
@@ -621,21 +615,17 @@ html,body{touch-action:manipulation}
     <button type="button" id="quickNo">✗ Neumím</button>
     <button type="button" class="primary" id="quickYes">✓ Umím</button>
   </div>
-  <div class="toolbar">
-    <button class="primary" id="check">Zkontrolovat</button>
+  <div class="toolbar" id="verbMainBar">
     <button id="prev" type="button" disabled>← Zpět</button>
-    <button id="next" type="button">Další otázka →</button>
+    <button class="primary" id="check">Kontrola</button>
+    <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost">🔊 Poslech</button>
+    <button id="next" type="button">Další →</button>
     <button id="verbToday" type="button" class="hidden">Zpět na Dnes</button>
   </div>
-  
-  
   <div class="toolbar" id="verbVoiceControls" style="margin-top:8px;align-items:center">
-    <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost"><span class="vl-full">🔊 Poslechnout výslovnost</span><span class="vl-short">🔊 Poslech</span></button>
     <button type="button" id="verbAnswerMic" aria-label="Nadiktovat odpověď">🎤 Hlasová odpověď</button>
     <button type="button" id="verbWordMic" class="hidden" aria-label="Řekni pouze slovo">🎤 Řekni slovo</button>
     <button type="button" id="verbSentenceMic" class="hidden" aria-label="Řekni celou větu">🗣️ Řekni větu</button>
-    <span class="vl-lang"><label for="verbVoiceLang" class="muted">Výslovnost:</label>
-    <select id="verbVoiceLang" aria-label="Jazyk rozpoznávání řeči"><option value="en-GB">Britská (en-GB)</option><option value="en-US">Americká (en-US)</option></select></span>
     <span class="muted" id="verbListenStatus" aria-live="polite"></span>
   </div>
   <p id="verbVoiceStatus" class="muted" aria-live="polite" style="margin:6px 0 0"></p>
@@ -905,7 +895,7 @@ const setNames=verbSets.map((s,i)=>`Sada ${i+1}: ${s.slice(0,3).map(v=>v.base).j
 let setIdx=0,verbs=verbSets[0];
 const modeNames={forms:"A · Tři tvary",quick:"E · Rychlé opakování",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
 const tasks={
-forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. a 3. tvar (oddělené mezerou)"}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
+forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. tvar"},{ph:"3. tvar"}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
 quick:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[],answers:[]}}},
 translate:{make(v){return {prompt:(gender==="f"&&FEMININE[v.base])||v.translation,fields:[{ph:"Napiš anglickou větu"}],answers:[v.sentence],ipa:v.ipa}}},
 negative:{make(v){return {prompt:v.neg.gap,gap:v.neg.gap,fields:[{ph:"Tvar slovesa"}],answers:[negWord(v)],explain:v.base==="be"?"Sloveso be tvoří zápor bez did: I wasn't, you weren't (ne I didn't be). Otázka: Were you at home?":"Po did/didn't používáme vždy 1. (základní) tvar slovesa – minulost už vyjadřuje did: didn't go, nikoli didn't went; Did she come?, nikoli Did she came?"}}},
@@ -976,7 +966,7 @@ function render(){
  }
  $("feedback").className="feedback hidden";$("feedback").textContent="";
  $("check").classList.remove("hidden");$("check").disabled=false;$("next").disabled=false;
- $("check").textContent=mode==="quick"?"Ukázat tvary":"Zkontrolovat";if(mode==="quick")requestAnimationFrame(()=>{try{$("check").focus({preventScroll:true});}catch(e){}});$("next").textContent=index===verbs.length-1?"Dokončit kolo →":"Další otázka →";
+ $("check").textContent=mode==="quick"?"Ukázat":"Kontrola";if(mode==="quick")requestAnimationFrame(()=>{try{$("check").focus({preventScroll:true});}catch(e){}});$("next").textContent=index===verbs.length-1?"Dokončit →":"Další →";
  $("score").textContent=scoreText();
 }
 function renderFinished(){
@@ -1082,7 +1072,7 @@ function evaluate(){
    message=!ok?translationSolution(v):exact?(tries>1?"Správně na druhý pokus!":"Správně! Výborně."):`Správně – i tato varianta zní přirozeně.\n${altNotes[v.base]||'Tvoje věta zachovává význam a je přirozenou alternativou ke vzoru.'}`;
  } else {
    const vals=raw.map(norm);let fr=null;
-   if(mode==="forms"){fr=checkForms(raw[0],v);ok=fr.ok;}
+   if(mode==="forms"){fr=checkForms(raw.join(" "),v);ok=fr.ok;}
    else if(mode==="negative"&&v.base==="be"&&raw[0].trim().split(/\s+/).length<=2)ok=["wasn't","was not"].includes(vals[0].replace(/[’‘]/g,"'"));
    else if((mode==="negative"||mode==="third")&&(dictationKind==="sentence"||$("answer0")?.dataset.dictationKind==="sentence"||/\s/.test(raw[0].trim()))){
      // Pokud je v poli celá věta, kontrolujeme celou větu i tehdy, když prohlížeč
@@ -1096,7 +1086,7 @@ function evaluate(){
    if(mode==="forms"){
      // U chyby ukážeme, který ze tří tvarů nesedí.
      const mark=(okPart,label,given,right)=>`${okPart?"✓":"✗"} ${label}: ${given||"(chybí)"}${okPart?"":" → "+right}`;
-     const detail=fr.count<2?"Napiš 2. a 3. tvar za sebou, oddělené mezerou.":fr.count>2?"Zadej jen 2. a 3. tvar, nic navíc.":[mark(fr.pastOk,"2. tvar",fr.past,v.past),mark(fr.partOk,"3. tvar",fr.part,v.part)].filter(Boolean).join("\n");
+     const detail=fr.count<2?"Vyplň obě políčka: 2. i 3. tvar.":fr.count>2?"Zadej jen 2. a 3. tvar, nic navíc.":[mark(fr.pastOk,"2. tvar",fr.past,v.past),mark(fr.partOk,"3. tvar",fr.part,v.part)].filter(Boolean).join("\n");
      message=ok?`Správně! Výborně.\n${formsIpa(v)}${altNote}`:`${detail}\nSprávné řešení: ${formsIpa(v)}`;
    }
    else{
@@ -1166,9 +1156,11 @@ document.addEventListener('keydown',function(e){
  if(e.key==='Escape'&&window.parent!==window)window.parent.postMessage('close-irregular-lesson','*');
 });
 
+// Přízvuk pro slovesa se bere z hlavního nastavení aplikace (Hlas angličtiny).
+function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000audio")||"{}")).accent;return a==="us"?"en-US":"en-GB";}catch(e){return "en-GB";}}
 // Poslech výslovnosti pro všechny režimy: A přečte tři tvary postupně, B/C/D celou anglickou větu.
 (function setupVerbListening(){
- const button=$("verbListen"), status=$("verbListenStatus"), langSelect=$("verbVoiceLang");
+ const button=$("verbListen"), status=$("verbListenStatus"), langSelect={get value(){return speechLang();}};
  function getVoice(){
    if(!( "speechSynthesis" in window))return null;
    const voices=window.speechSynthesis.getVoices();
@@ -1201,11 +1193,9 @@ document.addEventListener('keydown',function(e){
 
 // ZMĚNA Fáze 3: hlasové zadávání v nepravidelných slovesech; C/D mají volbu slovo/věta.
 (function setupVerbDictation(){
- const mic=$("verbAnswerMic"), wordMic=$("verbWordMic"), sentenceMic=$("verbSentenceMic"), langSelect=$("verbVoiceLang"), status=$("verbVoiceStatus");
+ const mic=$("verbAnswerMic"), wordMic=$("verbWordMic"), sentenceMic=$("verbSentenceMic"), langSelect={get value(){return speechLang();}}, status=$("verbVoiceStatus");
  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
  let lastAnswerId="answer0";
- try{const saved=localStorage.getItem("irregularVerbSpeechLang");if(saved==="en-GB"||saved==="en-US")langSelect.value=saved;}catch(e){}
- langSelect.addEventListener("change",()=>{try{localStorage.setItem("irregularVerbSpeechLang",langSelect.value);}catch(e){} });
  $("inputs").addEventListener("focusin",e=>{if(e.target&&/^answer\d+$/.test(e.target.id))lastAnswerId=e.target.id;});
  function showDictationComparison(spoken,expected,isExact){
    const box=$("dictationComparison");if(!box)return;box.replaceChildren();box.classList.remove("hidden");
@@ -2209,7 +2199,7 @@ function finishQuiz(){
  // Výsledky kvízů se za den sčítají (graf úspěšnosti); počet kvízů a kvíz bez chyby jsou pro odznaky.
  const total=quiz.qs.length,me=myDev(),prev=me.history[todayKey()]||{correct:0,total:0};me.history[todayKey()]={correct:prev.correct+quiz.correct,total:prev.total+total};
  if(!quiz.practice){me.quizzes=(me.quizzes||0)+1;if(quiz.correct===total)me.perfect=true;}recomputeTotals();saveDaily();
- $('quizProgress').style.width='100%';$('quizCounter').textContent='Kvíz dokončen';$('quizKind').textContent='';
+ $('quizProgress').style.width='100%';$('quizSpeak').classList.add('hidden');$('quizCounter').textContent='Kvíz dokončen';$('quizKind').textContent='';
  const pct=Math.round(quiz.correct/total*100);
  $('quizQuestion').classList.remove('sentence');$('quizQuestion').textContent=pct>=90?'Výborně! 🎉':pct>=70?'Dobrá práce!':'Hotovo – tohle chce ještě procvičit.';
  const left=activeMistakes().length;
@@ -2347,7 +2337,7 @@ function renderMistakes(){
  const groups=[['w','Slovíčka (kvíz)'],['d','Rozhovory'],['v','Nepravidelná slovesa']];
  const nQuiz=all.filter(x=>x.v.group!=='v').length,nVerb=all.filter(x=>x.v.group==='v').length;
  let html=`<section><h3>Co ti zatím nejde</h3><p class="note" style="margin-top:0">Sbírají se sem chyby z kvízu, rozhovorů a lekce sloves. Každá chyba zmizí, až ji ${MISTAKE_OK}× za sebou zodpovíš správně (nebo ji smažeš tlačítkem ✕).</p>
-  <div class="mis-actions"><button type="button" class="primary" id="misQuiz" ${nQuiz?'':'disabled'}>Procvičit slovíčka a rozhovory (${nQuiz})</button><button type="button" class="primary" id="misVerbs" ${nVerb?'':'disabled'}>Procvičit slovesa (${nVerb})</button><button type="button" id="misListen" ${all.some(x=>x.v.group==='w')?'':'disabled'}>🎧 Poslechnout slovíčka</button></div></section>`;
+  <div class="mis-actions"><button type="button" class="primary" id="misQuiz" ${nQuiz?'':'disabled'}>Procvičit slovíčka a rozhovory (${nQuiz})</button><button type="button" class="primary" id="misVerbs" ${nVerb?'':'disabled'}>Procvičit slovesa (${nVerb})</button></div></section>`;
  if(!all.length)html+='<section><p style="margin:0">Žádné chyby k procvičení 🎉 Až se v kvízu, rozhovoru nebo ve slovesech spleteš, najdeš to tady.</p></section>';
  for(const [g,title] of groups){const rows=all.filter(x=>x.v.group===g);if(!rows.length)continue;
   html+=`<section><h3>${title} (${rows.length})</h3>`+rows.map(({m,v})=>`<div class="mis-row"><div class="mis-main"><b>${esc(v.main)}</b>${v.ipa?` <span class="ipa">${esc(v.ipa)}</span>`:''}<span class="cs">${esc(v.cs)}</span></div><span class="mis-meta">${m.n||1}× chyba${m.ok?`<br>✓ ${m.ok}/${MISTAKE_OK}`:''}</span><span><button type="button" class="audio-btn extra-audio" data-mis-say="${esc(v.say)}" aria-label="Přehrát">🔊</button> <button type="button" class="mis-del" data-mis-del="${esc(m.key)}" aria-label="Smazat z chyb" title="Už umím – smazat">✕</button></span></div>`).join('')+'</section>';}

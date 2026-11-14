@@ -1,3 +1,11 @@
+NOVÉ VE v47
+- Slovesa: čtyři kompaktní tlačítka v jednom řádku Zpět – Kontrola – Poslech – Další (cvičení A–E; v E je „Ukázat“).
+- Slovesa: na telefonu odebrány hlasové odpovědi (zůstávají na širokém displeji, např. Mac); odebrán výběr Výslovnost – přízvuk se bere z Nastavení (Hlas angličtiny).
+- Cvičení A: znovu dvě samostatná políčka (2. tvar, 3. tvar).
+- Vyhodnocení u překladu vět už nepřekrývá anglickou větu s výslovností.
+- Kvíz: na konci už se nezobrazuje tlačítko Poslech.
+- „Co ti zatím nejde“: odebráno tlačítko Poslechnout slovíčka (zůstává 🔊 u jednotlivých slov).
+
 NOVÉ VE v46
 - Opravy příkladových vět a častých spojení (kontrola proti slovníkům):
   chair: "comfortable chair" = pohodlná židle (bylo křeslo); cousin: "first cousin" = bratranec / sestřenice;
