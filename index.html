@@ -152,6 +152,7 @@ html.dark .gap-opts button.correct{background:#173a30;border-color:#1d6b55;color
 .colloc{width:100%;max-width:650px;font-size:.88rem;line-height:1.5;text-align:left;border-top:1px solid var(--line);padding:6px 0 2px;margin:2px 0}
 .colloc b{color:var(--ink)}.colloc em{font-style:normal;font-weight:650;color:#085041}
 html.dark .pos{color:#f0997b}html.dark .colloc em{color:#9fe1cb}
+@media(max-width:600px){.mic-btn,.mic-result{display:none!important}}
 .mic-btn.listening{background:#c33c48;border-color:#c33c48;color:#fff;animation:micpulse 1s ease-in-out infinite}
 @keyframes micpulse{50%{transform:scale(1.12)}}
 .mic-result{min-height:1.2em;font-size:.88rem;margin:4px 0 0;color:var(--muted)}.mic-result.ok{color:#0f6e56;font-weight:600}.mic-result.bad{color:#c33c48}
@@ -435,7 +436,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.47</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.48</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -566,10 +567,13 @@ html.dark #quickNo{color:#f0a3aa;border-color:#7a2a31}
 #translateIpa.aligned-ipa{margin-top:10px!important}
 #exercisePanel #verbMainBar button{flex:1 1 0;min-width:0;width:auto;padding:11px 2px;font-size:.9rem;font-weight:700;white-space:nowrap}
 #exercisePanel #verbMainBar #verbToday{flex:1 1 100%}
+#exercisePanel #verbMainBar #check{flex:2 1 0}
+#exercisePanel #verbMainBar #next.wide{flex:2 1 0;font-size:.9rem}
+#exercisePanel #verbMainBar #prev,#exercisePanel #verbMainBar #next{font-size:1.15rem}
 #exercisePanel .inputs input{flex:1 1 0;min-width:0;width:auto}
 @media(max-width:600px){
  /* Na telefonu se hlasová odpověď nepoužívá (diktuje se mikrofonem na klávesnici). */
- #verbVoiceControls,#verbVoiceStatus{display:none!important}
+ #verbVoiceControls,#verbVoiceStatus,.mic-btn,.mic-result{display:none!important}
  #exercisePanel .question{margin:6px 0 2px}
  #exercisePanel .ipa{margin:0;line-height:1.25}
  #exercisePanel .inputs{margin:8px 0}
@@ -616,10 +620,10 @@ html,body{touch-action:manipulation}
     <button type="button" class="primary" id="quickYes">✓ Umím</button>
   </div>
   <div class="toolbar" id="verbMainBar">
-    <button id="prev" type="button" disabled>← Zpět</button>
+    <button id="prev" type="button" disabled aria-label="Zpět">←</button>
     <button class="primary" id="check">Kontrola</button>
-    <button type="button" id="verbListen" aria-label="Přehrát anglickou výslovnost">🔊 Poslech</button>
-    <button id="next" type="button">Další →</button>
+    <button type="button" id="verbListen" aria-label="Poslech" title="Poslech">🔊</button>
+    <button id="next" type="button" aria-label="Další">→</button>
     <button id="verbToday" type="button" class="hidden">Zpět na Dnes</button>
   </div>
   <div class="toolbar" id="verbVoiceControls" style="margin-top:8px;align-items:center">
@@ -937,7 +941,7 @@ let cloudHistory={correct:0,total:0,loaded:false};
 function scoreText(){const s=modeStats(mode),all=[...recorded.values()];const local=`${setLabel()}, ${modeNames[mode]}: správně ${s.correct} z ${s.total} · Toto otevřené kolo: správně ${all.filter(Boolean).length} z ${all.length}`;return local+(cloudHistory.loaded?` · Online celkem: správně ${cloudHistory.correct} z ${cloudHistory.total}`:'');}
 window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='verb-history'||!e.data.stats)return;const s=e.data.stats;cloudHistory={correct:Number(s.correct)||0,total:Number(s.total)||0,loaded:!!s.loaded};const score=$('score');if(score)score.textContent=scoreText();});
 function render(){
- answered=false;finished=false;$("verbToday").classList.add("hidden");tries=0;quickRevealed=false;$("quickGrade").classList.add("hidden");document.body.classList.toggle("quick-mode",mode==="quick");dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
+ answered=false;finished=false;$("verbToday").classList.add("hidden");$("next").classList.remove("wide");tries=0;quickRevealed=false;$("quickGrade").classList.add("hidden");document.body.classList.toggle("quick-mode",mode==="quick");dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
  $("counter").textContent=`Otázka ${index+1} z ${verbs.length}`;
  $("prev").disabled=index===0;
  $("prompt").textContent=q.prompt;
@@ -966,7 +970,7 @@ function render(){
  }
  $("feedback").className="feedback hidden";$("feedback").textContent="";
  $("check").classList.remove("hidden");$("check").disabled=false;$("next").disabled=false;
- $("check").textContent=mode==="quick"?"Ukázat":"Kontrola";if(mode==="quick")requestAnimationFrame(()=>{try{$("check").focus({preventScroll:true});}catch(e){}});$("next").textContent=index===verbs.length-1?"Dokončit →":"Další →";
+ $("check").textContent=mode==="quick"?"Ukázat":"Kontrola";if(mode==="quick")requestAnimationFrame(()=>{try{$("check").focus({preventScroll:true});}catch(e){}});$("next").textContent=index===verbs.length-1?"→":"→";
  $("score").textContent=scoreText();
 }
 function renderFinished(){
@@ -981,7 +985,7 @@ function renderFinished(){
  $("translateIpa").classList.add("hidden");$("submittedPreview").classList.add("hidden");
  $("feedback").className="feedback hidden";
  $("check").classList.add("hidden");$("quickGrade").classList.add("hidden");$("prev").disabled=false;
- $("next").textContent="Nové kolo →";$("verbToday").classList.remove("hidden");$("next").focus({preventScroll:true});
+ $("next").textContent="Nové kolo";$("next").classList.add("wide");$("verbToday").classList.remove("hidden");$("next").focus({preventScroll:true});
  $("score").textContent=scoreText();
 }
 function goNext(){

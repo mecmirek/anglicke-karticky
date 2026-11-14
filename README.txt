@@ -1,3 +1,7 @@
+NOVÉ VE v48
+- Slovesa: tlačítka zjednodušena na ← | Kontrola | 🔊 | → (vejdou se bez ořezání textu).
+- Kartičky: na telefonu odebráno tlačítko 🎤 u slova a u věty (anglicko-české i česko-anglické); na širokém displeji (Mac) zůstává.
+
 NOVÉ VE v47
 - Slovesa: čtyři kompaktní tlačítka v jednom řádku Zpět – Kontrola – Poslech – Další (cvičení A–E; v E je „Ukázat“).
 - Slovesa: na telefonu odebrány hlasové odpovědi (zůstávají na širokém displeji, např. Mac); odebrán výběr Výslovnost – přízvuk se bere z Nastavení (Hlas angličtiny).
