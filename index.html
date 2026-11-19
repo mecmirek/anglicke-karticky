@@ -321,7 +321,7 @@ html.dark .seg button.on{background:#1d9e75;border-color:#1d9e75}
 .voice-help{margin-top:10px;font-size:.9rem}.voice-help summary{cursor:pointer;font-weight:650;color:#0f6e56}.voice-help p{margin:6px 0}
 html.dark .voice-row{background:#1f211e;border-color:#3a3c36}html.dark .voice-row.on{background:#173a30;border-color:#1d6b55}html.dark .voice-row .q{background:#173a30;color:#9fe1cb}
 /* Diktát */
-.dt-play{display:flex;justify-content:center;align-items:center;gap:12px;margin:10px 0 6px}
+.dt-play{display:flex;justify-content:flex-start;align-items:center;gap:10px;margin:10px 0 4px}#dtRun .dt-big{width:52px;height:52px;font-size:1.5rem;flex:none;padding:0}#dtSlow{width:52px;height:52px;border-radius:50%;font-size:1.4rem;flex:none;padding:0}#dtMeaning{margin:0;flex:1;min-width:0;line-height:1.3}#dtRun>.quiz-nav.dt-nav{position:static;margin:8px 0 0;padding:0;box-shadow:none;border-radius:0;background:none}#dtRun>.dt-nav button{flex:1 1 0;min-width:0;padding:10px 6px;min-height:44px;white-space:nowrap}#dtRun>.dt-nav button:disabled{opacity:.45}#dtRun #dtInput{margin:8px 0 0;padding:10px}#dtRun #dtFeedback{margin-top:6px;padding:8px 10px}#dtFeedback .dt-word{display:inline;font-size:1.3rem;margin:0 4px}#dtFeedback .note{margin:2px 0 0}
 .dt-big{width:76px;height:76px;border-radius:50%;font-size:2rem;background:#e1f5ee;border-color:#9fe1cb}
 #dtInput{width:100%;font:inherit;font-size:1.3rem;text-align:center;border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
 #dtInput.ok{border-color:#5dcaa5;background:#e1f5ee}#dtInput.bad{border-color:#f0bdc2;background:#fff5f5}
@@ -436,7 +436,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.49</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.50</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -456,7 +456,7 @@ main{padding:16px;display:grid;gap:14px}.panel{background:white;border:1px solid
 button{cursor:pointer;font-weight:650}.primary{background:var(--blue);color:white;border-color:var(--blue)}button:disabled{opacity:.45;cursor:not-allowed}
 .mode.active{background:#e1f5ee;border-color:#5dcaa5}.muted{color:var(--muted);font-size:.9rem}.counter{color:var(--muted);font-size:.9rem}
 .question{font-size:clamp(1.35rem,4vw,2rem);font-weight:750;margin:18px 0 8px}.ipa{color:#5f5e5a;font-size:1rem}.inputs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.inputs input{min-width:130px;flex:1}.aligned-ipa{display:flex;flex-wrap:wrap;gap:5px 8px;margin-top:-8px;margin-bottom:14px}.aligned-ipa .ipa-word{display:inline-flex;flex-direction:column;align-items:center;min-width:fit-content}.aligned-ipa .en-word{font-size:1.05rem;font-weight:650}.aligned-ipa .ipa-part{font-size:.82rem;color:#5f5e5a;line-height:1.2}.submitted-preview{font-size:1.05rem;font-weight:650;margin-top:10px;overflow-wrap:anywhere}.lowercase-start{text-decoration:underline;text-decoration-color:#bd3444;text-decoration-thickness:2px;text-underline-offset:3px}
-.feedback{padding:12px;border-radius:10px;margin-top:12px;background:#f2f0ea;white-space:pre-line}.feedback.good{background:#e1f5ee;color:var(--green)}.feedback.bad{background:#fff0f1;color:var(--red)}
+.feedback{padding:12px;border-radius:10px;margin-top:12px;background:#f2f0ea;white-space:pre-line}.feedback.good{background:#e1f5ee;color:var(--green)}.neutral-note{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f7f6f1;color:#3a3a36;white-space:normal}.neutral-note mark.diff{background:#ffe9a8;color:inherit;border-radius:3px;padding:0 2px}.neutral-note .small{font-size:.85em;opacity:.8}.neutral-note .tip-note{margin-top:4px;font-size:.9em}.feedback.bad{background:#fff0f1;color:var(--red)}
 .answer{font-weight:700}.spaced{margin-top:20px}.wordtable{width:100%;border-collapse:collapse}.wordtable td,.wordtable th{text-align:left;padding:9px;border-bottom:1px solid var(--line);vertical-align:top}.wordtable .ipa{font-size:.85rem}.hidden{display:none!important}
 @media(max-width:600px){.panel{padding:14px}.toolbar button{flex:1}.inputs input{min-width:100%}}
 
@@ -476,7 +476,7 @@ html.dark button,html.dark select,html.dark input{background:#2a2c28;color:var(-
 html.dark .primary{background:#0f6e56;border-color:#0f6e56;color:#fff}
 html.dark .mode.active{background:#173a30;border-color:#1d6b55}
 html.dark #context.meaning-highlight{background:#173a30;border-color:#1d6b55;color:#e1f5ee}html.dark #context.meaning-highlight::before{color:#9fe1cb}
-html.dark .feedback{background:#2a2c28}html.dark .feedback.good{background:#173a30;color:#9fe1cb}html.dark .feedback.bad{background:#3d1c1f;color:#f4a7ae}
+html.dark .feedback{background:#2a2c28}html.dark .feedback.good{background:#173a30;color:#9fe1cb}html.dark .neutral-note{background:#22241f;color:#d8d6cc}html.dark .neutral-note mark.diff{background:#5a4a1a;color:#ffe9a8}html.dark .feedback.bad{background:#3d1c1f;color:#f4a7ae}
 html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
 
 /* Mobilní kompaktní ovládání cvičení: méně vysoká tlačítka a více prostoru pro otázku i hodnocení. */
@@ -917,7 +917,7 @@ window.lessonVerbs=function(){return verbSets.flat();};
 window.practiceVerbs=function(list,title){const all=verbSets.flat();const pick=[...new Set(list)].map(b=>all.find(v=>v.base===b)).filter(Boolean);if(!pick.length)return false;
  verbs=pick;setIdx=-1;customTitle=title||"Opakování";for(const k of [...recorded.keys()])if(k.startsWith("-1:"))recorded.delete(k);
  const sel=$("verbSet");let opt=sel.querySelector('option[value="-1"]');if(!opt){opt=document.createElement("option");opt.value="-1";sel.prepend(opt);}opt.textContent=`${customTitle} (${pick.length})`;sel.value="-1";
- mode="forms";index=0;showExercise();return true;};
+ mode="forms";index=0;showExercise();focusAnswerNow();return true;};
 const $=id=>document.getElementById(id);
 function showSelection(){ $("selectionPanel").classList.remove("hidden"); $("exercisePanel").classList.add("hidden"); $("scorePanel").classList.add("hidden"); $("tablePanel").classList.add("hidden"); window.scrollTo(0,0); }
 function showExercise(){ $("selectionPanel").classList.add("hidden"); $("exercisePanel").classList.remove("hidden"); $("scorePanel").classList.remove("hidden"); $("tablePanel").classList.remove("hidden"); renderTable();render();window.scrollTo(0,0); }
@@ -1029,6 +1029,10 @@ function translationHint(v,typed){
  else hint=`Tvar „${v.past}“ máš správně – zkontroluj ostatní slova a jejich pořadí.`;
  return `Ještě ne. ${hint}\nZkus to ještě jednou – oprav větu a znovu klikni na „Zkontrolovat“. (Do skóre se počítá první pokus.)`;
 }
+function verbFormOk(v,typed){const t=canon(typed).split(" ");const forms=String(v.past).split("/").map(x=>x.toLowerCase());if(v.base==="be")forms.push("was","were");const alt=ALT_FORMS[v.base];if(alt)forms.push(...alt[0]);return forms.some(f=>t.includes(f));}
+function verbOnlyMarkup(v,typed){const bag=canon(typed).split(" ");const out=String(v.sentence).split(/\s+/).map(w=>{const c=canon(w);const i=c?bag.indexOf(c):-1;if(i>=0){bag.splice(i,1);return escapeHtml(w);}return `<mark class="diff">${escapeHtml(w)}</mark>`;}).join(" ");
+ const tip=tips[v.base]?`<div class="tip-note">${escapeHtml(tips[v.base])}</div>`:"";
+ return `✓ Sloveso máš správně („${escapeHtml(v.past)}“).<div class="neutral-note">Přirozeněji: ${out}<br><span class="small">Zvýrazněná slova se liší od vzoru – nepočítá se to jako chyba.</span>${tip}</div>`;}
 function translationSolution(v){return `Přirozený vzor: “${v.sentence}”\n${tips[v.base]||`${v.base} – ${v.past} – ${v.part}. Pro minulý děj použij 2. tvar: ${v.past}.`}`;}
 function revealQuick(){
  const v=cur();quickRevealed=true;answered=true;
@@ -1058,7 +1062,10 @@ function evaluate(){
  if(mode==="translate"){
    const typed=raw[0].trim();
    const exact=canon(typed)===canon(v.sentence);
-   ok=exact||(v.alternatives||[]).some(x=>canon(x)===canon(typed));
+   const sentOk=exact||(v.alternatives||[]).some(x=>canon(x)===canon(typed));
+   // v50: hodnotí se jen procvičované sloveso (2. tvar); zbytek věty se jen vysvětlí.
+   const verbOnly=!sentOk&&verbFormOk(v,typed);
+   ok=sentOk||verbOnly;
    tries++;
    record(key,ok);
    if(!ok&&tries===1){
@@ -1073,6 +1080,7 @@ function evaluate(){
    const ipaBox=$("translateIpa");
    ipaBox.innerHTML=alignedIpaMarkup(v.sentence,v.ipa,underlineFirst);
    ipaBox.classList.remove("hidden");
+   if(verbOnly){$("feedback").innerHTML=verbOnlyMarkup(v,typed);$("feedback").className="feedback good";$("check").disabled=true;$("next").disabled=false;$("score").textContent=scoreText();return;}
    message=!ok?translationSolution(v):exact?(tries>1?"Správně na druhý pokus!":"Správně! Výborně."):`Správně – i tato varianta zní přirozeně.\n${altNotes[v.base]||'Tvoje věta zachovává význam a je přirozenou alternativou ke vzoru.'}`;
  } else {
    const vals=raw.map(norm);let fr=null;
@@ -1546,11 +1554,10 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
       <p class="note" id="dtNote"></p>
     </div>
     <div id="dtRun" class="hidden">
-      <div class="dt-play"><button type="button" class="dt-big" id="dtPlay" aria-label="Přehrát slovo znovu">🔊</button><button type="button" id="dtSlow" aria-label="Přehrát pomalu">🐢 Pomalu</button></div>
-      <div class="quiz-sub" id="dtMeaning"></div>
+      <div class="dt-play"><button type="button" class="dt-big" id="dtPlay" aria-label="Přehrát slovo znovu">🔊</button><button type="button" id="dtSlow" aria-label="Přehrát pomalu (dvakrát)">🐢</button><div class="quiz-sub" id="dtMeaning"></div></div>
+      <div class="quiz-nav dt-nav"><button type="button" id="dtSkip">Nevím</button><button type="button" class="primary" id="dtCheck">Zkontrolovat</button><button type="button" id="dtNext" disabled>Další →</button></div>
       <input id="dtInput" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Napiš, co slyšíš…" aria-label="Napiš slovo, které slyšíš">
       <div class="quiz-feedback hidden" id="dtFeedback" aria-live="polite"></div>
-      <div class="quiz-nav"><button type="button" id="dtSkip">Nevím</button><button type="button" class="primary" id="dtCheck">Zkontrolovat</button></div>
     </div>
     <div id="dtDone" class="hidden"></div>
   </div></div>
@@ -2430,17 +2437,22 @@ function dtBegin(list){dt={list,i:0,correct:0,wrong:[],answered:false};$('dtSetu
 function dtStart(){const src=$('dtSrc').value,count=+$('dtCount').value;prefs.dict={src,count,hint:$('dtHint').checked};savePrefs(false);
  const list=shuffle(listenWords(src)).slice(0,count);if(!list.length){$('dtNote').textContent='V tomto výběru teď nejsou žádná slova – zvol jiný.';return;}dtBegin(list);}
 function dtShow(){const w=dt.list[dt.i];dt.answered=false;$('dtCounter').textContent=`Slovo ${dt.i+1} z ${dt.list.length}`;$('dtScore').textContent=`Správně: ${dt.correct}`;$('dtProgress').style.width=(dt.i/dt.list.length*100)+'%';
- $('dtMeaning').textContent=$('dtHint').checked?'Význam: '+w.cs:'';const inp=$('dtInput');inp.value='';inp.className='';inp.disabled=false;
- $('dtFeedback').className='quiz-feedback hidden';$('dtCheck').textContent='Zkontrolovat';$('dtSkip').classList.remove('hidden');inp.focus({preventScroll:true});speakText(w.word,{voice:rotVoice(dt.i)});}
+ $('dtMeaning').textContent=$('dtHint').checked?'Význam: '+w.cs:'';const inp=$('dtInput');inp.value='';inp.className='';inp.disabled=false;inp.readOnly=false;
+ $('dtFeedback').className='quiz-feedback hidden';dtButtons(false);inp.focus({preventScroll:true});speakText(w.word,{voice:rotVoice(dt.i)});}
 function dtCheck(skip){if(!dt)return;if(dt.answered){dtNext();return;}const w=dt.list[dt.i],typed=$('dtInput').value;if(!skip&&!typed.trim()){$('dtInput').focus();return;}
  const ok=!skip&&dtNorm(typed)===dtNorm(w.word);dt.answered=true;if(ok)dt.correct++;else dt.wrong.push({w,typed});noteResult('w:'+w.word,ok);markActive();
  const capital=ok&&typed.trim()!==w.word&&/[A-Z]/.test(w.word);
- $('dtInput').className=ok?'ok':'bad';$('dtInput').disabled=true;
+ $('dtInput').className=ok?'ok':'bad';$('dtInput').readOnly=true;
  const fb=$('dtFeedback');fb.className='quiz-feedback';
- fb.innerHTML=(ok?'✓ Správně!':(skip?'Správně se píše:':'✗ Správně se píše:'))+`<div class="dt-word">${ok?esc(w.word):dtDiff(typed,w.word)}</div>`
-  +(!ok&&typed.trim()?`<div class="note">Tvoje odpověď: <s>${esc(typed.trim())}</s></div>`:'')+`<div class="note">${esc(w.ipa||'')} – ${esc(w.cs)}</div>`
-  +(w.sentence?`<div class="note" style="margin-top:6px">${esc(w.sentence)}</div>`:'')+(capital?`<div class="note">Pozor, píše se s velkým písmenem: ${esc(w.word)}</div>`:'');
- $('dtCheck').textContent=dt.i<dt.list.length-1?'Další slovo →':'Výsledek →';$('dtSkip').classList.add('hidden');$('dtScore').textContent=`Správně: ${dt.correct}`;$('dtCheck').focus({preventScroll:true});}
+ fb.innerHTML=(ok?'✓ Správně!':(skip?'Správně se píše:':'✗ Správně se píše:'))+`<span class="dt-word">${ok?esc(w.word):dtDiff(typed,w.word)}</span>${ok?`${esc(w.ipa||'')} – ${esc(w.cs)}`:''}`
+  +(!ok?`<div class="note">${esc(w.ipa||'')} – ${esc(w.cs)}</div>`:'')+(!ok&&typed.trim()?`<div class="note">Tvoje odpověď: <s>${esc(typed.trim())}</s></div>`:'')
+  +(w.sentence?`<div class="note">${esc(w.sentence)}</div>`:'')+(capital?`<div class="note">Pozor, píše se s velkým písmenem: ${esc(w.word)}</div>`:'');
+ dtButtons(true);$('dtScore').textContent=`Správně: ${dt.correct}`;$('dtInput').focus({preventScroll:true});dtEnsureVisible(fb);}
+// v50: klávesnice zůstává otevřená – 1. Enter kontrola, 2. Enter další slovo; tlačítka v jednom řádku nad políčkem.
+function dtButtons(done){const c=$('dtCheck'),n=$('dtNext'),k=$('dtSkip');c.disabled=done;k.disabled=done;n.disabled=!done;c.classList.toggle('primary',!done);n.classList.toggle('primary',done);n.textContent=done&&dt&&dt.i>=dt.list.length-1?'Výsledek →':'Další →';}
+function dtEnsureVisible(el){requestAnimationFrame(()=>{try{const vv=window.visualViewport,top=vv?vv.offsetTop:0,h=vv?vv.height:window.innerHeight,r=el.getBoundingClientRect(),diff=r.bottom-(top+h)+8;if(diff<=0)return;
+ let sc=el.parentElement;while(sc&&!(sc.scrollHeight>sc.clientHeight&&/(auto|scroll)/.test(getComputedStyle(sc).overflowY)))sc=sc.parentElement;
+ const room=r.top-top-8;const d=Math.min(diff,Math.max(0,room));if(d<=0)return;if(sc)sc.scrollTop+=d;else window.scrollBy(0,d);}catch(e){}});}
 function dtNext(){if(dt.i<dt.list.length-1){dt.i++;dtShow();}else dtFinish();}
 function dtFinish(){$('dtRun').classList.add('hidden');const d=$('dtDone');d.classList.remove('hidden');$('dtProgress').style.width='100%';$('dtCounter').textContent='Diktát dokončen';
  const n=dt.list.length,pct=Math.round(dt.correct/n*100),wrong=dt.wrong;
@@ -2449,10 +2461,13 @@ function dtFinish(){$('dtRun').classList.add('hidden');const d=$('dtDone');d.cla
   +`<div class="quiz-nav"><button type="button" id="dtAgain">Nový diktát</button>${wrong.length?'<button type="button" id="dtRetry">Znovu chybná slova</button>':''}<button type="button" class="primary" id="dtClose2">Zpět na Dnes</button></div>`;
  $('dtAgain').onclick=dtShowSetup;$('dtClose2').onclick=goToday;if($('dtRetry'))$('dtRetry').onclick=()=>dtBegin(wrong.map(x=>x.w));$('dtClose2').focus({preventScroll:true});}
 $('openDictation').onclick=openDictation;$('closeDictation').onclick=closeDictation;$('dtStart').onclick=dtStart;
-$('dtCheck').onclick=()=>dtCheck(false);$('dtSkip').onclick=()=>dtCheck(true);
-$('dtPlay').onclick=()=>{if(dt)speakText(dt.list[dt.i].word,{voice:rotVoice(dt.i)});};
+$('dtCheck').onclick=()=>dtCheck(false);$('dtSkip').onclick=()=>dtCheck(true);$('dtNext').onclick=()=>{if(dt&&dt.answered)dtNext();};
+// Klepnutí na tlačítka diktátu nemá brát kurzor z políčka (jinak se na iPhonu zavře klávesnice).
+['dtPlay','dtSlow','dtSkip','dtCheck','dtNext'].forEach(id=>$(id).addEventListener('mousedown',e=>{if(document.activeElement===$('dtInput'))e.preventDefault();}));
+$('dtPlay').onclick=()=>{if(dt)dt.slowTok=null;if(dt)speakText(dt.list[dt.i].word,{voice:rotVoice(dt.i)});};
 // Pomalu: výrazně pomaleji (u jednoho slova je malé zpomalení skoro neslyšet).
-$('dtSlow').onclick=()=>{if(!dt)return;speakText(dt.list[dt.i].word,{voice:rotVoice(dt.i),rate:0.4});};
+// v50: pomalu dvakrát s krátkou pauzou.
+$('dtSlow').onclick=()=>{if(!dt)return;const w=dt.list[dt.i],voice=rotVoice(dt.i),tok=dt.slowTok={};speakText(w.word,{voice,rate:0.4,onend:()=>setTimeout(()=>{if(dt&&dt.slowTok===tok&&dt.list[dt.i]===w)speakText(w.word,{voice,rate:0.4});},600)});};
 $('dtInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();dtCheck(false);}});
 $('listenPlay').onclick=()=>{if(listen.playing)listenStop();else if(listen.items.length)listenRun();};
 $('listenNext').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.min(listen.i+1,listen.items.length-1);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
@@ -2684,8 +2699,13 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=44,KEY='karticky-seen-ver';
- var NEWS=[{v:44,major:true,items:[
+ var VER=50,KEY='karticky-seen-ver';
+ var NEWS=[{v:50,major:true,items:[
+  'Diktát: klávesnice zůstává otevřená – 1. Enter zkontroluje, 2. Enter přejde na další slovo. Tlačítka a vyhodnocení jsou nad klávesnicí.',
+  'Diktát: 🐢 přečte slovo pomalu dvakrát za sebou.',
+  'Slovesa B (Překlad vět): hodnotí se jen procvičované sloveso. Jiná slova ve větě se jen vysvětlí a nepočítají se jako chyba.',
+  'Slovesa z Dnešního plánu a z Mých chyb: kurzor hned bliká v políčku a otevře se klávesnice.'
+ ]},{v:44,major:true,items:[
   'Kartičky „Nová slova“: po ohodnocení poslední dnešní kartičky se ukáže „Hotovo!“ a tlačítko „Zpět na Dnes“.',
   'Kvíz: tlačítko 🔊 Poslech u všech otázek (u některých až po odpovědi, aby neprozradilo řešení).'
  ]},{v:42,major:true,title:'Co je nového',items:[

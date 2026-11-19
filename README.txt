@@ -1,3 +1,9 @@
+NOVÉ VE v50
+- Diktát: klávesnice zůstává otevřená – 1. Enter zkontroluje, 2. Enter další slovo. Nové rozvržení: 🔊 🐢 + význam, pod tím Nevím | Zkontrolovat | Další →, políčko a vyhodnocení s příkladovou větou. 🐢 přečte slovo pomalu dvakrát.
+- Slovesa B (Překlad vět): hodnotí se jen 2. tvar procvičovaného slovesa. Když se zbytek věty liší od vzoru, ukáže se „Přirozeněji: …“ se zvýrazněnými rozdíly – nepočítá se jako chyba.
+- Slovesa otevřená z Dnešního plánu a z „Moje chyby → Procvičit slovesa“: kurzor bliká v políčku a na iPhonu se otevře klávesnice.
+- Okno „Co je nového“ se po aktualizaci zobrazí jednou.
+
 NOVÉ VE v49
 - Kartičky: „Umím“ u slova, které ještě není na řadě, už neposune opakování dál – plán zůstane (píše se „zatím beze změny, na řadě za …“). Nová slova a slova na řadě se posouvají jako dřív, „Neumím“ vrací slovo na 10 minut.
 - Slovesa, cvičení A: po Enteru u 2. tvaru už obrazovka neposkočí nahoru a při dalším slovese zpět dolů.
