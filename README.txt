@@ -1,3 +1,7 @@
+NOVÉ VE v51
+- Diktát: kratší popisky tlačítek – Nevím | Kontrola | Další (vejdou se i na telefonu).
+- Kartičky: po klepnutí na Umím / Neumím se na 3 s ukáže, kdy bude slovo znovu na řadě (např. „znovu za 1 den“ nebo „zatím beze změny, na řadě za 1 den“).
+
 NOVÉ VE v50
 - Diktát: klávesnice zůstává otevřená – 1. Enter zkontroluje, 2. Enter další slovo. Nové rozvržení: 🔊 🐢 + význam, pod tím Nevím | Zkontrolovat | Další →, políčko a vyhodnocení s příkladovou větou. 🐢 přečte slovo pomalu dvakrát.
 - Slovesa B (Překlad vět): hodnotí se jen 2. tvar procvičovaného slovesa. Když se zbytek věty liší od vzoru, ukáže se „Přirozeněji: …“ se zvýrazněnými rozdíly – nepočítá se jako chyba.
