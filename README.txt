@@ -1,3 +1,9 @@
+NOVÉ VE v52
+- Nová slova denně se vybírají v pořadí: 50 základních sloves, pak A1 → A2 → B1 → B2, uvnitř úrovně od nejčastějších; dny a měsíce na začátku A1. Lekce, číslování kartiček, naučená slova a opakování se nemění. Dnešní už vybraná slova zůstávají.
+- Zdroje: CEFR-J Wordlist (Tono Laboratory, TUFS, https://github.com/openlanguageprofiles/olp-en-cefrj) a New General Service List (Browne, Culligan & Phillips, CC BY-SA 4.0, https://www.newgeneralservicelist.com/). Uvedeno i v Nastavení.
+- Kartičky: odstraněn zelený štítek „znovu za …“ z v51; informace zůstává v panelu „⚙ změnit“.
+- Po aktualizaci se jednou zobrazí „Co je nového“.
+
 NOVÉ VE v51
 - Diktát: kratší popisky tlačítek – Nevím | Kontrola | Další (vejdou se i na telefonu).
 - Kartičky: po klepnutí na Umím / Neumím se na 3 s ukáže, kdy bude slovo znovu na řadě (např. „znovu za 1 den“ nebo „zatím beze změny, na řadě za 1 den“).
