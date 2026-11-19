@@ -1,3 +1,8 @@
+NOVÉ VE v49
+- Kartičky: „Umím“ u slova, které ještě není na řadě, už neposune opakování dál – plán zůstane (píše se „zatím beze změny, na řadě za …“). Nová slova a slova na řadě se posouvají jako dřív, „Neumím“ vrací slovo na 10 minut.
+- Slovesa, cvičení A: po Enteru u 2. tvaru už obrazovka neposkočí nahoru a při dalším slovese zpět dolů.
+- Slovesa, cvičení A–D: po otevření cvičení a po klepnutí na →, ←, „Začít znovu“ bliká kurzor v políčku a na iPhonu se otevře klávesnice.
+
 NOVÉ VE v48
 - Slovesa: tlačítka zjednodušena na ← | Kontrola | 🔊 | → (vejdou se bez ořezání textu).
 - Kartičky: na telefonu odebráno tlačítko 🎤 u slova a u věty (anglicko-české i česko-anglické); na širokém displeji (Mac) zůstává.

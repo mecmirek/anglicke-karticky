@@ -436,7 +436,7 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.48</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.49</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1118,7 +1118,9 @@ function evaluate(){
   vd.textContent=st==="good"?"✓":"👎";vd.setAttribute("aria-label",st==="good"?"Správně":"Špatně");
   vd.className="verdict "+st;void vd.offsetWidth;vd.className="verdict show "+st;try{const r=vd.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)vd.scrollIntoView({block:"nearest"});}catch(e){}}
  new MutationObserver(sync).observe(fb,{attributes:true,attributeFilter:["class"],childList:true,characterData:true,subtree:true});sync();})();
-document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;showExercise()}));
+// v49: iPhone otevře klávesnici jen při focusu přímo v klepnutí – proto kurzor do 1. políčka hned (A–D, šipky, Začít znovu).
+function focusAnswerNow(){if(mode==="quick")return;const f=$("answer0");if(!f||f.disabled||f.offsetParent===null)return;try{f.focus({preventScroll:true});if(typeof f.setSelectionRange==="function"){const e=f.value.length;f.setSelectionRange(e,e);}}catch(e){}}
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;index=0;showExercise();focusAnswerNow()}));
 $("check").addEventListener("click",evaluate);
 // Klávesa Enter funguje ve všech režimech:
 // A (dva tvary): z 2. tvaru přesune do 3. tvaru; z 3. tvaru zkontroluje.
@@ -1127,18 +1129,18 @@ $("inputs").addEventListener("keydown",e=>{
  if(e.key!=="Enter")return;
  e.preventDefault();
  if(answered){
-   if(!$("next").disabled)goNext();
+   if(!$("next").disabled){goNext();focusAnswerNow();}
    return;
  }
  if(mode==="forms" && e.target && e.target.id==="answer0"){
    const second=$("answer1");
-   if(second){second.focus();return;}
+   if(second){second.focus({preventScroll:true});return;}
  }
  evaluate();
 });
-$("next").addEventListener("click",goNext);
-$("prev").addEventListener("click",()=>{if(finished){render();return;}if(index>0){index--;render();}});
-$("restart").addEventListener("click",()=>{index=0;recorded.clear();render()});
+$("next").addEventListener("click",()=>{goNext();focusAnswerNow();});
+$("prev").addEventListener("click",()=>{if(finished){render();focusAnswerNow();return;}if(index>0){index--;render();focusAnswerNow();}});
+$("restart").addEventListener("click",()=>{index=0;recorded.clear();render();focusAnswerNow()});
 function renderTable(){$("verbtable").innerHTML=verbs.map(v=>`<tr><td>${v.base}<br><span class="ipa">/${v.ipa3[0]}/</span></td><td>${v.past}<br><span class="ipa">/${v.ipa3[1]}/</span></td><td>${v.part}<br><span class="ipa">/${v.ipa3[2]}/</span></td><td>${v.cs}</td></tr>`).join("");}
 $("verbSet").innerHTML=setNames.map((n,i)=>`<option value="${i}">${escapeHtml(n)}</option>`).join("");
 // Zvolená sada se pamatuje v tomto prohlížeči.
@@ -2052,7 +2054,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-card-tab]'
  if(typeof fitCard==='function')fitCard();});
 function render(){renderCore();focusAnswer();}
 function focusAnswer(){if(!document.body.classList.contains('view-cards'))return;const q=document.getElementById('reverseQuiz'),el=document.getElementById('answerInput');if(!q||!el||q.classList.contains('hidden')||el.disabled)return;if(document.querySelector('.lesson-overlay:not([hidden])'))return;try{el.focus({preventScroll:true});}catch(e){}}
-function gradeTypedKnown(w){grades[w.word]='known';dirty[w.word]=true;const s=srsGrade(w.word,'known');markActive();save();$('srsNote').textContent=`„${w.word}“ – znovu ${inTime(s.due-Date.now())}`;}
+// v49: „Umím“ u slova, které ještě není na řadě, plán nemění (stejně jako kvíz a slovesa).
+function srsEarly(w){const s=srs[w.word];return !!s&&s.due>Date.now();}
+function earlyNote(w){$('srsNote').textContent=`„${w.word}“ – zatím beze změny, na řadě ${inTime(srs[w.word].due-Date.now())}`;}
+function gradeTypedKnown(w){if(srsEarly(w)){markActive();earlyNote(w);return;}grades[w.word]='known';dirty[w.word]=true;const s=srsGrade(w.word,'known');markActive();save();$('srsNote').textContent=`„${w.word}“ – znovu ${inTime(s.due-Date.now())}`;}
 let typedGraded=null;
 function advanceAfterTyped(){const w=typedGraded;typedGraded=null;if(!w){$('next').click();return;}let a=set();index=!a.length?0:a.includes(w)?(index+1)%a.length:index%a.length;render();}
 function renderCore(){typedGraded=null;resetCardTabs();mode=$('mode').value;$('listNote').textContent='';document.querySelectorAll('[data-mic-result]').forEach(p=>{p.textContent='';p.className='mic-result';});const fm=document.querySelector('.front [data-mic]');if(fm)fm.classList.toggle('hidden',$('direction').value==='cs-en');let a=set();index=Math.max(0,Math.min(index,Math.max(0,a.length-1)));let w=a[index];const todayDone=mode==='today'&&a.length>0&&a.every(x=>grades[x.word]);if(todayDone)w=undefined;$('flip').classList.remove('turned');$('jump').innerHTML='';a.forEach((x,i)=>{let o=document.createElement('option');o.value=i;o.textContent=`${i+1}. ${x.word}`;$('jump').append(o)});$('jump').value=index;
@@ -2065,7 +2070,7 @@ let vals=Object.values(grades),k=vals.filter(x=>x==='known').length,r=vals.filte
 $('list').innerHTML=base().map(x=>`<button class="chip ${grades[x.word]==='known'?'known':grades[x.word]==='review'?'unknown':''}" data-word="${esc(x.word)}">${grades[x.word]==='known'?'✓ ':grades[x.word]==='review'?'✗ ':''}${esc(x.word)}${starred[x.word]?' ★':''}</button>`).join('');$('status').textContent=`Načteno ${words.length} kartiček. ${cloudUser&&cloudReady?'Online synchronizace je aktivní.':'Lokální záloha je aktivní; pro synchronizaci se přihlas nahoře.'}`}
 $('turn').onclick=()=>{if($('turn').dataset.today){goToday();return;}$('flip').classList.toggle('turned');};$('flip').onclick=e=>{if(e.target.closest('button,input,textarea,select,label,a')||$('turn').dataset.today)return;$('flip').classList.toggle('turned')};
 // Když ohodnocená kartička ze seznamu vypadne (režim „Pouze Neumím“ → „Umím“), na stejné pozici už je další kartička – index se nesmí posunout.
-document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{let w=set()[index];if(!w)return;grades[w.word]=b.dataset.grade;dirty[w.word]=true;const s=srsGrade(w.word,b.dataset.grade);markActive();save();$('srsNote').textContent=`„${w.word}“ – znovu ${inTime(s.due-Date.now())}`;let a=set();index=!a.length?0:a.includes(w)?(index+1)%a.length:index%a.length;render()});
+document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{let w=set()[index];if(!w)return;if(b.dataset.grade==='known'&&srsEarly(w)){markActive();earlyNote(w);}else{grades[w.word]=b.dataset.grade;dirty[w.word]=true;const s=srsGrade(w.word,b.dataset.grade);markActive();save();$('srsNote').textContent=`„${w.word}“ – znovu ${inTime(s.due-Date.now())}`;}let a=set();index=!a.length?0:a.includes(w)?(index+1)%a.length:index%a.length;render()});
 $('prev').onclick=()=>{index=Math.max(0,index-1);render()};$('next').onclick=()=>{let a=set();index=a.length?(index+1)%a.length:0;render()};$('repeat').onclick=()=>{index=0;$('mode').value='all';render()};
 $('lesson').onchange=()=>{lesson=+$('lesson').value;lessonT=Date.now();index=0;save();render()};$('mode').onchange=()=>{index=0;render()};$('jump').onchange=()=>{index=+$('jump').value;render()};$('direction').onchange=()=>{render()};$('checkAnswer').onclick=()=>{const w=set()[index];if(!w)return;const raw=$('answerInput').value;if(!raw.trim()){$('answerFeedback').textContent='Nejdřív napiš svůj překlad.';$('answerFeedback').style.color='';return;}const r=judgeAnswer(raw,w);$('answerFeedback').textContent=r.text;$('answerFeedback').style.color=r.color;$('checkAnswer').disabled=true;if(r.ok){gradeTypedKnown(w);typedGraded=w;}};$('answerInput').addEventListener('click',e=>e.stopPropagation());$('answerInput').addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();if(e.repeat)return;if(!$('checkAnswer').disabled)$('checkAnswer').click();else advanceAfterTyped();});$('list').onclick=e=>{let b=e.target.closest('[data-word]');if(!b)return;const word=b.dataset.word;let i=set().findIndex(w=>w.word===word);if(i>=0){index=i;render();return;}const item=words.find(w=>w.word===word);const reverse=$('direction').value==='cs-en';let why;if(reverse&&item&&(!item.cs||item.cs==='význam podle kontextu'))why=`„${word}“ zatím nemá český význam, proto se v režimu Česky → anglicky nezobrazuje.`;else if(mode==='due')why=`„${word}“ dnes není na řadě k opakování.`;else if(mode==='review')why=`„${word}“ není mezi slovíčky „Neumím“. Pro zobrazení přepni režim na „Všechna slovíčka lekce“.`;else why=`„${word}“ se v aktuálním režimu nezobrazuje.`;$('listNote').textContent=why;};
 const voiceSelect=$('voiceSelect'),speechRate=$('speechRate'),speechRateValue=$('speechRateValue'),voiceStatus=$('voiceStatus');
