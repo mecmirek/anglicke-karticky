@@ -1,3 +1,10 @@
+NOVÉ VE v59 (obsahuje i v58)
+- Doplněna britská IPA tří tvarů a příkladové věty u 50 sloves, kde chyběla (be, have, do … become, show, draw).
+- Slovesa: sady seřazeny podle úrovně (CEFR-J: A1 → A2 → B1) a uvnitř podle četnosti (NGSL). Sada 1: be, have, do, say, go, know, get, think, make, see … sada 11: beat, hang, bet, burst, forgive. V nabídce sad je i úroveň (např. „Sada 1 · A1: be, have, do…“).
+- +5 sloves A2: bear (bore, borne/born), seek (sought), quit (quit), forbid (forbade, forbidden), sew (sewed, sewn/sewed) – s větami pro cvičení B–D a tipy. Slovesa A1 a A2 jsou kompletní; 105 sloves v 11 sadách.
+- Pokrok u sloves (opakování) se nemění – je uložen podle slovesa. Uložená vybraná sada ukazuje nové složení.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v57
 - +400 nových slov úrovně B1 (4 dávky: whether, term, process … emphasize, maximum) – celkem 1734 slov, 35 lekcí. Zařazena v B1 podle četnosti (NGSL); B2 zůstává na konci. U 15 vět je i ženská verze překladu. Pokrok se nemění.
 - Slovesa, cvičení A: mezerník v políčku 2. tvaru přesune kurzor do 3. tvaru (stejně jako Enter); funguje i mezera z našeptávače na iPhonu.
