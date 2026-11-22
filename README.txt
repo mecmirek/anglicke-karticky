@@ -1,3 +1,10 @@
+NOVÉ VE v55
+- +300 nových slov úrovně A2 (dávky 1–3: even, since, provide … passenger, rush) – celkem 1300 slov, 26 lekcí. Každé slovo má význam, britskou IPA, slovní druh, 2 věty s překladem a IPA a 3 slovní spojení; u 6 vět je i ženská verze překladu.
+- Lekce přeřazeny: lekce 1 = 50 základních sloves, dál A1 → A2 → B1 → B2, uvnitř úrovně podle četnosti (NGSL); dny a měsíce na začátku A1. Pořadí lekcí = pořadí nových slov denně.
+- Pokrok se nemění (je uložen podle slova). Změnil se obsah lekcí a čísla kartiček (x/1300).
+- Počet lekcí se počítá z počtu slov (výběr lekce, vstupní test, statistiky). Vstupní test má teď 2 otázky z každé z 26 lekcí.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v54
 - Úroveň slova (A1/A2/B1/B2, podle CEFR-J) jako barevný štítek na kartičce vedle slovního druhu a ve Slovníku vedle čísla lekce. U 8 slov (born, children, said, women, goodbye, oh, zero, according) je úroveň doplněná ručně – NEJISTÉ, ověř.
 - Pojistka pro Safari na Macu se zmenšenou stránkou (Cmd −): cvičení sloves se už neposune mimo obrazovku.
