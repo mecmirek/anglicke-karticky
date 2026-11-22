@@ -1,3 +1,9 @@
+NOVÉ VE v57
+- +400 nových slov úrovně B1 (4 dávky: whether, term, process … emphasize, maximum) – celkem 1734 slov, 35 lekcí. Zařazena v B1 podle četnosti (NGSL); B2 zůstává na konci. U 15 vět je i ženská verze překladu. Pokrok se nemění.
+- Slovesa, cvičení A: mezerník v políčku 2. tvaru přesune kurzor do 3. tvaru (stejně jako Enter); funguje i mezera z našeptávače na iPhonu.
+- Slovesa: tlačítko 🔊 nebere kurzor z políčka – klávesnice zůstane otevřená.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v56
 - Doplněno 34 základních slov, která chyběla: měsíce (February, March, April, May, June, July, August, December – March a May jako samostatné kartičky měsíců; „march“ = pochodovat a „may“ = smět zůstávají), čísla 11–19 a desítky (eleven … ninety), fourth, fifth, barvy pink, purple, grey, rodina grandmother, grandfather, uncle, ear a jídlo vegetable, cheese, rice, sugar, salt.
 - Dny v týdnu, všech 12 měsíců a čísla 11–90 jsou pohromadě na začátku A1 (kartičky 101–138). Ostatní nová slova jsou zařazena podle úrovně a četnosti.
