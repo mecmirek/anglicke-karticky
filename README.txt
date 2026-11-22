@@ -1,3 +1,9 @@
+NOVÉ VE v56
+- Doplněno 34 základních slov, která chyběla: měsíce (February, March, April, May, June, July, August, December – March a May jako samostatné kartičky měsíců; „march“ = pochodovat a „may“ = smět zůstávají), čísla 11–19 a desítky (eleven … ninety), fourth, fifth, barvy pink, purple, grey, rodina grandmother, grandfather, uncle, ear a jídlo vegetable, cheese, rice, sugar, salt.
+- Dny v týdnu, všech 12 měsíců a čísla 11–90 jsou pohromadě na začátku A1 (kartičky 101–138). Ostatní nová slova jsou zařazena podle úrovně a četnosti.
+- Celkem 1334 slov, 27 lekcí; ostatní slova se posunula (čísla kartiček se počítají automaticky). Pokrok se nemění.
+- Úroveň fourth/fifth doplněna ručně jako A1 (v CEFR-J chybí/B1) – NEJISTÉ, ověř. salt je podle CEFR-J A2.
+
 NOVÉ VE v55
 - +300 nových slov úrovně A2 (dávky 1–3: even, since, provide … passenger, rush) – celkem 1300 slov, 26 lekcí. Každé slovo má význam, britskou IPA, slovní druh, 2 věty s překladem a IPA a 3 slovní spojení; u 6 vět je i ženská verze překladu.
 - Lekce přeřazeny: lekce 1 = 50 základních sloves, dál A1 → A2 → B1 → B2, uvnitř úrovně podle četnosti (NGSL); dny a měsíce na začátku A1. Pořadí lekcí = pořadí nových slov denně.
