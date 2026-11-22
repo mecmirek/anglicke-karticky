@@ -1,3 +1,8 @@
+NOVÉ VE v54
+- Úroveň slova (A1/A2/B1/B2, podle CEFR-J) jako barevný štítek na kartičce vedle slovního druhu a ve Slovníku vedle čísla lekce. U 8 slov (born, children, said, women, goodbye, oh, zero, according) je úroveň doplněná ručně – NEJISTÉ, ověř.
+- Pojistka pro Safari na Macu se zmenšenou stránkou (Cmd −): cvičení sloves se už neposune mimo obrazovku.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v53
 - Nastavení → „Moje úroveň“ (A1 – začínám od začátku / A2 – A1 už umím / B1 – A1 i A2 už umím). Nová slova denně se nabízejí až od zvolené úrovně; 50 základních nepravidelných sloves zůstává vždy. Přeskočená slova se neoznačují jako naučená – jsou dál v lekcích a ve Slovníku.
 - Při změně úrovně se dnešní ještě neohodnocená nová slova pod úrovní hned vymění.
