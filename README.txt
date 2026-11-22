@@ -1,3 +1,9 @@
+NOVÉ VE v53
+- Nastavení → „Moje úroveň“ (A1 – začínám od začátku / A2 – A1 už umím / B1 – A1 i A2 už umím). Nová slova denně se nabízejí až od zvolené úrovně; 50 základních nepravidelných sloves zůstává vždy. Přeskočená slova se neoznačují jako naučená – jsou dál v lekcích a ve Slovníku.
+- Při změně úrovně se dnešní ještě neohodnocená nová slova pod úrovní hned vymění.
+- Když slova tvé úrovně dojdou, nová slova se už nenabízejí a Dnes ukáže „slova tvé úrovně máš 🎉“ (další slova se budou doplňovat).
+- Úroveň se synchronizuje mezi zařízeními jako počet nových slov. Zobrazí se „Co je nového“.
+
 NOVÉ VE v52
 - Nová slova denně se vybírají v pořadí: 50 základních sloves, pak A1 → A2 → B1 → B2, uvnitř úrovně od nejčastějších; dny a měsíce na začátku A1. Lekce, číslování kartiček, naučená slova a opakování se nemění. Dnešní už vybraná slova zůstávají.
 - Zdroje: CEFR-J Wordlist (Tono Laboratory, TUFS, https://github.com/openlanguageprofiles/olp-en-cefrj) a New General Service List (Browne, Culligan & Phillips, CC BY-SA 4.0, https://www.newgeneralservicelist.com/). Uvedeno i v Nastavení.
