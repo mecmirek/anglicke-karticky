@@ -1,3 +1,14 @@
+NOVÉ VE v63 (obsahuje i v61 a v62)
+- Nová cvičení (Doplň slovo, Slož větu, Spoj dvojice, Poslech vět): bez horního řádku se zadáním; vyhodnocení v jednom řádku ✓ Správně / ✗ Špatně (Správně je) · 🔊 · Další, pod ním jen věta (bez IPA a významu slova). Další se neschová pod okraj obrazovky.
+- Slož větu: okno na skládání má pevnou výšku 3 řádků a místo pro dlaždice pod ním je pevné – obraz se neposouvá.
+- Poslech vět: tlačítka 🔊 Poslech a 🐢 jsou dole v řádku s Nevím (místo velkých kulatých nahoře).
+- Spoj dvojice: výslovnost (IPA) malým písmem v dlaždici anglického slova; po kole jen „✓ Kolo hotové“ a Další.
+
+NOVÉ VE v62
+- Slovesa G · Najdi chybu: český překlad i u vět se záporem / otázkou (did/didn't) a s have/has – bere se z existujících překladů cvičení C a D (s ženským tvarem).
+- Slovesa bear, seek, quit, forbid, sew: doplněna IPA a český překlad vět pro cvičení C a D.
+- Zpřesněno 10 překladů vět C/D (hit, bend, tear, lie, know, run, spend, spread, meet, sleep).
+
 NOVÉ VE v61
 - Dnes: 4 nová cvičení pod Rozhovory / Moje chyby / Poslech / Diktát – Doplň slovo (4 možnosti do mezery ve větě), Slož větu (ťukáním z rozházených slov podle českého překladu), Spoj dvojice (5 dvojic EN–CZ v kole) a Poslech vět (uslyšíš větu, vybereš překlad ze 4). Slova se berou z probraných slov (nebo jiného výběru); výsledky se počítají do opakování jako v kvízu, chyby jdou do Mých chyb.
 - Slovesa: nové režimy F · Spoj tvary (trojice tvarů 4 sloves v kole) a G · Najdi chybu (špatný tvar ve větě → ťuknout a vybrat správný). Počítají se do opakování sloves a do Mých chyb.
