@@ -439,7 +439,29 @@ header h1{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1
 .lesson-overlay{bottom:var(--nav-h);height:auto}
 body.kbd-open .lesson-overlay{bottom:0}
 body.kbd-open .bottom-nav{display:none}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.60</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+/* v61: nová cvičení – Doplň slovo, Slož větu, Spoj dvojice, Poslech vět */
+.ex-sent{font-size:1.25rem;line-height:1.55;margin:6px 0}
+.ex-gap{display:inline-block;min-width:3.6em;border-bottom:2px solid #0f6e56;color:#0f6e56;text-align:center}
+.ex-hit{color:#0f6e56;background:#e1f5ee;border-radius:4px;padding:0 3px}
+.ex-full{font-size:1.1rem;margin:4px 0}
+.ex-line{min-height:56px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px;border:2px dashed #d3d1c7;border-radius:12px;margin:10px 0}
+.ex-line.ok{border-color:#5dcaa5;border-style:solid}.ex-line.bad{border-color:#f0bdc2;border-style:solid}
+.ex-bank{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;min-height:8px}
+.ex-tile{padding:9px 12px;border-radius:10px;border:1px solid #d3d1c7;background:#fff;font-weight:600;font-size:1rem;color:var(--ink);line-height:1.25}
+.ex-pairs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.ex-pairs .ex-tile{width:100%;min-height:54px;text-align:center;word-break:break-word}
+.ex-tile.sel{border-color:#0f6e56;background:#e1f5ee;outline:2px solid #5dcaa5}
+.ex-tile.ok{background:#e1f5ee;border-color:#5dcaa5;color:#0f6e56;opacity:.55}
+.ex-tile.bad{background:#fff5f5;border-color:#f0bdc2;color:#c33c48;animation:exShake .32s}
+@keyframes exShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(prefers-reduced-motion:reduce){.ex-tile.bad{animation:none}}
+.ex-nav button[hidden]{display:none}
+html.dark .ex-tile{background:#2a2c28;border-color:#3a3c36;color:var(--ink)}
+html.dark .ex-tile.sel,html.dark .ex-tile.ok,html.dark .ex-hit{background:#173a30;border-color:#1d6b55;color:#9fe1cb}
+html.dark .ex-tile.bad{background:#3d1c1f;border-color:#7a2f36;color:#f4a7ae}
+html.dark .ex-line{border-color:#3a3c36}html.dark .ex-gap{color:#9fe1cb;border-color:#5dcaa5}
+.chips+.chips{margin-top:-4px}
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.61</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -522,6 +544,34 @@ html.dark .ipa,html.dark .aligned-ipa .ipa-part{color:#b8b6ab}
   #scorePanel button{padding:6px 9px;font-size:.86rem}
 }
 html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}
+/* v61: F · Spoj tvary a G · Najdi chybu – herní režimy bez psaní. */
+#modes .mode[data-mode="match"],#modes .mode[data-mode="error"]{grid-column:span 1}
+@media(min-width:700px){#modes .mode[data-mode="match"],#modes .mode[data-mode="error"]{grid-column:span 2}}
+body.game-mode #exercisePanel>.prompt-wrap,body.game-mode #context,body.game-mode #inputs,body.game-mode #exercisePanel>.fb-wrap,body.game-mode #submittedPreview,body.game-mode #translateIpa,body.game-mode #quickGrade,body.game-mode #verbMainBar,body.game-mode #verbVoiceControls,body.game-mode #verbVoiceStatus,body.game-mode #dictationComparison{display:none!important}
+.g-q{margin:8px 0 4px}
+.g-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.g-tile{min-height:54px;padding:8px 4px;font-weight:700;font-size:1.05rem;border-radius:12px;text-align:center;word-break:break-word;width:100%}
+.g-tile.sel{background:#e1f5ee;border-color:#0f6e56;outline:2px solid #5dcaa5}
+.g-tile.ok{background:#e1f5ee;border-color:#5dcaa5;color:var(--green);opacity:.5}
+.g-tile.bad,.g-word.hit,.g-opt.wrong{background:#fdecee;border-color:#f0bdc2;color:var(--red)}
+.g-tile.bad{animation:gShake .32s}
+@keyframes gShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(prefers-reduced-motion:reduce){.g-tile.bad{animation:none}}
+.g-done{display:flex;flex-direction:column;gap:2px;margin:6px 0;font-size:.95rem}
+.g-sent{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.g-word{padding:8px 10px;font-size:1.1rem;font-weight:600}
+.g-word.hit{text-decoration:line-through}
+.g-word.miss{opacity:.45}
+.g-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}
+.g-opt{padding:12px 8px;font-size:1.05rem;font-weight:700}
+.g-opt.correct{background:#e1f5ee;border-color:#5dcaa5;color:var(--green)}
+.g-fb{padding:12px;border-radius:10px;background:#f2f0ea;margin-top:10px;white-space:pre-line}
+.g-fb.good{background:#e1f5ee;color:var(--green)}.g-fb.bad{background:#fdecee;color:#8a1f2b}
+.g-opt.correct:disabled,.g-opt.wrong:disabled,.g-word.hit:disabled,.g-tile.ok:disabled{opacity:1}.g-tile.ok:disabled{opacity:.6}
+.g-nav{display:flex;gap:8px;margin-top:12px}.g-nav button{flex:1}.g-nav #gSay{flex:0 0 56px}
+html.dark .g-tile.sel,html.dark .g-tile.ok,html.dark .g-opt.correct,html.dark .g-fb.good{background:#173a30;border-color:#1d6b55;color:#9fe1cb}
+html.dark .g-tile.bad,html.dark .g-word.hit,html.dark .g-opt.wrong,html.dark .g-fb.bad{background:#3d1c1f;border-color:#7a2f36;color:#f4a7ae}
+html.dark .g-fb{background:#2a2c28;color:var(--ink)}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&display=swap" rel="stylesheet">
 <style>
@@ -603,6 +653,8 @@ html,body{touch-action:manipulation}
     <button class="mode" data-mode="negative">C · Zápory a otázky</button>
     <button class="mode" data-mode="third">D · Třetí tvar</button>
     <button class="mode" data-mode="quick">E · Rychlé opakování (bez psaní)</button>
+    <button class="mode" data-mode="match">F · Spoj tvary</button>
+    <button class="mode" data-mode="error">G · Najdi chybu</button>
   </div>
   <div class="toolbar" style="margin-top:10px;align-items:center"><label for="verbSet" class="muted">Sada sloves:</label><select id="verbSet"></select></div>
   <p class="muted">Odpovídej bez nápovědy. Po kontrole vysvětlím chybu a můžeš pokračovat. U překladu vět máš dva pokusy.</p>
@@ -610,6 +662,7 @@ html,body{touch-action:manipulation}
 <section class="panel hidden" id="exercisePanel">
   <button type="button" id="backToSelection" style="margin-bottom:8px">← Zpět k výběru cvičení</button>
   <div class="counter" id="counter">Otázka 1</div>
+  <div id="gameBox" class="hidden"></div>
   <div class="prompt-wrap">
   <div id="prompt" class="question">Doplň zbývající dva tvary:</div>
   <div id="ipa" class="ipa"></div></div>
@@ -917,7 +970,7 @@ let dictationKind="default";
 window.setGender=function(g){const next=g==="f"?"f":"m";if(next===gender)return;gender=next;if(mode==="translate"&&!finished)render();};
 const setNames=verbSets.map((s,i)=>`Sada ${i+1} · ${setLevel(s)}: ${s.slice(0,3).map(v=>v.base).join(", ")}…`);
 let setIdx=0,verbs=verbSets[0];
-const modeNames={forms:"A · Tři tvary",quick:"E · Rychlé opakování",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
+const modeNames={match:"F · Spoj tvary",error:"G · Najdi chybu",forms:"A · Tři tvary",quick:"E · Rychlé opakování",translate:"B · Překlad vět",negative:"C · Zápory a otázky",third:"D · Třetí tvar"};
 const tasks={
 forms:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[{ph:"2. tvar"},{ph:"3. tvar"}],answers:[formsExpected(v)],explain:"2. tvar používáme v prostém minulém čase. 3. tvar se používá například s have/has."}}},
 quick:{make(v){return {prompt:`${v.base} – ? – ?`,fields:[],answers:[]}}},
@@ -960,7 +1013,77 @@ function modeStats(m){const rows=[...recorded].filter(([k])=>k.startsWith(setIdx
 let cloudHistory={correct:0,total:0,loaded:false};
 function scoreText(){const s=modeStats(mode),all=[...recorded.values()];const local=`${setLabel()}, ${modeNames[mode]}: správně ${s.correct} z ${s.total} · Toto otevřené kolo: správně ${all.filter(Boolean).length} z ${all.length}`;return local+(cloudHistory.loaded?` · Online celkem: správně ${cloudHistory.correct} z ${cloudHistory.total}`:'');}
 window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='verb-history'||!e.data.stats)return;const s=e.data.stats;cloudHistory={correct:Number(s.correct)||0,total:Number(s.total)||0,loaded:!!s.loaded};const score=$('score');if(score)score.textContent=scoreText();});
+// v61: F · Spoj tvary (trojice tvarů 4 sloves) a G · Najdi chybu (špatný tvar ve větě). Výsledek se hlásí hlavní stránce jako u ostatních režimů.
+let game=null;
+function gShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function gEsc(s){return escapeHtml(String(s));}
+function gRecord(key,ok,base){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok,verb:base,mode:'forms'},'*');}catch(e){}$("score").textContent=scoreText();}
+function gSay(text){try{if(!("speechSynthesis" in window))return;const u=new SpeechSynthesisUtterance(String(text).replace(/\//g,", "));u.lang=speechLang();u.rate=0.95;const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.replace("_","-").startsWith(u.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function gForms(v){return [v.base,v.past,v.part];}
+function gameRender(){if(mode==="match")matchStart();else errorStart();$("score").textContent=scoreText();}
+function matchStart(){const list=gShuffle(verbs),n=list.length,R=Math.max(1,Math.ceil(n/4)),rounds=[];let k=0;for(let r=0;r<R;r++){const size=Math.ceil((n-k)/(R-r));rounds.push(list.slice(k,k+size));k+=size;}
+ game={kind:"match",rounds,r:0,correct:0,total:n};matchRound();}
+function matchRound(){const vs=game.rounds[game.r];game.tiles=gShuffle(vs.flatMap(v=>gForms(v).map(t=>({t,v:v.base,ok:false}))));game.sel=[];game.done=new Set();game.failed=new Set();game.doneList=[];matchPaint();}
+function matchPaint(msg){const vs=game.rounds[game.r],all=game.done.size===vs.length,last=game.r>=game.rounds.length-1;
+ $("counter").textContent=`Kolo ${game.r+1} z ${game.rounds.length} · ${setLabel()}`;
+ $("gameBox").innerHTML=`<div class="question g-q">Spoj tři tvary každého slovesa</div><p class="muted" style="margin:0">Ťukni na tři tvary, které patří k jednomu slovesu.</p>`
+  +`<div class="g-grid">${game.tiles.map((x,i)=>`<button type="button" class="g-tile${x.ok?" ok":""}${game.sel.includes(i)?" sel":""}" data-i="${i}"${x.ok?" disabled":""}>${gEsc(x.t)}</button>`).join("")}</div>`
+  +`<div class="g-done">${game.doneList.map(s=>`<span>✓ ${s}</span>`).join("")}</div>`
+  +(msg?`<div class="g-fb bad">${msg}</div>`:"")
+  +(all?`<div class="g-nav"><button type="button" class="primary" id="gNext">${last?"Výsledek":"Další kolo →"}</button></div>`:"");
+ $("gameBox").querySelector(".g-grid").onclick=e=>{const b=e.target.closest("[data-i]");if(b)matchTap(+b.dataset.i);};
+ const nx=$("gNext");if(nx){nx.onclick=()=>{if(game.r<game.rounds.length-1){game.r++;matchRound();}else gameFinish();};nx.focus({preventScroll:true});}}
+function matchTap(i){if(!game||game.kind!=="match")return;const x=game.tiles[i];if(x.ok)return;const s=game.sel,p=s.indexOf(i);
+ if(p>=0){s.splice(p,1);matchPaint();return;}s.push(i);if(s.length<3){matchPaint();return;}
+ const vs=game.rounds[game.r],key=a=>a.map(t=>String(t).toLowerCase()).sort().join("|"),picked=s.map(j=>game.tiles[j].t);
+ const v=vs.find(v=>!game.done.has(v.base)&&key(gForms(v))===key(picked));
+ if(v){s.forEach(j=>game.tiles[j].ok=true);game.done.add(v.base);const ok=!game.failed.has(v.base);if(ok)game.correct++;gRecord(`${setIdx}:match:${v.base}`,ok,v.base);
+  game.doneList.push(`<b>${gEsc(v.base)} – ${gEsc(v.past)} – ${gEsc(v.part)}</b> <span class="muted">${gEsc(v.cs)}</span>`);game.sel=[];matchPaint();gSay(`${v.base}, ${v.past}, ${v.part}`);}
+ else{game.failed.add(game.tiles[s[0]].v);const bad=s.slice();game.sel=[];matchPaint("Tyhle tři tvary k sobě nepatří – zkus to znovu.");bad.forEach(j=>{const b=$("gameBox").querySelector(`[data-i="${j}"]`);if(b)b.classList.add("bad");});}}
+function gReg(b){if(/e$/.test(b))return b+"d";if(/[^aeiou]y$/.test(b))return b.slice(0,-1)+"ied";if(b.length<=4&&/[^aeiou][aeiou][^aeiouwxy]$/.test(b))return b+b.slice(-1)+"ed";return b+"ed";}
+function gSplit(s){return String(s).trim().split(/\s+/).map(t=>{const m=t.match(/^([^A-Za-z']*)(.*?)([^A-Za-z']*)$/);return {pre:m[1],w:m[2],post:m[3]};});}
+function errorItem(v){const a=ALT_FORMS[v.base]||[[],[]],all=[v.base,...String(v.past).split("/"),v.part],allOk=all.concat(a[0]||[],a[1]||[]).map(x=>x.toLowerCase());
+ const reg=gReg(v.base),useReg=v.base!=="be"&&!allOk.includes(reg);
+ const wrongFor=(ok,noBase)=>{const s=new Set(all.filter(f=>!ok.includes(f.toLowerCase())&&!(noBase&&f===v.base)));if(useReg)s.add(reg);return [...s];};
+ const slots=[],pasts=String(v.past).split("/").concat(a[0]||[]).map(x=>x.toLowerCase());
+ const st=gSplit(v.sentence),pi=st.findIndex(t=>pasts.includes(t.w.toLowerCase()));
+ if(pi>=0)slots.push({toks:st,i:pi,ok:pasts,noBase:true,why:"Ve větě o minulosti (bez have/has) se používá 2. tvar.",cs:(gender==="f"&&FEMININE[v.base])||v.translation||""});
+ const gapSlot=(src,form,ok,why)=>{if(!src||!src.includes("___"))return;const t=gSplit(src.replace("___","QQQ")),i=t.findIndex(x=>x.w==="QQQ");if(i<0)return;t[i].w=form;slots.push({toks:t,i,ok,why,cs:""});};
+ gapSlot(v.perf,v.part,[v.part].concat(a[1]||[]).map(x=>x.toLowerCase()),"Po have / has se používá 3. tvar (předpřítomný čas).");
+ if(v.base!=="be"&&v.neg)gapSlot(v.neg.gap,v.base,[v.base.toLowerCase()],"Po did / didn't se používá 1. (základní) tvar – minulost už vyjadřuje did.");
+ const usable=slots.map(s=>({s,w:wrongFor(s.ok,s.noBase)})).filter(x=>x.w.length);if(!usable.length)return null;
+ const pick=usable[Math.floor(Math.random()*usable.length)],slot=pick.s,right=slot.toks[slot.i].w,wrong0=pick.w[Math.floor(Math.random()*pick.w.length)];
+ const cap=/^[A-Z]/.test(right),wrong=cap?wrong0[0].toUpperCase()+wrong0.slice(1):wrong0;
+ const b=v.base,third=b==='be'?'is':b==='have'?'has':/(s|sh|ch|x|o)$/.test(b)?b+'es':/[^aeiou]y$/.test(b)?b.slice(0,-1)+'ies':b+'s',ing=/ie$/.test(b)?b.slice(0,-2)+'ying':/[^e]e$/.test(b)&&b!=='be'?b.slice(0,-1)+'ing':b+'ing';
+ const rightL=right.toLowerCase(),pool=[...new Set(all.concat(useReg?[reg]:[]).map(x=>x.toLowerCase()))].filter(x=>x!==rightL&&x!==wrong0.toLowerCase()),extra=[third,ing].filter(x=>x!==rightL&&x!==wrong0.toLowerCase()&&!pool.includes(x));
+ while(pool.length<3&&extra.length)pool.push(extra.shift());
+ const opts=gShuffle([rightL,...pool.slice(0,3)]).map(x=>cap?x[0].toUpperCase()+x.slice(1):x);
+ return {v,toks:slot.toks,i:slot.i,right,wrong,opts,why:slot.why,cs:slot.cs};}
+function errorStart(){const items=gShuffle(verbs).map(errorItem).filter(Boolean);game={kind:"error",items,k:0,correct:0,total:items.length};if(!items.length){gameFinish();return;}errorShow();}
+function errorShow(){const it=game.items[game.k];it.stage="find";it.failed=false;
+ $("counter").textContent=`Věta ${game.k+1} z ${game.items.length} · ${setLabel()}`;
+ $("gameBox").innerHTML=`<div class="question g-q">Najdi chybu ve větě</div><p class="muted" style="margin:0">Ťukni na slovo, které je ve větě špatně.</p>`
+  +`<div class="g-sent" id="gSent">${it.toks.map((t,i)=>`<button type="button" class="g-word" data-i="${i}">${gEsc(t.pre+(i===it.i?it.wrong:t.w)+t.post)}</button>`).join("")}</div><div id="gOpts"></div><div id="gFb"></div><div class="g-nav" id="gNav"></div>`;
+ $("gSent").onclick=e=>{const b=e.target.closest("[data-i]");if(b)errorTap(+b.dataset.i,b);};}
+function errorTap(i,b){const it=game.items[game.k];if(it.stage!=="find")return;
+ if(i!==it.i){it.failed=true;b.classList.add("miss");b.disabled=true;$("gFb").innerHTML=`<div class="g-fb bad">Tohle slovo je v pořádku – hledej tvar slovesa.</div>`;return;}
+ it.stage="fix";b.classList.add("hit");$("gSent").querySelectorAll(".g-word").forEach(x=>x.disabled=true);$("gFb").innerHTML="";
+ $("gOpts").innerHTML=`<p class="muted" style="margin:4px 0">Vyber správný tvar:</p><div class="g-opts">${it.opts.map((o,k)=>`<button type="button" class="g-opt" data-k="${k}">${gEsc(o)}</button>`).join("")}</div>`;
+ $("gOpts").querySelector(".g-opts").onclick=e=>{const x=e.target.closest("[data-k]");if(x)errorFix(+x.dataset.k);};}
+function errorFix(k){const it=game.items[game.k];if(it.stage!=="fix")return;it.stage="done";const ok=it.opts[k]===it.right;if(!ok)it.failed=true;
+ $("gOpts").querySelectorAll(".g-opt").forEach((b,j)=>{b.disabled=true;if(it.opts[j]===it.right)b.classList.add("correct");else if(j===k)b.classList.add("wrong");});
+ const good=!it.failed;if(good)game.correct++;gRecord(`${setIdx}:error:${it.v.base}`,good,it.v.base);
+ const fixedPlain=it.toks.map((t,i)=>t.pre+(i===it.i?it.right:t.w)+t.post).join(" "),fixed=it.toks.map((t,i)=>i===it.i?`${gEsc(t.pre)}<b>${gEsc(it.right)}</b>${gEsc(t.post)}`:gEsc(t.pre+t.w+t.post)).join(" ");
+ $("gFb").innerHTML=`<div class="g-fb ${good?"good":"bad"}">${good?"✓ Správně!":"✗ Správně je:"}\n${fixed}${it.cs?`\n${gEsc(it.cs)}`:""}\n${gEsc(it.why)}\n${gEsc(it.v.base)} – ${gEsc(it.v.past)} – ${gEsc(it.v.part)}</div>`;
+ gSay(fixedPlain);const last=game.k>=game.items.length-1;
+ $("gNav").innerHTML=`<button type="button" id="gSay" aria-label="Poslech">🔊</button><button type="button" class="primary" id="gNext">${last?"Výsledek":"Další →"}</button>`;
+ $("gSay").onclick=()=>gSay(fixedPlain);$("gNext").onclick=()=>{if(game.k<game.items.length-1){game.k++;errorShow();}else gameFinish();};$("gNext").focus({preventScroll:true});}
+function gameFinish(){const n=game.total||0,c=game.correct;$("counter").textContent="Kolo dokončeno";
+ $("gameBox").innerHTML=`<div class="question g-q">${n&&c===n?"Výborně, všechno správně! 🎉":"Kolo dokončeno"}</div><p>${modeNames[mode]}: napoprvé správně ${c} z ${n}.</p><div class="g-nav"><button type="button" id="gAgain">Nové kolo</button><button type="button" class="primary" id="gToday">Zpět na Dnes</button></div>`;
+ $("gAgain").onclick=()=>{for(const k of [...recorded.keys()])if(k.startsWith(setIdx+":"+mode+":"))recorded.delete(k);render();};
+ $("gToday").onclick=()=>window.parent.postMessage("go-today","*");$("gToday").focus({preventScroll:true});$("score").textContent=scoreText();}
 function render(){
+ {const isGame=mode==="match"||mode==="error";document.body.classList.toggle("game-mode",isGame);$("gameBox").classList.toggle("hidden",!isGame);if(isGame){answered=false;finished=false;$("prev").disabled=true;gameRender();return;}}
  answered=false;finished=false;$("verbToday").classList.add("hidden");$("next").classList.remove("wide");tries=0;quickRevealed=false;$("quickGrade").classList.add("hidden");document.body.classList.toggle("quick-mode",mode==="quick");dictationKind="default";const cmp=$("dictationComparison");if(cmp){cmp.replaceChildren();cmp.classList.add("hidden");}const v=cur(),q=tasks[mode].make(v);
  $("counter").textContent=`Otázka ${index+1} z ${verbs.length}`;
  $("prev").disabled=index===0;
@@ -1595,6 +1718,26 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
     <div id="dtDone" class="hidden"></div>
   </div></div>
 </div>
+<div id="exOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Cvičení">
+  <div class="lesson-overlay-bar"><strong id="exTitle">Cvičení</strong><button type="button" id="closeEx">← Zpět</button></div>
+  <div class="quiz-wrap"><div class="quiz-card" id="exCard">
+    <div class="quiz-top"><span id="exCounter"></span><span id="exScore"></span></div>
+    <div class="quiz-progress"><span id="exProgress"></span></div>
+    <div id="exSetup">
+      <div class="quiz-kind" id="exKind"></div>
+      <label class="listen-field">Která slova<select id="exSrc"><option value="graded">Probraná slova</option><option value="today">Dnešní nová slova</option><option value="due">Slova na řadě k opakování</option><option value="lesson">Aktuální lekce</option><option value="mistakes">Moje chyby</option><option value="known">Naučená slova</option><option value="starred">Oblíbená ★</option></select></label>
+      <label class="listen-field" id="exCountWrap">Počet<select id="exCount"><option>5</option><option selected>10</option><option>20</option></select></label>
+      <div class="quiz-nav"><button type="button" class="primary" id="exStart">▶ Začít</button></div>
+      <p class="note" id="exNote"></p>
+    </div>
+    <div id="exRun" class="hidden">
+      <div id="exBody"></div>
+      <div class="quiz-feedback hidden" id="exFb" aria-live="polite"></div>
+      <div class="quiz-nav ex-nav"><button type="button" id="exSkip">Nevím</button><button type="button" class="primary" id="exCheck">Kontrola</button><button type="button" id="exNext" disabled>Další</button></div>
+    </div>
+    <div id="exDone" class="hidden"></div>
+  </div></div>
+</div>
 <div id="listenOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Poslech bez rukou">
   <div class="lesson-overlay-bar"><strong>Poslech bez rukou</strong><button type="button" id="closeListen">← Zpět</button></div>
   <div class="quiz-wrap"><div class="progress-body">
@@ -1631,16 +1774,22 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
     <button type="button" class="plan-row" id="todayVerbs"><span class="pi"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/><path d="M8 7h7"/></svg></span><b>Slovesa</b><span id="todayVerbsInfo"></span></button>
     <button type="button" class="plan-row" id="todayQuiz"><span class="pi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14"/><path d="M12 17.5v.01"/></svg></span><b>Kvíz dne</b><span id="todayQuizInfo">20 otázek</span></button>
   </div>
+  <div class="week-card">
+  <p class="note hidden" id="placementHint" style="margin:0 0 10px">Část slov už možná znáš. <button type="button" class="link-btn" id="openPlacement">Vstupní test (3 min)</button> je přeskočí.</p>
+  <div class="week" id="todayWeek"></div>
+  <div class="today-path"><span>Cesta k 2 000</span><div class="bar"><span id="pathBar"></span></div><span id="pathInfo">0 naučených</span></div>
+  </div>
   <div class="chips">
     <button type="button" class="chip" id="todayDialogs"><span class="ci"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>Rozhovory<span id="todayDialogsInfo" class="chip-sub"></span></button>
     <button type="button" class="chip" id="todayMistakes"><span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5v.01"/></svg></span>Moje chyby<span id="todayMistakesInfo" class="chip-sub"></span></button>
     <button type="button" class="chip" id="openListen"><span class="ci"><svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span>Poslech<span class="chip-sub">bez rukou</span></button>
     <button type="button" class="chip" id="openDictation"><span class="ci"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span>Diktát<span class="chip-sub">pravopis</span></button>
   </div>
-  <div class="week-card">
-  <p class="note hidden" id="placementHint" style="margin:0 0 10px">Část slov už možná znáš. <button type="button" class="link-btn" id="openPlacement">Vstupní test (3 min)</button> je přeskočí.</p>
-  <div class="week" id="todayWeek"></div>
-  <div class="today-path"><span>Cesta k 1 000</span><div class="bar"><span id="pathBar"></span></div><span id="pathInfo">0 naučených</span></div>
+  <div class="chips" id="todayEx">
+    <button type="button" class="chip" data-ex="gap"><span class="ci"><svg viewBox="0 0 24 24"><path d="M3 8h4M17 8h4M3 16h18"/><rect x="8.5" y="5.5" width="7" height="5" rx="1"/></svg></span>Doplň slovo<span class="chip-sub">do věty</span></button>
+    <button type="button" class="chip" data-ex="order"><span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="7" height="5" rx="1"/><rect x="13" y="5" width="8" height="5" rx="1"/><path d="M3 16h18"/><path d="M15 13l3 3-3 3"/></svg></span>Slož větu<span class="chip-sub">pořadí slov</span></button>
+    <button type="button" class="chip" data-ex="pairs"><span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="5" rx="1"/><rect x="14" y="15" width="7" height="5" rx="1"/><path d="M10 6.5h2a2 2 0 0 1 2 2v7"/></svg></span>Spoj dvojice<span class="chip-sub">hra</span></button>
+    <button type="button" class="chip" data-ex="listen"><span class="ci"><svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg></span>Poslech vět<span class="chip-sub">porozumění</span></button>
   </div>
 </section>
 <section class="panel" id="settingsPanel" data-view="settings">
@@ -1864,7 +2013,7 @@ function renderToday(){
  const dv=dueVerbs().length,nv=Object.keys(verbSrsObj()).length;$('todayVerbsInfo').textContent=dv?`${dv} ${dv===1?'sloveso':dv<5?'slovesa':'sloves'} na řadě`:nv?'Nic na řadě ✓':'nepravidelná slovesa';$('todayVerbs').classList.toggle('done',!!nv&&!dv);
  const mc=activeMistakes().length;$('todayMistakesInfo').textContent=mc?`${mc} k procvičení`:'Žádné chyby ✓';$('todayMistakes').classList.toggle('done',!mc);
  $('placementHint').classList.toggle('hidden',!!daily.placementDone||Object.keys(grades).length>=100);
- const k=Object.values(grades).filter(x=>x==='known').length;$('pathBar').style.width=(k/words.length*100)+'%';$('pathInfo').textContent=`${k} naučených`;
+ const k=Object.values(grades).filter(x=>x==='known').length;$('pathBar').style.width=(Math.min(k,2000)/2000*100)+'%';$('pathInfo').textContent=`${k} naučených`;
 }
 // Kontrola odpovědi v režimu Česky → anglicky.
 // Ignoruje velikost písmen, interpunkci a úvodní a/an/the/to; uzná slovo se stejným českým významem a pozná drobný překlep.
@@ -2307,7 +2456,7 @@ function badgeList(){
  const q=daily.quizzes||0,stars=Object.keys(starred).length;
  return [
   ['🃏','První kartička','1 ohodnocená kartička',graded,1],['🌱','Prvních 10','10 naučených slov',known,10],['💯','První stovka','100 naučených slov',known,100],
-  ['📗','Čtvrtka cesty','250 naučených slov',known,250],['📘','Polovina','500 naučených slov',known,500],['🏆','Celá tisícovka','1 000 naučených slov',known,1000],
+  ['📗','Čtvrtka cesty','250 naučených slov',known,250],['📘','Polovina','500 naučených slov',known,500],['🏆','Celá tisícovka','1 000 naučených slov',known,1000],['🎓','Dva tisíce','2 000 naučených slov',known,2000],
   ['✅','Hotová lekce','všech 50 slov jedné lekce',bestLesson,50],['❓','První kvíz','dokončený kvíz dne',q,1],['🎯','Bez chyby','kvíz 20 z 20',daily.perfect?1:0,1],
   ['🧠','Kvízový maratón','10 dokončených kvízů',q,10],['🔥','3 dny v řadě','učení 3 dny po sobě',st.best,3],['📅','Týden v kuse','učení 7 dní po sobě',st.best,7],
   ['🗓️','Měsíc v kuse','učení 30 dní po sobě',st.best,30],['⭐','Sběratel','10 oblíbených slov',stars,10],
@@ -2315,8 +2464,8 @@ function badgeList(){
  ].map(([icon,title,desc,val,target])=>({icon,title,desc,val:Math.min(val,target),target,got:val>=target}));
 }
 function renderProgress(){
- const known=Object.values(grades).filter(x=>x==='known').length,graded=Object.keys(grades).length,st=streaks(),total=words.length;
- const marks=[100,250,500,750,1000],next=marks.find(m=>m>known);
+ const known=Object.values(grades).filter(x=>x==='known').length,graded=Object.keys(grades).length,st=streaks(),total=2000;
+ const marks=[100,250,500,1000,1500,2000],next=marks.find(m=>m>known);
  const badges=badgeList(),got=badges.filter(b=>b.got).length;
  const days=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=todayKey(d),h=daily.history[k];days.push({label:['Ne','Po','Út','St','Čt','Pá','So'][d.getDay()],day:d.getDate(),pct:h&&h.total?Math.round(h.correct/h.total*100):null});}
  const hasQuiz=days.some(d=>d.pct!==null);
@@ -2326,8 +2475,8 @@ function renderProgress(){
  `<section><h3>${prefs.vocative?esc(prefs.vocative)+', tvoje':'Tvoje'} slovní zásoba</h3><div class="p-stats">
    <div class="p-stat"><b>${known}</b><span>naučených slov</span></div><div class="p-stat"><b>${graded}</b><span>probraných slov</span></div>
    <div class="p-stat"><b>${activeDates().length}</b><span>dní učení</span></div><div class="p-stat"><b>${st.cur}</b><span>dní v řadě (rekord ${st.best})</span></div></div>
-   <div class="p-path" aria-label="Cesta k 1 000 slov"><div class="fill" style="width:${known/total*100}%"></div>${marks.map(m=>`<div class="p-tick${known>=m?' done':''}" style="left:${m/total*100}%"><span>${m}</span></div>`).join('')}</div>
-   <p class="note">${next?`Další milník: <b>${next} slov</b>, zbývá ${next-known}.`:'Máš naučenou celou tisícovku! 🎉'}</p></section>
+   <div class="p-path" aria-label="Cesta k 2 000 slov"><div class="fill" style="width:${Math.min(known,total)/total*100}%"></div>${marks.map(m=>`<div class="p-tick${known>=m?' done':''}" style="left:${m/total*100}%"><span>${m}</span></div>`).join('')}</div>
+   <p class="note">${next?`Další milník: <b>${next} slov</b>, zbývá ${next-known}.`:'Máš naučené 2 000 slov! 🎉'}</p></section>
  <section><h3>Odznaky · ${got} z ${badges.length}</h3><div class="badges">${badges.map(b=>`<div class="badge${b.got?' got':''}"><div class="b-icon">${b.icon}</div><b>${b.title}</b><small>${b.desc}</small>${b.got?'<small>✓ získáno</small>':`<div class="b-bar"><span style="width:${b.val/b.target*100}%"></span></div><small>${b.val} / ${b.target}</small>`}</div>`).join('')}</div></section>
  <section><h3>Úspěšnost v kvízech · posledních 14 dní</h3>${hasQuiz?`<div class="chart">${days.map(d=>`<div class="chart-col"><div class="chart-bar${d.pct===null?' empty':''}" style="height:${d.pct===null?2:Math.max(4,d.pct)}%">${d.pct===null?'':`<em>${d.pct} %</em>`}</div><span>${d.label}</span></div>`).join('')}</div>`:'<p class="note">Zatím žádný kvíz. Graf se začne plnit po prvním kvízu dne.</p>'}</section>
  <section><h3>Nepravidelná slovesa</h3>${(daily.verbs||{}).answered?`<p class="note" style="margin:0">Správně <b>${daily.verbs.correct}</b> z ${daily.verbs.answered} odpovědí (${Math.round(daily.verbs.correct/daily.verbs.answered*100)} %). Počítá se první pokus u každé otázky.</p>`:'<p class="note" style="margin:0">Zatím žádná odpověď. Lekci otevřeš ve spodní liště tlačítkem Slovesa.</p>'}</section>
@@ -2521,6 +2670,102 @@ $('dtPlay').onclick=()=>{if(dt)dt.slowTok=null;if(dt)speakText(dt.list[dt.i].wor
 // v50: pomalu dvakrát s krátkou pauzou.
 $('dtSlow').onclick=()=>{if(!dt)return;const w=dt.list[dt.i],voice=rotVoice(dt.i),tok=dt.slowTok={};speakText(w.word,{voice,rate:0.4,onend:()=>setTimeout(()=>{if(dt&&dt.slowTok===tok&&dt.list[dt.i]===w)speakText(w.word,{voice,rate:0.4});},600)});};
 $('dtInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();dtCheck(false);}});
+// --- v61: nová cvičení (Doplň slovo, Slož větu, Spoj dvojice, Poslech vět). Výsledky jdou do opakování a do Mých chyb jako v kvízu. ---
+let ex=null;
+const EX_INFO={gap:{title:'Doplň slovo',kind:'Vyber slovo, které patří do mezery ve větě.'},order:{title:'Slož větu',kind:'Poskládej anglickou větu podle českého překladu.'},pairs:{title:'Spoj dvojice',kind:'Spoj anglická slova s jejich českým významem (5 dvojic v kole).'},listen:{title:'Poslech vět',kind:'Poslechni si anglickou větu a vyber správný překlad.'}};
+function exCore(t){return String(t||'').toLowerCase().replace(/[’‘]/g,"'").replace(/^[^a-z0-9']+|[^a-z0-9']+$/g,'');}
+function exForms(word){const w=word.toLowerCase(),f=new Set([w,w+'s',w+'es',w+'ed',w+'d',w+'ing',w+'er',w+'ers',w+'est',w+'ly']);
+ if(/e$/.test(w)){const s=w.slice(0,-1);f.add(s+'ing');f.add(s+'ed');}
+ if(/[^aeiou]y$/.test(w)){const s=w.slice(0,-1);['ies','ied','ier','iest','ily'].forEach(x=>f.add(s+x));}
+ if(/[^aeiou][aeiou][^aeiouwxy]$/.test(w)){const c=w.slice(-1);f.add(w+c+'ed');f.add(w+c+'ing');f.add(w+c+'er');}
+ return f;}
+function exGapIn(sentence,word){if(!sentence||/\s/.test(word))return null;const toks=sentence.split(/\s+/),f=exForms(word),i=toks.findIndex(t=>f.has(exCore(t)));if(i<0)return null;
+ const m=toks[i].match(/^([^A-Za-z0-9']*)(.*?)([^A-Za-z0-9']*)$/);return {toks,i,pre:m[1],form:m[2],post:m[3]};}
+function exSentences(w){return [[w.sentence,csText(w)],[w.ex2&&w.ex2.sentence,w.ex2&&(w.ex2.sentence_cs||'')]].filter(x=>x[0]);}
+function exPos(w){return String(w.pos_en||'').split(/[ \/]/)[0];}
+function exPool(w,test){const lv=wordLevel(w.word),pool=words.filter(x=>x!==w&&x.cs&&x.cs!==PLACEHOLDER&&test(x));const same=shuffle(pool.filter(x=>wordLevel(x.word)===lv));return same.concat(shuffle(pool));}
+function exItem(type,w){
+ if(type==='gap'){for(const [s,cs] of exSentences(w)){const g=exGapIn(s,w.word);if(!g)continue;const avoid=new Set(g.toks.map(exCore)),pos=exPos(w),opts=[];
+   for(const x of exPool(w,x=>!/\s/.test(x.word)&&exPos(x)===pos&&!avoid.has(x.word.toLowerCase()))){if(!opts.includes(x))opts.push(x);if(opts.length>=3)break;}
+   if(opts.length<3)return null;return {w,s,cs,g,opts:shuffle([w,...opts])};}return null;}
+ if(type==='order'){for(const [s,cs] of exSentences(w)){const raw=s.trim().split(/\s+/);if(raw.length<3||raw.length>12)continue;
+   const toks=raw.map(t=>t.replace(/^["“„(]+|[.,!?;:"”)]+$/g,'')).filter(Boolean),f=toks[0];
+   if(!/^I(['’]|$)/.test(f)&&!/^[A-Z]{2,}$/.test(f))toks[0]=f[0].toLowerCase()+f.slice(1);
+   if(new Set(toks.map(t=>t.toLowerCase())).size<3)continue;return {w,s,cs,toks};}return null;}
+ if(type==='listen'){if(!w.sentence)return null;const cs=csText(w);if(!cs)return null;const opts=[];
+   for(const x of exPool(w,x=>x.sentence_cs&&x.sentence_cs!==cs)){const t=csText(x);if(t&&!opts.includes(t)&&t!==cs)opts.push(t);if(opts.length>=3)break;}
+   return {w,s:w.sentence,cs,opts:shuffle([cs,...opts])};}
+ return null;}
+function exShort(w){return String(w.cs||'').split(';')[0].replace(/\([^)]*\)/g,'').trim();}
+function openEx(type){ex={type};const info=EX_INFO[type];$('exTitle').textContent=info.title;$('exOverlay').setAttribute('aria-label',info.title);$('exOverlay').hidden=false;document.body.style.overflow='hidden';exShowSetup();}
+function closeEx(){$('exOverlay').hidden=true;document.body.style.overflow='';ex=null;try{window.speechSynthesis.cancel();}catch(e){}render();}
+function exShowSetup(){const type=ex.type,info=EX_INFO[type],c=(prefs.ex||{})[type]||{};ex={type};
+ $('exSetup').classList.remove('hidden');$('exRun').classList.add('hidden');$('exDone').classList.add('hidden');$('exCounter').textContent='';$('exScore').textContent='';$('exProgress').style.width='0';
+ $('exKind').textContent=info.kind;$('exSrc').value=c.src||'graded';$('exCount').value=String(c.count||10);$('exCountWrap').firstChild.textContent=type==='pairs'?'Počet slov':'Počet otázek';$('exNote').textContent='';$('exStart').focus({preventScroll:true});}
+function exStart(){const type=ex.type,src=$('exSrc').value,count=+$('exCount').value;prefs.ex=prefs.ex||{};prefs.ex[type]={src,count};savePrefs(false);
+ const base=src==='graded'?shuffle(words.filter(w=>grades[w.word]&&w.cs&&w.cs!==PLACEHOLDER)):shuffle(listenWords(src));
+ if(type==='pairs'){const list=[],seen=new Set();for(const w of base){const l=exShort(w).toLowerCase();if(!l||seen.has(l))continue;seen.add(l);list.push(w);if(list.length>=count)break;}
+  if(list.length<2){$('exNote').textContent=src==='graded'?'Zatím nemáš probraná slova – začni Novými slovy, nebo zvol jiný výběr.':'V tomto výběru teď nejsou slova – zvol jiný.';return;}exBegin(list,true);return;}
+ const items=[];for(const w of base){const it=exItem(type,w);if(it)items.push(it);if(items.length>=count)break;}
+ if(!items.length){$('exNote').textContent=src==='graded'?'Zatím nemáš probraná slova – začni Novými slovy, nebo zvol jiný výběr.':'V tomto výběru teď nejsou vhodná slova – zvol jiný.';return;}exBegin(items,false);}
+function exBegin(list,pairs){const type=ex.type;ex={type,i:0,correct:0,total:0,wrong:[],answered:false,src:list};
+ if(pairs){ex.rounds=[];for(let k=0;k<list.length;k+=5)ex.rounds.push(list.slice(k,k+5));if(ex.rounds.length>1&&ex.rounds[ex.rounds.length-1].length<2){const l=ex.rounds.pop();ex.rounds[ex.rounds.length-1].push(...l);}ex.items=ex.rounds;}else ex.items=list;
+ $('exSetup').classList.add('hidden');$('exDone').classList.add('hidden');$('exRun').classList.remove('hidden');exShow();}
+function exRecord(w,ok){ex.total++;if(ok)ex.correct++;else if(!ex.wrong.includes(w))ex.wrong.push(w);noteResult('w:'+w.word,ok);applyQuizResult(w,ok);$('exScore').textContent=`Správně: ${ex.correct}`;}
+function exNav(check,skip,next){$('exCheck').hidden=!check;$('exSkip').hidden=!skip;$('exNext').disabled=!next;$('exCheck').classList.toggle('primary',!next);$('exNext').classList.toggle('primary',!!next);$('exNext').textContent=next&&ex.i>=ex.items.length-1?'Výsledek':'Další';}
+function exShow(){const type=ex.type,it=ex.items[ex.i],n=ex.items.length;ex.answered=false;
+ $('exCounter').textContent=type==='pairs'?`Kolo ${ex.i+1} z ${n}`:`Otázka ${ex.i+1} z ${n}`;$('exScore').textContent=`Správně: ${ex.correct}`;$('exProgress').style.width=(ex.i/n*100)+'%';
+ const fb=$('exFb');fb.className='quiz-feedback hidden';fb.innerHTML='';
+ if(type==='gap'){const g=it.g,shown=g.toks.map((t,k)=>k===g.i?`${esc(g.pre)}<span class="ex-gap">?</span>${esc(g.post)}`:esc(t)).join(' ');
+  $('exBody').innerHTML=`<div class="quiz-kind">Které slovo patří do mezery?</div><div class="ex-sent">${shown}</div><p class="quiz-sub">${esc(it.cs||'')}</p><div id="exOpts">${it.opts.map((o,k)=>`<button type="button" class="quiz-opt" data-k="${k}"><kbd>${k+1}</kbd>${esc(o.word)}</button>`).join('')}</div>`;
+  $('exOpts').onclick=e=>{const b=e.target.closest('[data-k]');if(b)exAnswerChoice(+b.dataset.k);};exNav(false,true,false);}
+ else if(type==='listen'){$('exBody').innerHTML=`<div class="quiz-kind">Co znamená věta, kterou slyšíš?</div><div class="dt-play"><button type="button" class="dt-big" id="exPlay" aria-label="Přehrát větu znovu">🔊</button><button type="button" id="exSlow" aria-label="Přehrát pomalu">🐢</button></div><div id="exOpts">${it.opts.map((o,k)=>`<button type="button" class="quiz-opt" data-k="${k}"><kbd>${k+1}</kbd>${esc(o)}</button>`).join('')}</div>`;
+  $('exOpts').onclick=e=>{const b=e.target.closest('[data-k]');if(b)exAnswerChoice(+b.dataset.k);};$('exPlay').onclick=()=>speakText(it.s,{voice:rotVoice(ex.i)});$('exSlow').onclick=()=>speakText(it.s,{voice:rotVoice(ex.i),rate:0.6});
+  exNav(false,true,false);speakText(it.s,{voice:rotVoice(ex.i)});}
+ else if(type==='order'){it.placed=[];let ord=shuffle(it.toks.map((t,k)=>k));for(let k=0;k<6&&ord.every((v,j)=>it.toks[v].toLowerCase()===it.toks[j].toLowerCase());k++)ord=shuffle(ord);it.bank=ord;
+  $('exBody').innerHTML=`<div class="quiz-kind">Slož větu:</div><div class="ex-sent">${esc(it.cs||'')}</div><div class="ex-line" id="exLine"></div><div class="ex-bank" id="exBank"></div>`;
+  $('exLine').onclick=e=>{const b=e.target.closest('[data-i]');if(!b||ex.answered)return;const k=+b.dataset.i;it.placed=it.placed.filter(x=>x!==k);exPaintOrder(it);};
+  $('exBank').onclick=e=>{const b=e.target.closest('[data-i]');if(!b||ex.answered)return;it.placed.push(+b.dataset.i);exPaintOrder(it);};
+  exNav(true,true,false);exPaintOrder(it);}
+ else if(type==='pairs'){const ws=it;ex.round={ws,en:shuffle(ws),cs:shuffle(ws),done:new Set(),failed:new Set(),sel:null};exPaintPairs();exNav(false,false,false);}
+ try{document.activeElement&&document.activeElement.blur();}catch(e){}}
+function exAnswerChoice(k){if(ex.answered)return;const it=ex.items[ex.i],type=ex.type,right=type==='gap'?it.opts.indexOf(it.w):it.opts.indexOf(it.cs),ok=k===right;ex.answered=true;
+ document.querySelectorAll('#exOpts .quiz-opt').forEach((b,j)=>{b.disabled=true;if(j===right)b.classList.add('correct');else if(j===k)b.classList.add('wrong');});
+ exRecord(it.w,ok);let html;
+ if(type==='gap'){const g=it.g,full=g.toks.map((t,j)=>j===g.i?`${esc(g.pre)}<b class="ex-hit">${esc(g.form)}</b>${esc(g.post)}`:esc(t)).join(' ');html=`<div class="ex-full">${full}</div><div class="note">${esc(it.w.word)} ${esc(it.w.ipa||'')} – ${esc(it.w.cs)}</div>`;}
+ else html=`<div class="ex-full">${esc(it.s)}</div><div class="note">${esc(it.cs)}</div><div class="note">Slovo: <b>${esc(it.w.word)}</b> ${esc(it.w.ipa||'')} – ${esc(it.w.cs)}</div>`;
+ exFeedback(ok,html,it.s);}
+function exFeedback(ok,html,say){const fb=$('exFb');fb.className='quiz-feedback';fb.innerHTML=`<b>${ok?'✓ Správně!':'✗ Správně je:'}</b>${html}<div class="quiz-nav" style="margin-top:8px"><button type="button" id="exSay">🔊 Poslech věty</button></div>`;
+ $('exSay').onclick=()=>speakText(say,{voice:rotVoice(ex.i)});if(ex.type!=='listen')speakText(say,{voice:rotVoice(ex.i)});exNav(false,false,true);$('exNext').focus({preventScroll:true});dtEnsureVisible(fb);}
+function exPaintOrder(it){$('exLine').innerHTML=it.placed.map(k=>`<button type="button" class="ex-tile" data-i="${k}">${esc(it.toks[k])}</button>`).join('')||'<span class="note">Ťukej na slova ve správném pořadí…</span>';
+ $('exBank').innerHTML=it.bank.filter(k=>!it.placed.includes(k)).map(k=>`<button type="button" class="ex-tile" data-i="${k}">${esc(it.toks[k])}</button>`).join('');
+ $('exCheck').disabled=it.placed.length!==it.toks.length;}
+function exCheckOrder(skip){if(!ex||ex.type!=='order'||ex.answered)return;const it=ex.items[ex.i];if(!skip&&it.placed.length!==it.toks.length)return;
+ const got=it.placed.map(k=>it.toks[k].toLowerCase()).join(' '),want=it.toks.map(t=>t.toLowerCase()).join(' '),ok=!skip&&got===want;ex.answered=true;
+ $('exLine').querySelectorAll('.ex-tile').forEach(b=>b.disabled=true);$('exBank').innerHTML='';$('exLine').classList.add(ok?'ok':'bad');
+ exRecord(it.w,ok);exFeedback(ok,`<div class="ex-full">${esc(it.s)}</div><div class="note">${esc(it.cs||'')}</div>`,it.s);}
+function exPaintPairs(){const r=ex.round,tile=(w,side)=>{const done=r.done.has(w.word),sel=r.sel&&r.sel.side===side&&r.sel.w===w;return `<button type="button" class="ex-tile${done?' ok':''}${sel?' sel':''}" data-side="${side}" data-w="${esc(w.word)}"${done?' disabled':''}>${esc(side==='en'?w.word:exShort(w))}</button>`;};
+ $('exBody').innerHTML=`<div class="quiz-kind">Ťukni na anglické slovo a pak na jeho český význam.</div><div class="ex-pairs" id="exPairs">${r.en.map((w,k)=>tile(w,'en')+tile(r.cs[k],'cs')).join('')}</div>`;
+ $('exPairs').onclick=e=>{const b=e.target.closest('[data-side]');if(b)exTapPair(b.dataset.side,b.dataset.w);};}
+function exTapPair(side,word){const r=ex.round,w=r.ws.find(x=>x.word===word);if(!w||r.done.has(word))return;
+ if(!r.sel||r.sel.side===side){r.sel=r.sel&&r.sel.side===side&&r.sel.w===w?null:{side,w};exPaintPairs();if(side==='en'&&r.sel)speakText(w.word,{voice:rotVoice(0)});return;}
+ const en=side==='en'?w:r.sel.w,cs=side==='cs'?w:r.sel.w;r.sel=null;
+ if(en===cs){r.done.add(en.word);exRecord(en,!r.failed.has(en.word));exPaintPairs();speakText(en.word,{voice:rotVoice(0)});
+  if(r.done.size===r.ws.length){ex.answered=true;$('exFb').className='quiz-feedback';$('exFb').innerHTML=`<b>Kolo hotové!</b><ul class="dt-list">${r.ws.map(x=>`<li><b>${esc(x.word)}</b> ${esc(x.ipa||'')} – ${esc(x.cs)}</li>`).join('')}</ul>`;exNav(false,false,true);$('exNext').focus({preventScroll:true});dtEnsureVisible($('exFb'));}}
+ else{r.failed.add(en.word);exPaintPairs();[['en',en],['cs',cs]].forEach(([s,x])=>{const b=$('exPairs').querySelector(`[data-side="${s}"][data-w="${CSS.escape(x.word)}"]`);if(b)b.classList.add('bad');});}}
+function exNext(){if(!ex||!ex.answered)return;if(ex.i<ex.items.length-1){ex.i++;exShow();}else exFinish();}
+function exFinish(){$('exRun').classList.add('hidden');const d=$('exDone');d.classList.remove('hidden');$('exProgress').style.width='100%';$('exCounter').textContent=EX_INFO[ex.type].title+' – hotovo';
+ const n=ex.total,pct=n?Math.round(ex.correct/n*100):0,wrong=ex.wrong;
+ d.innerHTML=`<div class="quiz-question">${pct>=90?'Výborně! 🎉':pct>=70?'Dobrá práce!':'Ještě to chce trénink.'}</div><p class="quiz-sub">${ex.type==='pairs'?'Napoprvé správně':'Správně'} ${ex.correct} z ${n} (${pct} %).${wrong.length?' Chybná slova najdeš i v Mých chybách.':''}</p>`
+  +(wrong.length?'<strong>K procvičení:</strong><ul class="dt-list">'+wrong.map(w=>`<li><b>${esc(w.word)}</b> – ${esc(w.cs)}</li>`).join('')+'</ul>':'')
+  +`<div class="quiz-nav"><button type="button" id="exAgain">Znovu</button><button type="button" class="primary" id="exClose2">Zpět na Dnes</button></div>`;
+ $('exAgain').onclick=exShowSetup;$('exClose2').onclick=goToday;$('exClose2').focus({preventScroll:true});}
+document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>openEx(b.dataset.ex));
+$('closeEx').onclick=closeEx;$('exStart').onclick=exStart;$('exNext').onclick=exNext;$('exCheck').onclick=()=>exCheckOrder(false);
+$('exSkip').onclick=()=>{if(!ex||ex.answered)return;if(ex.type==='order')exCheckOrder(true);else exAnswerChoice(-1);};
+document.addEventListener('keydown',e=>{if($('exOverlay').hidden||!ex||!ex.items||e.metaKey||e.ctrlKey||e.altKey)return;
+ if(e.key==='Enter'&&ex.answered&&document.activeElement!==$('exNext')){e.preventDefault();exNext();return;}
+ if(!ex.answered&&(ex.type==='gap'||ex.type==='listen')&&/^[1-4]$/.test(e.key)){e.preventDefault();exAnswerChoice(+e.key-1);}});
 $('listenPlay').onclick=()=>{if(listen.playing)listenStop();else if(listen.items.length)listenRun();};
 $('listenNext').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.min(listen.i+1,listen.items.length-1);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
 $('listenPrev').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.max(listen.i-1,0);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
@@ -2761,8 +3006,12 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=60,KEY='karticky-seen-ver';
- var NEWS=[{v:60,major:true,items:[
+ var VER=61,KEY='karticky-seen-ver';
+ var NEWS=[{v:61,major:true,items:[
+  'Čtyři nová cvičení na obrazovce Dnes: Doplň slovo (do věty), Slož větu, Spoj dvojice a Poslech vět. Počítají se do opakování a chyby jdou do Mých chyb.',
+  'Slovesa: nové režimy F · Spoj tvary (skládáš trojice tvarů) a G · Najdi chybu (špatný tvar ve větě).',
+  'Dny používání a ukazatel „Cesta k 2 000“ jsou hned pod Dnešním plánem. V Pokroku přibyly milníky 1 500 a 2 000 a odznak „Dva tisíce“.'
+ ]},{v:60,major:true,items:[
   'Přibylo 300 nových slov úrovně B2 – aplikace má teď 2034 slov ve 41 lekcích. Slova jsou zařazená na konec podle četnosti; pokrok se nemění.',
   'Nastavení → Moje úroveň: nově i B2 – nová slova se pak nabízejí až od B2.'
  ]},{v:59,major:true,items:[

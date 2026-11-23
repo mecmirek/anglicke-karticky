@@ -1,3 +1,9 @@
+NOVÉ VE v61
+- Dnes: 4 nová cvičení pod Rozhovory / Moje chyby / Poslech / Diktát – Doplň slovo (4 možnosti do mezery ve větě), Slož větu (ťukáním z rozházených slov podle českého překladu), Spoj dvojice (5 dvojic EN–CZ v kole) a Poslech vět (uslyšíš větu, vybereš překlad ze 4). Slova se berou z probraných slov (nebo jiného výběru); výsledky se počítají do opakování jako v kvízu, chyby jdou do Mých chyb.
+- Slovesa: nové režimy F · Spoj tvary (trojice tvarů 4 sloves v kole) a G · Najdi chybu (špatný tvar ve větě → ťuknout a vybrat správný). Počítají se do opakování sloves a do Mých chyb.
+- Dny používání + ukazatel „Cesta k 2 000“ přesunuty hned pod Dnešní plán. Pokrok: milníky 100–2000, nový odznak „Dva tisíce“.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v60
 - +300 nových slov úrovně B2 (3 dávky: particular, data, store … compensation, versus) – celkem 2034 slov, 41 lekcí. Zařazena na konec (B2) podle četnosti (NGSL) spolu s 8 dřívějšími slovy B2. Britský pravopis (honour, offence, fulfil). U části vět je i ženská verze překladu. Pokrok se nemění.
 - Nastavení → Moje úroveň: přidána volba B2 (nová slova až od B2).
