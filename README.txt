@@ -1,3 +1,8 @@
+NOVÉ VE v60
+- +300 nových slov úrovně B2 (3 dávky: particular, data, store … compensation, versus) – celkem 2034 slov, 41 lekcí. Zařazena na konec (B2) podle četnosti (NGSL) spolu s 8 dřívějšími slovy B2. Britský pravopis (honour, offence, fulfil). U části vět je i ženská verze překladu. Pokrok se nemění.
+- Nastavení → Moje úroveň: přidána volba B2 (nová slova až od B2).
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v59 (obsahuje i v58)
 - Doplněna britská IPA tří tvarů a příkladové věty u 50 sloves, kde chyběla (be, have, do … become, show, draw).
 - Slovesa: sady seřazeny podle úrovně (CEFR-J: A1 → A2 → B1) a uvnitř podle četnosti (NGSL). Sada 1: be, have, do, say, go, know, get, think, make, see … sada 11: beat, hang, bet, burst, forgive. V nabídce sad je i úroveň (např. „Sada 1 · A1: be, have, do…“).
