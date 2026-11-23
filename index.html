@@ -483,7 +483,9 @@ html.dark .ex-line{border-color:#3a3c36}html.dark .ex-gap{color:#9fe1cb;border-c
 .chips .chip .chip-sub{display:none!important}
 .chips+.chips{margin-top:0!important}
 #todayPanel{justify-content:flex-start!important;gap:10px!important}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.64</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+/* v65: Dnes a Kartičky stojí – když se obsah vejde, stránka se nedá posouvat ani „pružit“. */
+html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidden!important}
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.65</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -2286,7 +2288,7 @@ function resetCardTabs(){const tabs=[...document.querySelectorAll('[data-card-ta
 document.addEventListener('click',e=>{const b=e.target.closest('[data-card-tab]');if(!b||b.disabled)return;const name=b.dataset.cardTab;document.querySelectorAll('[data-card-tab]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active));});document.querySelectorAll('[data-card-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.cardPanel!==name));
  // Jiná záložka má jinou výšku obsahu – kartička se jí přizpůsobí, aby tlačítka nepřetékala.
  if(typeof fitCard==='function')fitCard();});
-function render(){renderCore();focusAnswer();}
+function render(){renderCore();focusAnswer();if(window.__scrollLockQ)window.__scrollLockQ();}
 function focusAnswer(){if(!document.body.classList.contains('view-cards'))return;const q=document.getElementById('reverseQuiz'),el=document.getElementById('answerInput');if(!q||!el||q.classList.contains('hidden')||el.disabled)return;if(document.querySelector('.lesson-overlay:not([hidden])'))return;try{el.focus({preventScroll:true});}catch(e){}}
 // v49: „Umím“ u slova, které ještě není na řadě, plán nemění (stejně jako kvíz a slovesa).
 function srsEarly(w){const s=srs[w.word];return !!s&&s.due>Date.now();}
@@ -2918,6 +2920,11 @@ function setView(v,fromHistory){if(v===view){window.scrollTo(0,0);return;}const 
  // Gesto zpět na iPhonu (nebo tlačítko Zpět v prohlížeči) vrátí na obrazovku Dnes místo opuštění aplikace.
  if(!fromHistory){try{if(v==='today'&&prev!=='today'&&history.state&&history.state.karticky)history.back();else if(v!=='today'&&prev==='today')history.pushState({karticky:v},'');else history.replaceState({karticky:v},'');}catch(e){}}}
 window.addEventListener('popstate',e=>{const v=(e.state&&e.state.karticky)||'today';setView(v,true);});
+// v65: když se obsah obrazovky Dnes / Kartičky vejde na displej, stránka se zamkne (žádné posouvání ani pružení jako u cvičení). Když se nevejde, posouvat jde.
+function updateScrollLock(){const h=document.documentElement;h.classList.remove('no-scroll');if(view!=='today'&&view!=='cards')return;if(h.scrollHeight<=window.innerHeight+1)h.classList.add('no-scroll');}
+(function(){let t=0;const q=()=>{cancelAnimationFrame(t);t=requestAnimationFrame(updateScrollLock);};window.addEventListener('resize',q);window.addEventListener('orientationchange',q);
+ try{const ro=new ResizeObserver(q);ro.observe(document.body);document.querySelectorAll('main,[data-view],.week-card,#placementHint').forEach(el=>ro.observe(el));}catch(e){}window.__scrollLockQ=q;
+ new MutationObserver(q).observe(document.body,{attributes:true,attributeFilter:['class']});q();window.addEventListener('load',q);setTimeout(q,600);setTimeout(q,2000);try{document.fonts.ready.then(q);}catch(e){}window.__scrollLock=updateScrollLock;})();
 $('openSettings').onclick=()=>setView(view==='settings'?'today':'settings');$('closeSettings').onclick=()=>setView('today');$('syncBadge').onclick=()=>{setView('settings');setTimeout(()=>$('cloudPanel').scrollIntoView({block:'start'}),30);};
 function fillNameForm(){$('nameInput').value=prefs.name||'';$('vocInput').value=prefs.vocative||'';vocEdited=!!prefs.vocative&&prefs.vocative!==suggestVocative(prefs.name);$('nameSaved').textContent='';}
 {const origSubmit=$('nameForm').onsubmit;$('nameForm').onsubmit=e=>{origSubmit(e);$('nameForm').classList.remove('hidden');$('nameSaved').textContent='✓ Uloženo';};}

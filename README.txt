@@ -1,3 +1,6 @@
+NOVÉ VE v65
+- Dnes a Kartičky: když se obsah vejde na displej, obrazovka stojí – nejde posouvat ani „pružit“ prstem (jako ve cvičeních). Když se obsah nevejde (malý displej, dlouhá kartička), posouvat jde dál. Nastavení a Slovník se posouvají jako dřív.
+
 NOVÉ VE v64
 - Obrazovka Dnes kompaktně (varianta A): bez velkého tlačítka „▶ Pokračovat“ (co je na řadě, ukazuje Dnešní plán), menší uvítací karta, nižší řádky plánu a týdne, bez textu „x/7 dní tento týden“, cvičení 4 v řadě jen s ikonou a názvem (dlouhé názvy se na úzkém displeji zalomí). Na velkém displeji se dlaždice už neroztahují po výšce obrazovky.
 
