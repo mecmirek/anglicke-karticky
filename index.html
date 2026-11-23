@@ -467,7 +467,23 @@ html.dark .ex-tile.sel,html.dark .ex-tile.ok,html.dark .ex-hit{background:#173a3
 html.dark .ex-tile.bad{background:#3d1c1f;border-color:#7a2f36;color:#f4a7ae}
 html.dark .ex-line{border-color:#3a3c36}html.dark .ex-gap{color:#9fe1cb;border-color:#5dcaa5}
 .chips+.chips{margin-top:-4px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.63</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+/* v64: kompaktní obrazovka Dnes (varianta A) – vše bez rolování: bez velkého tlačítka Pokračovat, nižší řádky, cvičení 4 v řadě bez podtitulků. */
+#continueBtn{display:none!important}
+.hero{padding:8px 14px!important;gap:12px!important}
+.hero .ring{width:46px!important;height:46px!important}
+.today-greet{font-size:1.2rem!important;line-height:1.2}
+#todayPanel .plan-row{padding:6px 2px!important}
+.week-card{padding:8px 12px!important}
+.week-day{font-size:.7rem!important;gap:2px!important}
+.week-dot{width:18px!important;height:18px!important}
+.week-count{display:none!important}
+.today-path{margin-top:4px!important;font-size:.78rem!important}
+.chips{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+.chips .chip{padding:8px 2px!important;font-size:.74rem!important;border-radius:12px!important;line-height:1.15;justify-content:flex-start;text-align:center;white-space:normal;hyphens:none}
+.chips .chip .chip-sub{display:none!important}
+.chips+.chips{margin-top:0!important}
+#todayPanel{justify-content:flex-start!important;gap:10px!important}
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.64</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -3020,8 +3036,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=63,KEY='karticky-seen-ver';
- var NEWS=[{v:63,major:true,items:[
+ var VER=64,KEY='karticky-seen-ver';
+ var NEWS=[{v:64,major:true,items:[
+  'Obrazovka Dnes je kompaktnější a vejde se bez rolování: místo velkého tlačítka Pokračovat ukazuje, co je na řadě, Dnešní plán („teď“); cvičení jsou 4 v řadě.'
+ ]},{v:63,major:true,items:[
   'Doplň slovo, Slož větu, Spoj dvojice a Poslech vět: kompaktnější vyhodnocení – ✓/✗, 🔊 a Další v jednom řádku, tlačítko Další se už neschová pod okraj. Ve Spoj dvojice je výslovnost přímo v dlaždici.'
  ]},{v:62,major:true,items:[
   'Slovesa G · Najdi chybu: u všech vět je teď i český překlad. U sloves bear, seek, quit, forbid a sew přibyla výslovnost a překlad vět v cvičeních C a D.'

@@ -1,3 +1,6 @@
+NOVÉ VE v64
+- Obrazovka Dnes kompaktně (varianta A): bez velkého tlačítka „▶ Pokračovat“ (co je na řadě, ukazuje Dnešní plán), menší uvítací karta, nižší řádky plánu a týdne, bez textu „x/7 dní tento týden“, cvičení 4 v řadě jen s ikonou a názvem (dlouhé názvy se na úzkém displeji zalomí). Na velkém displeji se dlaždice už neroztahují po výšce obrazovky.
+
 NOVÉ VE v63 (obsahuje i v61 a v62)
 - Nová cvičení (Doplň slovo, Slož větu, Spoj dvojice, Poslech vět): bez horního řádku se zadáním; vyhodnocení v jednom řádku ✓ Správně / ✗ Špatně (Správně je) · 🔊 · Další, pod ním jen věta (bez IPA a významu slova). Další se neschová pod okraj obrazovky.
 - Slož větu: okno na skládání má pevnou výšku 3 řádků a místo pro dlaždice pod ním je pevné – obraz se neposouvá.
