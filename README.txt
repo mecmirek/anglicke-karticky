@@ -1,3 +1,9 @@
+NOVÉ VE v70
+- Kvalitní hlasy: krátká samostatná slova (do 4 písmen, např. On, Tam, At) se posílají s tečkou, aby je hlas vyslovil.
+- Každá nově stažená nahrávka se zkontroluje (hlasitost); skoro tichá (jen nádech) se neuloží, zkusí se znovu a případně promluví hlas iPhonu.
+- Čeština (Poslech bez rukou): výrazy oddělené „;“ se čtou jako krátké věty se stejnou pauzou. Text v závorkách se nečte (jako dřív).
+- Dřívější uložené nahrávky (tts-v1) se jednou smažou a stahují se znovu (tts-v2).
+
 NOVÉ VE v69
 - Čeština (Poslech bez rukou, ukázka českého hlasu) mluví kvalitním hlasem Google cs-CZ-Chirp3-HD-Laomedeia přes stejnou funkci „tts“ (v Supabase je třeba povolit i tento hlas). Při chybě / bez internetu mluví český hlas iPhonu. Rychlost češtiny zůstává max. 1×.
 - Zobrazí se „Co je nového“.

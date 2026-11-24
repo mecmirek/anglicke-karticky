@@ -1,6 +1,6 @@
 // Offline režim kartiček: soubory aplikace se uloží do mezipaměti, takže kartičky i lekce fungují bez internetu.
 // Při každé nové verzi aplikace zvyš CACHE_VERSION, aby si zařízení stáhla nové soubory.
-const CACHE_VERSION = 'karticky-v82';
+const CACHE_VERSION = 'karticky-v83';
 // Celá aplikace (kartičky, lekce sloves, ikona) je v jednom souboru index.html.
 const APP_FILES = [
   './',
