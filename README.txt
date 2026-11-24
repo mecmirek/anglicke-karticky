@@ -1,3 +1,6 @@
+NOVÉ VE v67
+- Nastavení → Hlas angličtiny: každý hlas je v seznamu jen jednou (iPhone hlásí stejný hlas dvakrát). Stažené vylepšené a prémiové hlasy iPhone webovým aplikacím nezpřístupňuje – aplikace může použít jen základní hlasy, které Safari nabídne.
+
 NOVÉ VE v66
 - Kartičky: na rubu kartičky se nezobrazuje číslo kartičky (je na líci) – dlouhý slovní druh se s ním už nepřekrývá; velikost kartičky ani rozložení se nemění.
 - Poslech a Diktát: střídání hlasů funguje i s jedním britským hlasem v iPhonu – střídá se hlavní hlas, druhý hlas (Nastavení → Druhý hlas) a další hlasy přízvuku.

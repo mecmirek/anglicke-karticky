@@ -488,7 +488,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.66</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.67</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -2330,7 +2330,8 @@ function voiceQuality(v){const s=(v.name+' '+(v.voiceURI||'')).toLowerCase();ret
 function voiceGender(v){const b=voiceBase(v).split(' ')[0];if(VOICE_INFO[b])return VOICE_INFO[b];if(/female|žensk/i.test(v.name))return 'f';if(/\bmale\b|mužsk/i.test(v.name))return 'm';return '';}
 function voiceAccent(v){const l=String(v.lang||'').toLowerCase().replace('_','-');return l.startsWith('en-gb')||/british|united kingdom|\buk\b/i.test(v.name)?'gb':l.startsWith('en-us')||/\bus\b|united states/i.test(v.name)?'us':(l.slice(3,5)||'en');}
 function voiceLabel(v){const g=voiceGender(v);return (ACCENT_CS[voiceAccent(v)]||'anglický')+(g?(g==='f'?' · ženský':' · mužský'):'');}
-function usableVoices(){return englishVoices().filter(v=>!VOICE_SKIP.test(voiceBase(v)));}
+// v67: iPhone hlásí stejný hlas dvakrát (dva interní názvy) – v seznamu se ukáže jen jednou (lepší kvalita má přednost).
+function usableVoices(){const seen=new Map();for(const v of englishVoices()){if(VOICE_SKIP.test(voiceBase(v)))continue;const k=voiceBase(v)+'|'+String(v.lang||'').toLowerCase().replace('_','-');const o=seen.get(k);if(!o||voiceQuality(v)>voiceQuality(o))seen.set(k,v);}return [...seen.values()];}
 function accentVoices(){const acc=audioSettings.accent||'gb',all=usableVoices(),f=acc==='all'?all:all.filter(v=>voiceAccent(v)===acc);return (f.length?f:all).slice().sort((a,b)=>voiceQuality(b)-voiceQuality(a)||voiceBase(a).localeCompare(voiceBase(b)));}
 function mainVoice(){const voices=englishVoices();let v=audioSettings.voiceURI&&audioSettings.voiceURI!=='auto'?voices.find(x=>voiceKey(x)===audioSettings.voiceURI):null;return v||accentVoices()[0]||recommendedBritishVoice(voices)||voices[0]||null;}
 // Druhá postava v Rozhovorech: zvolený hlas, jinak automaticky hlas opačného pohlaví (nebo aspoň jiný).
