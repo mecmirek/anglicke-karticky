@@ -488,7 +488,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.68</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.69</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1870,7 +1870,7 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
   <div class="voice-more">
     <label class="listen-field">Druhý hlas – Rozhovory (druhá postava) a střídání hlasů<span class="voice-pick"><select id="voiceB"></select><button type="button" class="audio-btn extra-audio" data-try="B" aria-label="Ukázka druhého hlasu">▶</button></span></label>
     <label class="listen-field">Český hlas (Poslech bez rukou)<span class="voice-pick"><select id="voiceCs"></select><button type="button" class="audio-btn extra-audio" data-try="cs" aria-label="Ukázka českého hlasu">▶</button></span></label>
-    <label class="listen-check"><input type="checkbox" id="voiceCloud" checked> Kvalitní hlasy Google (Algenib, druhý hlas Laomedeia) – potřebují internet; co jednou zazní, hraje i offline. Bez internetu mluví hlas iPhonu.</label>
+    <label class="listen-check"><input type="checkbox" id="voiceCloud" checked> Kvalitní hlasy Google (Algenib, druhý hlas Laomedeia, čeština Laomedeia) – potřebují internet; co jednou zazní, hraje i offline. Bez internetu mluví hlas iPhonu.</label>
     <label class="listen-check"><input type="checkbox" id="voiceRotate"> Střídat hlasy v Poslechu a Diktátu – hlavní hlas, druhý hlas a další hlasy přízvuku (zvykneš si na různé mluvčí)</label>
   </div>
   <details class="voice-help"><summary>Jak získat přirozenější hlasy</summary>
@@ -2366,7 +2366,7 @@ speechRate.addEventListener('input',()=>{audioSettings.rate=Number(speechRate.va
 if('speechSynthesis' in window){populateVoiceOptions();if(typeof window.speechSynthesis.addEventListener==='function')window.speechSynthesis.addEventListener('voiceschanged',populateVoiceOptions);else window.speechSynthesis.onvoiceschanged=populateVoiceOptions;}
 // v68: Kvalitní hlasy Google (Chirp 3 HD: Algenib, Laomedeia) přes Supabase funkci „tts“. Nahrávka se uloží do telefonu (Cache Storage),
 // takže se každá věta stahuje jen jednou a pak hraje i bez internetu. Při chybě nebo bez internetu mluví hlas iPhonu jako dřív.
-const CLOUD_VOICE={m:'en-GB-Chirp3-HD-Algenib',f:'en-GB-Chirp3-HD-Laomedeia'},CLOUD_CACHE='tts-v1';
+const CLOUD_VOICE={m:'en-GB-Chirp3-HD-Algenib',f:'en-GB-Chirp3-HD-Laomedeia',cs:'cs-CZ-Chirp3-HD-Laomedeia'},CLOUD_CACHE='tts-v1';
 const cloudAudio=new Audio();cloudAudio.preload='auto';
 let cloudTok=0,cloudUnlocked=false;
 function cloudOn(){return audioSettings.cloud!==false&&typeof fetch==='function'&&typeof Blob==='function';}
@@ -2666,9 +2666,12 @@ function csSay(s){return String(s||'').replace(/\([^)]*\)/g,'').replace(/;/g,','
 function czechVoice(){const cz=czVoices();return cz.find(v=>voiceKey(v)===audioSettings.voiceCs)||cz[0]||null;}
 // Přečte text a počká na konec; pojistka pro prohlížeče, které konec řeči neohlásí.
 function say(text,lang,voice){return new Promise(res=>{let done=false;const fin=()=>{if(!done){done=true;clearTimeout(tm);res();}};
- const tm=setTimeout(fin,2500+(lang!=='cs'&&cloudOn()?4000:0)+String(text).length*110/(audioSettings.rate||1));
+ const tm=setTimeout(fin,2500+(cloudOn()?4000:0)+String(text).length*110/(audioSettings.rate||1));
  if(!text||!('speechSynthesis' in window)){fin();return;}
- if(lang==='cs'){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='cs-CZ';const v=czechVoice();if(v)u.voice=v;u.rate=Math.min(1,audioSettings.rate||1);u.onend=fin;u.onerror=fin;window.speechSynthesis.speak(u);}
+ const csSystem=()=>{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='cs-CZ';const v=czechVoice();if(v)u.voice=v;u.rate=Math.min(1,audioSettings.rate||1);u.onend=fin;u.onerror=fin;window.speechSynthesis.speak(u);};
+ // v69: čeština kvalitním hlasem Google (Laomedeia); při chybě / bez internetu český hlas iPhonu.
+ if(lang==='cs'&&cloudOn()&&String(text).length<=400){window.speechSynthesis.cancel();cloudSpeak(String(text),{cloudVoice:'cs',rate:Math.min(1,audioSettings.rate||1),onend:fin}).then(ok=>{if(!ok)csSystem();});}
+ else if(lang==='cs')csSystem();
  else speakText(text,{onend:fin,voice});});}
 function listenAlive(tok){return listen.playing&&tok===listen.token;}
 function listenWait(ms,tok){return new Promise(res=>{const end=Date.now()+ms;const step=()=>{if(!listenAlive(tok)||Date.now()>=end){res();return;}setTimeout(step,100);};step();});}
@@ -3100,8 +3103,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=68,KEY='karticky-seen-ver';
- var NEWS=[{v:68,major:true,items:[
+ var VER=69,KEY='karticky-seen-ver';
+ var NEWS=[{v:69,major:true,items:[
+  'Čeština (Poslech bez rukou) teď mluví kvalitním hlasem Google Laomedeia. Bez internetu mluví český hlas iPhonu.'
+ ]},{v:68,major:true,items:[
   'Nové kvalitní hlasy Google: Algenib (hlavní) a Laomedeia (druhý hlas v Rozhovorech a při střídání). Potřebují internet – co jednou zazní, uloží se do telefonu a hraje i offline. Vypnout jde v Nastavení → Hlas angličtiny.'
  ]},{v:64,major:true,items:[
   'Obrazovka Dnes je kompaktnější a vejde se bez rolování: místo velkého tlačítka Pokračovat ukazuje, co je na řadě, Dnešní plán („teď“); cvičení jsou 4 v řadě.'

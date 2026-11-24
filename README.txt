@@ -1,3 +1,7 @@
+NOVÉ VE v69
+- Čeština (Poslech bez rukou, ukázka českého hlasu) mluví kvalitním hlasem Google cs-CZ-Chirp3-HD-Laomedeia přes stejnou funkci „tts“ (v Supabase je třeba povolit i tento hlas). Při chybě / bez internetu mluví český hlas iPhonu. Rychlost češtiny zůstává max. 1×.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v68
 - Kvalitní hlasy Google Cloud Text-to-Speech (Chirp 3 HD): hlavní Algenib, druhý hlas Laomedeia (Rozhovory, střídání hlasů). Volání přes Supabase Edge Function „tts“ (klíč GOOGLE_TTS_KEY je uložen v Supabase Secrets, v aplikaci není). Nahrávky se ukládají do telefonu (Cache Storage) – každá věta se stahuje jen jednou a pak hraje i bez internetu. Bez internetu / při chybě mluví hlas iPhonu.
 - Platí i v lekci sloves (poslech tvarů a vět, Spoj tvary, Najdi chybu).
