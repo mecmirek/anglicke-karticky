@@ -485,7 +485,10 @@ html.dark .ex-line{border-color:#3a3c36}html.dark .ex-gap{color:#9fe1cb;border-c
 #todayPanel{justify-content:flex-start!important;gap:10px!important}
 /* v65: Dnes a Kartičky stojí – když se obsah vejde, stránka se nedá posouvat ani „pružit“. */
 html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidden!important}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.65</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+/* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
+.side.back>.counter{display:none}
+#dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.66</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1863,9 +1866,9 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
   <select id="voiceSelect" class="hidden" aria-hidden="true" tabindex="-1"><option value="auto">Automaticky</option></select>
   <div class="voice-list" id="voiceList" role="radiogroup" aria-label="Hlas angličtiny"></div>
   <div class="voice-more">
-    <label class="listen-field">Druhý hlas v Rozhovorech (druhá postava)<span class="voice-pick"><select id="voiceB"></select><button type="button" class="audio-btn extra-audio" data-try="B" aria-label="Ukázka druhého hlasu">▶</button></span></label>
+    <label class="listen-field">Druhý hlas – Rozhovory (druhá postava) a střídání hlasů<span class="voice-pick"><select id="voiceB"></select><button type="button" class="audio-btn extra-audio" data-try="B" aria-label="Ukázka druhého hlasu">▶</button></span></label>
     <label class="listen-field">Český hlas (Poslech bez rukou)<span class="voice-pick"><select id="voiceCs"></select><button type="button" class="audio-btn extra-audio" data-try="cs" aria-label="Ukázka českého hlasu">▶</button></span></label>
-    <label class="listen-check"><input type="checkbox" id="voiceRotate"> Střídat hlasy v Poslechu a Diktátu (zvykneš si na různé mluvčí)</label>
+    <label class="listen-check"><input type="checkbox" id="voiceRotate"> Střídat hlasy v Poslechu a Diktátu – hlavní hlas, druhý hlas a další hlasy přízvuku (zvykneš si na různé mluvčí)</label>
   </div>
   <details class="voice-help"><summary>Jak získat přirozenější hlasy</summary>
     <p><b>iPhone:</b> Nastavení → Zpřístupnění → Předčítaný obsah → Hlasy → Angličtina → vyber hlas (např. Daniel, Kate, Serena) → stáhni verzi <i>Vylepšený</i> nebo <i>Prémiový</i>. Pro češtinu: Hlasy → Čeština → Zuzana.</p>
@@ -2334,7 +2337,8 @@ function mainVoice(){const voices=englishVoices();let v=audioSettings.voiceURI&&
 function voiceB(){const voices=englishVoices();if(audioSettings.voiceB&&audioSettings.voiceB!=='auto'){const v=voices.find(x=>voiceKey(x)===audioSettings.voiceB);if(v)return v;}
  const m=mainVoice(),g=m?voiceGender(m):'',pool=accentVoices().concat(usableVoices()).filter(v=>!m||voiceBase(v)!==voiceBase(m));return pool.find(v=>g&&voiceGender(v)&&voiceGender(v)!==g)||pool[0]||null;}
 // Střídání hlasů (Poslech, Diktát): každé slovo namluví další hlas zvoleného přízvuku.
-function rotVoice(i){if(!audioSettings.rotate)return undefined;const pool=accentVoices().filter((v,k,a)=>a.findIndex(x=>voiceBase(x)===voiceBase(v))===k);return pool.length?pool[i%pool.length]:undefined;}
+// v66: střídá se hlavní hlas, druhý hlas (nastavení „Druhá postava“) a další hlasy zvoleného přízvuku – i když je v iPhonu jen jeden britský hlas.
+function rotVoice(i){if(!audioSettings.rotate)return undefined;const pool=[mainVoice(),voiceB()].concat(accentVoices()).filter(Boolean).filter((v,k,a)=>a.findIndex(x=>voiceBase(x)===voiceBase(v))===k);return pool.length?pool[i%pool.length]:undefined;}
 function czVoices(){try{return window.speechSynthesis.getVoices().filter(v=>/^cs/i.test(v.lang)&&!VOICE_SKIP.test(voiceBase(v))).sort((a,b)=>voiceQuality(b)-voiceQuality(a));}catch(e){return [];}}
 function populateVoiceOptions(){const list=$('voiceList');if(!list)return;const acc=audioSettings.accent||'gb';document.querySelectorAll('#voiceAccent [data-acc]').forEach(b=>b.classList.toggle('on',b.dataset.acc===acc));
  const voices=accentVoices(),cur=audioSettings.voiceURI||'auto',all=usableVoices(),cz=czVoices();
@@ -2550,7 +2554,8 @@ function renderDialog(){
   html+=`<section class="quiz-card" style="margin-top:12px"><div class="quiz-kind">Co odpovíte?</div><p>${esc(q.cs)}</p>${(dlg.qOrder=dlg.qOrder||shuffle(q.options.map((o,i)=>i))).map(i=>`<button type="button" class="quiz-opt" data-q="${i}" ${dlg.answered?'disabled':''}>${esc(q.options[i])}</button>`).join('')}<div id="dlgQFeedback"></div></section>`;}
  $('dlgBody').innerHTML=html;
  if(dlg.answered)markQuestion();
- const last=$('dlgBody').querySelector('.bubble-row:last-of-type');if(last&&!dlg.answered)last.scrollIntoView({block:'nearest'});
+ // v66: posun na nejnovější repliku a tlačítko Další replika / možnosti (dřív mířil na špatný prvek a nic se neposunulo).
+ if(!dlg.answered){const rows=$('dlgBody').querySelectorAll('.bubble-row'),target=$('dlgNext')||$('dlgBody').querySelector('section.quiz-card')||rows[rows.length-1];if(target)requestAnimationFrame(()=>{try{target.scrollIntoView({block:'end',behavior:'smooth'});}catch(e){target.scrollIntoView(false);}});}
 }
 function markQuestion(){const q=dlg.d.question;$('dlgBody').querySelectorAll('[data-q]').forEach(b=>{const i=+b.dataset.q;b.disabled=true;if(i===q.answer)b.classList.add('correct');else if(i===dlg.qChoice)b.classList.add('wrong');});
  $('dlgQFeedback').innerHTML=`<div class="quiz-feedback">${dlg.qChoice===q.answer?'✓ Správně! ':'✗ '}${esc(q.explain)}\n\nVýsledek: ${dlg.correct} z ${dlg.total}</div><div class="quiz-nav"><button type="button" id="dlgAgain">Zkusit znovu</button><button type="button" class="primary" id="dlgList">Další rozhovor</button></div>`;}
@@ -2925,6 +2930,14 @@ function updateScrollLock(){const h=document.documentElement;h.classList.remove(
 (function(){let t=0;const q=()=>{cancelAnimationFrame(t);t=requestAnimationFrame(updateScrollLock);};window.addEventListener('resize',q);window.addEventListener('orientationchange',q);
  try{const ro=new ResizeObserver(q);ro.observe(document.body);document.querySelectorAll('main,[data-view],.week-card,#placementHint').forEach(el=>ro.observe(el));}catch(e){}window.__scrollLockQ=q;
  new MutationObserver(q).observe(document.body,{attributes:true,attributeFilter:['class']});q();window.addEventListener('load',q);setTimeout(q,600);setTimeout(q,2000);try{document.fonts.ready.then(q);}catch(e){}window.__scrollLock=updateScrollLock;})();
+// v66: aplikace z ikony na ploše zůstává v iPhonu uspaná – když se probudí v nový den, načte se celá znovu (jako po zavření v přepínači aplikací), aby byl Dnešní plán nový.
+// Při návratu do aplikace se načte hned; když se den změní během cvičení (o půlnoci), počká se, až se cvičení zavře.
+(function(){const startDay=todayKey();let reloading=false;
+ function dayChanged(){return todayKey()!==startDay;}
+ function reloadNow(){if(reloading)return;reloading=true;try{saveDaily();}catch(e){}try{save();}catch(e){}location.reload();}
+ function onResume(){if(document.visibilityState==='visible'&&dayChanged())reloadNow();}
+ document.addEventListener('visibilitychange',onResume);window.addEventListener('pageshow',onResume);window.addEventListener('focus',onResume);
+ setInterval(()=>{if(document.visibilityState!=='visible'||!dayChanged())return;if(document.querySelector('.lesson-overlay:not([hidden])'))return;reloadNow();},30000);})();
 $('openSettings').onclick=()=>setView(view==='settings'?'today':'settings');$('closeSettings').onclick=()=>setView('today');$('syncBadge').onclick=()=>{setView('settings');setTimeout(()=>$('cloudPanel').scrollIntoView({block:'start'}),30);};
 function fillNameForm(){$('nameInput').value=prefs.name||'';$('vocInput').value=prefs.vocative||'';vocEdited=!!prefs.vocative&&prefs.vocative!==suggestVocative(prefs.name);$('nameSaved').textContent='';}
 {const origSubmit=$('nameForm').onsubmit;$('nameForm').onsubmit=e=>{origSubmit(e);$('nameForm').classList.remove('hidden');$('nameSaved').textContent='✓ Uloženo';};}

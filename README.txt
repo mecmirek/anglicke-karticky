@@ -1,3 +1,9 @@
+NOVÉ VE v66
+- Kartičky: na rubu kartičky se nezobrazuje číslo kartičky (je na líci) – dlouhý slovní druh se s ním už nepřekrývá; velikost kartičky ani rozložení se nemění.
+- Poslech a Diktát: střídání hlasů funguje i s jedním britským hlasem v iPhonu – střídá se hlavní hlas, druhý hlas (Nastavení → Druhý hlas) a další hlasy přízvuku.
+- Rozhovory: po každé replice se rozhovor posune, aby byla vidět poslední replika a tlačítko Další replika / možnosti.
+- Aplikace spuštěná z ikony na ploše: když se ráno probudí v nový den, celá se znovu načte (jako po zavření v přepínači aplikací) – Dnešní plán je hned nový. Pokud se den změní během otevřeného cvičení (o půlnoci), načte se až po jeho zavření. Pokrok se nemění.
+
 NOVÉ VE v65
 - Dnes a Kartičky: když se obsah vejde na displej, obrazovka stojí – nejde posouvat ani „pružit“ prstem (jako ve cvičeních). Když se obsah nevejde (malý displej, dlouhá kartička), posouvat jde dál. Nastavení a Slovník se posouvají jako dřív.
 
