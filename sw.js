@@ -1,6 +1,6 @@
 // Offline režim kartiček: soubory aplikace se uloží do mezipaměti, takže kartičky i lekce fungují bez internetu.
 // Při každé nové verzi aplikace zvyš CACHE_VERSION, aby si zařízení stáhla nové soubory.
-const CACHE_VERSION = 'karticky-v80';
+const CACHE_VERSION = 'karticky-v81';
 // Celá aplikace (kartičky, lekce sloves, ikona) je v jednom souboru index.html.
 const APP_FILES = [
   './',
@@ -21,7 +21,8 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
-    for (const key of await caches.keys()) if (key !== CACHE_VERSION) await caches.delete(key);
+    // v68: nahrávky kvalitních hlasů (tts-…) se při nové verzi nemažou, aby se nestahovaly znovu.
+    for (const key of await caches.keys()) if (key !== CACHE_VERSION && !key.startsWith('tts-')) await caches.delete(key);
     await self.clients.claim();
   })());
 });

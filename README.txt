@@ -1,3 +1,9 @@
+NOVÉ VE v68
+- Kvalitní hlasy Google Cloud Text-to-Speech (Chirp 3 HD): hlavní Algenib, druhý hlas Laomedeia (Rozhovory, střídání hlasů). Volání přes Supabase Edge Function „tts“ (klíč GOOGLE_TTS_KEY je uložen v Supabase Secrets, v aplikaci není). Nahrávky se ukládají do telefonu (Cache Storage) – každá věta se stahuje jen jednou a pak hraje i bez internetu. Bez internetu / při chybě mluví hlas iPhonu.
+- Platí i v lekci sloves (poslech tvarů a vět, Spoj tvary, Najdi chybu).
+- Nastavení → Hlas angličtiny: přepínač „Kvalitní hlasy Google“ (zapnuto). Ukázky hlasů iPhonu v seznamu dál hrají hlasem iPhonu.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v67
 - Nastavení → Hlas angličtiny: každý hlas je v seznamu jen jednou (iPhone hlásí stejný hlas dvakrát). Stažené vylepšené a prémiové hlasy iPhone webovým aplikacím nezpřístupňuje – aplikace může použít jen základní hlasy, které Safari nabídne.
 

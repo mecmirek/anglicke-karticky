@@ -488,7 +488,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.67</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.68</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1050,7 +1050,7 @@ let game=null;
 function gShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function gEsc(s){return escapeHtml(String(s));}
 function gRecord(key,ok,base){if(recorded.has(key))return;recorded.set(key,ok);try{if(window.parent!==window)window.parent.postMessage({type:'verb-answer',ok:!!ok,verb:base,mode:'forms'},'*');}catch(e){}$("score").textContent=scoreText();}
-function gSay(text){try{if(!("speechSynthesis" in window))return;const u=new SpeechSynthesisUtterance(String(text).replace(/\//g,", "));u.lang=speechLang();u.rate=0.95;const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.replace("_","-").startsWith(u.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function gSay(text){try{if(window.parent!==window&&window.parent.appCloudOn&&window.parent.appCloudOn()){window.parent.appSpeak(String(text).replace(/\//g,", "));return;}}catch(e){}try{if(!("speechSynthesis" in window))return;const u=new SpeechSynthesisUtterance(String(text).replace(/\//g,", "));u.lang=speechLang();u.rate=0.95;const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.replace("_","-").startsWith(u.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function gForms(v){return [v.base,v.past,v.part];}
 function gameRender(){if(mode==="match")matchStart();else errorStart();$("score").textContent=scoreText();}
 function matchStart(){const list=gShuffle(verbs),n=list.length,R=Math.max(1,Math.ceil(n/4)),rounds=[];let k=0;for(let r=0;r<R;r++){const size=Math.ceil((n-k)/(R-r));rounds.push(list.slice(k,k+size));k+=size;}
@@ -1381,6 +1381,8 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
    else if(mode==="negative") lines=[negFull(v)];
    else lines=[v.perf.replace("___",v.part)];
    if(!lines.every(Boolean)){status.textContent="Pro tuto otázku není k dispozici text k přečtení.";return;}
+   // v68: kvalitní hlas přes hlavní stránku (tři tvary v jedné nahrávce)
+   try{if(window.parent!==window&&window.parent.appCloudOn&&window.parent.appCloudOn()){status.textContent=(mode==="forms"||mode==="quick")?"Posloucháš 1., 2. a 3. tvar…":"Přehrávám anglickou větu…";window.parent.appSpeak(lines.join(", ").replace(/\//g,", "),{onend:()=>{status.textContent="";}});return;}}catch(e){}
    window.speechSynthesis.cancel();
    const voice=getVoice();
    lines.forEach((line,i)=>{
@@ -1868,6 +1870,7 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
   <div class="voice-more">
     <label class="listen-field">Druhý hlas – Rozhovory (druhá postava) a střídání hlasů<span class="voice-pick"><select id="voiceB"></select><button type="button" class="audio-btn extra-audio" data-try="B" aria-label="Ukázka druhého hlasu">▶</button></span></label>
     <label class="listen-field">Český hlas (Poslech bez rukou)<span class="voice-pick"><select id="voiceCs"></select><button type="button" class="audio-btn extra-audio" data-try="cs" aria-label="Ukázka českého hlasu">▶</button></span></label>
+    <label class="listen-check"><input type="checkbox" id="voiceCloud" checked> Kvalitní hlasy Google (Algenib, druhý hlas Laomedeia) – potřebují internet; co jednou zazní, hraje i offline. Bez internetu mluví hlas iPhonu.</label>
     <label class="listen-check"><input type="checkbox" id="voiceRotate"> Střídat hlasy v Poslechu a Diktátu – hlavní hlas, druhý hlas a další hlasy přízvuku (zvykneš si na různé mluvčí)</label>
   </div>
   <details class="voice-help"><summary>Jak získat přirozenější hlasy</summary>
@@ -2313,7 +2316,7 @@ document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{let w=set()[
 $('prev').onclick=()=>{index=Math.max(0,index-1);render()};$('next').onclick=()=>{let a=set();index=a.length?(index+1)%a.length:0;render()};$('repeat').onclick=()=>{index=0;$('mode').value='all';render()};
 $('lesson').onchange=()=>{lesson=+$('lesson').value;lessonT=Date.now();index=0;save();render()};$('mode').onchange=()=>{index=0;render()};$('jump').onchange=()=>{index=+$('jump').value;render()};$('direction').onchange=()=>{render()};$('checkAnswer').onclick=()=>{const w=set()[index];if(!w)return;const raw=$('answerInput').value;if(!raw.trim()){$('answerFeedback').textContent='Nejdřív napiš svůj překlad.';$('answerFeedback').style.color='';return;}const r=judgeAnswer(raw,w);$('answerFeedback').textContent=r.text;$('answerFeedback').style.color=r.color;$('checkAnswer').disabled=true;if(r.ok){gradeTypedKnown(w);typedGraded=w;}};$('answerInput').addEventListener('click',e=>e.stopPropagation());$('answerInput').addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();if(e.repeat)return;if(!$('checkAnswer').disabled)$('checkAnswer').click();else advanceAfterTyped();});$('list').onclick=e=>{let b=e.target.closest('[data-word]');if(!b)return;const word=b.dataset.word;let i=set().findIndex(w=>w.word===word);if(i>=0){index=i;render();return;}const item=words.find(w=>w.word===word);const reverse=$('direction').value==='cs-en';let why;if(reverse&&item&&(!item.cs||item.cs==='význam podle kontextu'))why=`„${word}“ zatím nemá český význam, proto se v režimu Česky → anglicky nezobrazuje.`;else if(mode==='due')why=`„${word}“ dnes není na řadě k opakování.`;else if(mode==='review')why=`„${word}“ není mezi slovíčky „Neumím“. Pro zobrazení přepni režim na „Všechna slovíčka lekce“.`;else why=`„${word}“ se v aktuálním režimu nezobrazuje.`;$('listNote').textContent=why;};
 const voiceSelect=$('voiceSelect'),speechRate=$('speechRate'),speechRateValue=$('speechRateValue'),voiceStatus=$('voiceStatus');
-let audioSettings={voiceURI:'auto',rate:0.85};
+let audioSettings={voiceURI:'auto',rate:0.85,cloud:true};
 try{const savedAudio=JSON.parse(localStorage.getItem('engcards1000audio')||'{}');if(typeof savedAudio.voiceURI==='string')audioSettings.voiceURI=savedAudio.voiceURI;if(Number.isFinite(savedAudio.rate))audioSettings.rate=Math.min(1,Math.max(.65,savedAudio.rate));}catch(e){}
 speechRate.value=String(audioSettings.rate);speechRateValue.textContent=audioSettings.rate.toFixed(2).replace('.',',')+'×';
 function englishVoices(){if(!('speechSynthesis' in window))return[];return window.speechSynthesis.getVoices().filter(v=>/^en(?:[-_]|$)/i.test(v.lang||'')).sort((a,b)=>{const ar=/^en[-_]gb$/i.test(a.lang)?0:/british|united kingdom/i.test(a.name)?1:2;const br=/^en[-_]gb$/i.test(b.lang)?0:/british|united kingdom/i.test(b.name)?1:2;return ar-br||a.name.localeCompare(b.name);});}
@@ -2321,7 +2324,7 @@ function recommendedBritishVoice(voices){return voices.find(v=>/^en[-_]gb$/i.tes
 function voiceKey(v){return v.voiceURI||`${v.name}__${v.lang}`;}
 // Výběr hlasů: přízvuk, pohlaví a kvalita známých hlasů Apple/Google pro přehledný seznam.
 // Novinkové a robotické hlasy (Bubbles, Zarvox, Eddy, Grandma…) se nenabízejí.
-try{const s=JSON.parse(localStorage.getItem('engcards1000audio')||'{}');['accent','voiceB','voiceCs'].forEach(k=>{if(typeof s[k]==='string')audioSettings[k]=s[k];});audioSettings.rotate=!!s.rotate;}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('engcards1000audio')||'{}');['accent','voiceB','voiceCs'].forEach(k=>{if(typeof s[k]==='string')audioSettings[k]=s[k];});audioSettings.rotate=!!s.rotate;audioSettings.cloud=s.cloud!==false;}catch(e){}
 const VOICE_INFO={Daniel:'m',Arthur:'m',Oliver:'m',Jamie:'m',Kate:'f',Serena:'f',Martha:'f',Stephanie:'f',Fiona:'f',Moira:'f',Samantha:'f',Ava:'f',Allison:'f',Susan:'f',Zoe:'f',Nicky:'f',Evan:'m',Tom:'m',Alex:'m',Nathan:'m',Aaron:'m',Karen:'f',Lee:'m',Tessa:'f',Rishi:'m',Veena:'f',Zuzana:'f',Iveta:'f'};
 const VOICE_SKIP=/^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Junior|Kathy|Ralph|Fred|Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley)\b/i;
 const ACCENT_CS={gb:'britský',us:'americký',au:'australský',ie:'irský',za:'jihoafrický',in:'indický',nz:'novozélandský',ca:'kanadský'};
@@ -2348,19 +2351,59 @@ function populateVoiceOptions(){const list=$('voiceList');if(!list)return;const 
   +voices.map(v=>{const k=voiceKey(v),q=voiceQuality(v);return `<label class="voice-row${cur===k?' on':''}"><input type="radio" name="voicePick" value="${esc(k)}" ${cur===k?'checked':''}><span class="vn"><b>${esc(voiceBase(v))}${q?`<span class="q">${q===2?'prémiový':'vylepšený'}</span>`:''}</b><span>${esc(voiceLabel(v))}</span></span><button type="button" class="audio-btn extra-audio" data-try-voice="${esc(k)}" aria-label="Ukázka hlasu ${esc(voiceBase(v))}">▶</button></label>`;}).join('');
  $('voiceB').innerHTML='<option value="auto">Automaticky – jiný hlas než hlavní</option>'+all.map(v=>`<option value="${esc(voiceKey(v))}">${esc(voiceBase(v))} – ${esc(voiceLabel(v))}</option>`).join('');$('voiceB').value=all.some(v=>voiceKey(v)===audioSettings.voiceB)?audioSettings.voiceB:'auto';
  $('voiceCs').innerHTML='<option value="auto">Automaticky</option>'+cz.map(v=>`<option value="${esc(voiceKey(v))}">${esc(voiceBase(v))}${voiceQuality(v)?' (vylepšený)':''}</option>`).join('');$('voiceCs').value=cz.some(v=>voiceKey(v)===audioSettings.voiceCs)?audioSettings.voiceCs:'auto';
- $('voiceRotate').checked=!!audioSettings.rotate;
+ $('voiceRotate').checked=!!audioSettings.rotate;$('voiceCloud').checked=audioSettings.cloud!==false;
  const m=mainVoice();voiceStatus.textContent=m?`Teď mluví ${voiceBase(m)} (${voiceLabel(m)}). Anglických hlasů v zařízení: ${all.length}.`+(cz.length?'':' Český hlas v zařízení chybí – návod je výše.'):'Hlasy se načítají…';}
-$('voiceList').addEventListener('click',e=>{const t=e.target.closest('[data-try-voice]');if(!t)return;e.preventDefault();const v=englishVoices().find(x=>voiceKey(x)===t.dataset.tryVoice);speakText('Hello! This is how I sound. Please take your bag.',{voice:v});});
-$('voiceList').addEventListener('change',e=>{if(e.target.name!=='voicePick')return;audioSettings.voiceURI=e.target.value;saveAudioSettings();populateVoiceOptions();speakText('Hello, I will be your English voice.');});
+$('voiceList').addEventListener('click',e=>{const t=e.target.closest('[data-try-voice]');if(!t)return;e.preventDefault();const v=englishVoices().find(x=>voiceKey(x)===t.dataset.tryVoice);speakText('Hello! This is how I sound. Please take your bag.',{voice:v,noCloud:true});});
+$('voiceList').addEventListener('change',e=>{if(e.target.name!=='voicePick')return;audioSettings.voiceURI=e.target.value;saveAudioSettings();populateVoiceOptions();speakText('Hello, I will be your English voice.',{noCloud:true});});
 $('voiceAccent').addEventListener('click',e=>{const b=e.target.closest('[data-acc]');if(!b)return;audioSettings.accent=b.dataset.acc;if(audioSettings.voiceURI!=='auto'&&!accentVoices().some(v=>voiceKey(v)===audioSettings.voiceURI))audioSettings.voiceURI='auto';saveAudioSettings();populateVoiceOptions();});
-$('voiceB').onchange=()=>{audioSettings.voiceB=$('voiceB').value;saveAudioSettings();speakText('Hello, can I help you?',{voice:voiceB()});};
+$('voiceB').onchange=()=>{audioSettings.voiceB=$('voiceB').value;saveAudioSettings();speakText('Hello, can I help you?',{voice:voiceB(),cloudVoice:'f'});};
 $('voiceCs').onchange=()=>{audioSettings.voiceCs=$('voiceCs').value;saveAudioSettings();populateVoiceOptions();};
 $('voiceRotate').onchange=()=>{audioSettings.rotate=$('voiceRotate').checked;saveAudioSettings();};
-document.querySelectorAll('[data-try]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();if(b.dataset.try==='B')speakText('Hello, can I help you?',{voice:voiceB()});else say('Dobrý den, tohle je český hlas.','cs');}));
+$('voiceCloud').onchange=()=>{audioSettings.cloud=$('voiceCloud').checked;saveAudioSettings();if(audioSettings.cloud){cloudUnlocked=false;cloudUnlock();}speakText('Hello! This is how I sound.');};
+document.querySelectorAll('[data-try]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();if(b.dataset.try==='B')speakText('Hello, can I help you?',{voice:voiceB(),cloudVoice:'f'});else say('Dobrý den, tohle je český hlas.','cs');}));
 function saveAudioSettings(){try{localStorage.setItem('engcards1000audio',JSON.stringify(audioSettings));}catch(e){}}
 speechRate.addEventListener('input',()=>{audioSettings.rate=Number(speechRate.value);speechRateValue.textContent=audioSettings.rate.toFixed(2).replace('.',',')+'×';saveAudioSettings();});
 if('speechSynthesis' in window){populateVoiceOptions();if(typeof window.speechSynthesis.addEventListener==='function')window.speechSynthesis.addEventListener('voiceschanged',populateVoiceOptions);else window.speechSynthesis.onvoiceschanged=populateVoiceOptions;}
-function speakText(text,opts){opts=opts||{};if(!text)return;if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){alert('Tento prohlížeč nepodporuje hlasové čtení.');return;}const utterance=new SpeechSynthesisUtterance(text);if(opts.pitch)utterance.pitch=opts.pitch;if(opts.onend)utterance.onend=opts.onend;utterance.lang='en-GB';utterance.rate=opts.rate||audioSettings.rate;const selected=opts.voice||mainVoice();if(selected){utterance.voice=selected;utterance.lang=selected.lang||'en-GB';}const ss=window.speechSynthesis;
+// v68: Kvalitní hlasy Google (Chirp 3 HD: Algenib, Laomedeia) přes Supabase funkci „tts“. Nahrávka se uloží do telefonu (Cache Storage),
+// takže se každá věta stahuje jen jednou a pak hraje i bez internetu. Při chybě nebo bez internetu mluví hlas iPhonu jako dřív.
+const CLOUD_VOICE={m:'en-GB-Chirp3-HD-Algenib',f:'en-GB-Chirp3-HD-Laomedeia'},CLOUD_CACHE='tts-v1';
+const cloudAudio=new Audio();cloudAudio.preload='auto';
+let cloudTok=0,cloudUnlocked=false;
+function cloudOn(){return audioSettings.cloud!==false&&typeof fetch==='function'&&typeof Blob==='function';}
+function silentWavUrl(){const n=800,b=new ArrayBuffer(44+n*2),d=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)d.setUint8(o+i,s.charCodeAt(i));};
+ w(0,'RIFF');d.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');d.setUint32(16,16,true);d.setUint16(20,1,true);d.setUint16(22,1,true);d.setUint32(24,16000,true);d.setUint32(28,32000,true);d.setUint16(32,2,true);d.setUint16(34,16,true);w(36,'data');d.setUint32(40,n*2,true);
+ return URL.createObjectURL(new Blob([b],{type:'audio/wav'}));}
+// iPhone pustí zvuk jen po klepnutí – první klepnutí kamkoli „odemkne“ přehrávač, další nahrávky už hrají samy.
+function cloudUnlock(){if(cloudUnlocked||!cloudOn())return;cloudUnlocked=true;try{if(!cloudAudio.src){cloudAudio.src=silentWavUrl();}const p=cloudAudio.play();if(p&&p.catch)p.catch(()=>{cloudUnlocked=false;});}catch(e){cloudUnlocked=false;}}
+['touchend','click','keydown'].forEach(ev=>document.addEventListener(ev,cloudUnlock,true));
+function cloudVoiceFor(opts){if(opts.cloudVoice&&CLOUD_VOICE[opts.cloudVoice])return CLOUD_VOICE[opts.cloudVoice];const v=opts.voice;if(!v)return CLOUD_VOICE.m;try{const b=voiceB();if(b&&voiceBase(v)===voiceBase(b))return CLOUD_VOICE.f;}catch(e){}return voiceGender(v)==='f'?CLOUD_VOICE.f:CLOUD_VOICE.m;}
+function cloudCacheUrl(text,voice){return location.pathname.replace(/[^/]*$/,'')+'__tts__/'+encodeURIComponent(voice+'|'+text);}
+async function cloudGet(text,voice){const url=cloudCacheUrl(text,voice);
+ try{if('caches' in window){const c=await caches.open(CLOUD_CACHE);const hit=await c.match(url);if(hit)return await hit.blob();}}catch(e){}
+ if(navigator.onLine===false)throw new Error('offline');
+ const ctl=typeof AbortController==='function'?new AbortController():null,tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},8000);
+ let r;try{r=await fetch(supabaseUrl+'/functions/v1/tts',{method:'POST',headers:{'Content-Type':'application/json',apikey:supabaseKey},body:JSON.stringify({text,voice}),signal:ctl?ctl.signal:undefined});}finally{clearTimeout(tm);}
+ if(!r.ok)throw new Error('tts '+r.status);const j=await r.json();if(!j||!j.audio)throw new Error('no audio');
+ const bin=atob(j.audio),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);const blob=new Blob([u8],{type:'audio/mpeg'});
+ try{if('caches' in window){const c=await caches.open(CLOUD_CACHE);await c.put(url,new Response(blob.slice(0),{headers:{'Content-Type':'audio/mpeg'}}));}}catch(e){}
+ return blob;}
+function stopCloud(){cloudTok++;try{cloudAudio.pause();}catch(e){}}
+async function cloudSpeak(text,opts){const tok=++cloudTok;try{cloudAudio.pause();}catch(e){}
+ try{const blob=await cloudGet(text,cloudVoiceFor(opts));if(tok!==cloudTok)return true;
+  if(cloudAudio._url)try{URL.revokeObjectURL(cloudAudio._url);}catch(e){}
+  const url=URL.createObjectURL(blob);cloudAudio._url=url;cloudAudio.src=url;
+  const rate=Math.max(0.5,Math.min(2,opts.rate||audioSettings.rate||1));try{cloudAudio.defaultPlaybackRate=rate;cloudAudio.playbackRate=rate;cloudAudio.preservesPitch=true;cloudAudio.webkitPreservesPitch=true;}catch(e){}
+  cloudAudio.onended=()=>{if(tok===cloudTok&&opts.onend)opts.onend();};
+  await cloudAudio.play();try{cloudAudio.playbackRate=rate;}catch(e){}return true;}
+ catch(e){return tok!==cloudTok;}}
+// Zastavení řeči (speechSynthesis.cancel) zastaví i kvalitní hlas – všechna cvičení tak fungují jako dřív.
+try{const ss=window.speechSynthesis;if(ss){const orig=ss.cancel.bind(ss);window.__ssCancel=orig;ss.cancel=function(){stopCloud();return orig();};}}catch(e){}
+// Lekce sloves (vložená stránka) mluví přes hlavní stránku.
+window.appCloudOn=()=>cloudOn();window.appSpeak=(t,o)=>speakText(t,o||{});
+function speakText(text,opts){opts=opts||{};if(!text)return;
+ if(!opts.noCloud&&cloudOn()&&String(text).length<=400){try{(window.__ssCancel||(()=>{}))();}catch(e){}cloudSpeak(String(text),opts).then(ok=>{if(!ok)speakTextSystem(text,opts);});return;}
+ speakTextSystem(text,opts);}
+function speakTextSystem(text,opts){opts=opts||{};if(!text)return;if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){alert('Tento prohlížeč nepodporuje hlasové čtení.');return;}const utterance=new SpeechSynthesisUtterance(text);if(opts.pitch)utterance.pitch=opts.pitch;if(opts.onend)utterance.onend=opts.onend;utterance.lang='en-GB';utterance.rate=opts.rate||audioSettings.rate;const selected=opts.voice||mainVoice();if(selected){utterance.voice=selected;utterance.lang=selected.lang||'en-GB';}const ss=window.speechSynthesis;
  // Safari na iPhonu občas zahodí promluvu spuštěnou hned po cancel() – rušíme jen běžící řeč a novou spustíme o chvilku později.
  if(!opts.queue&&(ss.speaking||ss.pending)){ss.cancel();setTimeout(()=>ss.speak(utterance),90);}else ss.speak(utterance);}
 function speakCurrentSentence(){const w=set()[index];if(!w||!w.sentence)return;speakText(w.sentence);}
@@ -2532,7 +2575,7 @@ function renderDialogList(){
  $('dlgBody').scrollTop=0;
 }
 // Druhá postava (B) mluví jiným hlasem; když v zařízení jiný hlas není, aspoň vyšším tónem.
-function dlgVoiceOpts(line,extra){const b=line.who==='B'?voiceB():null;return Object.assign(b?{voice:b}:{pitch:line.who==='B'?1.15:0.95},extra||{});}
+function dlgVoiceOpts(line,extra){const b=line.who==='B'?voiceB():null;return Object.assign(b?{voice:b}:{pitch:line.who==='B'?1.15:0.95},{cloudVoice:line.who==='B'?'f':'m'},extra||{});}
 function dlgSpeak(line,onend){speakText(line.en,dlgVoiceOpts(line,{onend}));}
 function openDialog(id){
  const d=DIALOGS.find(x=>x.id===id);if(!d)return;
@@ -2623,7 +2666,7 @@ function csSay(s){return String(s||'').replace(/\([^)]*\)/g,'').replace(/;/g,','
 function czechVoice(){const cz=czVoices();return cz.find(v=>voiceKey(v)===audioSettings.voiceCs)||cz[0]||null;}
 // Přečte text a počká na konec; pojistka pro prohlížeče, které konec řeči neohlásí.
 function say(text,lang,voice){return new Promise(res=>{let done=false;const fin=()=>{if(!done){done=true;clearTimeout(tm);res();}};
- const tm=setTimeout(fin,2500+String(text).length*110/(audioSettings.rate||1));
+ const tm=setTimeout(fin,2500+(lang!=='cs'&&cloudOn()?4000:0)+String(text).length*110/(audioSettings.rate||1));
  if(!text||!('speechSynthesis' in window)){fin();return;}
  if(lang==='cs'){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='cs-CZ';const v=czechVoice();if(v)u.voice=v;u.rate=Math.min(1,audioSettings.rate||1);u.onend=fin;u.onerror=fin;window.speechSynthesis.speak(u);}
  else speakText(text,{onend:fin,voice});});}
@@ -3057,8 +3100,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=64,KEY='karticky-seen-ver';
- var NEWS=[{v:64,major:true,items:[
+ var VER=68,KEY='karticky-seen-ver';
+ var NEWS=[{v:68,major:true,items:[
+  'Nové kvalitní hlasy Google: Algenib (hlavní) a Laomedeia (druhý hlas v Rozhovorech a při střídání). Potřebují internet – co jednou zazní, uloží se do telefonu a hraje i offline. Vypnout jde v Nastavení → Hlas angličtiny.'
+ ]},{v:64,major:true,items:[
   'Obrazovka Dnes je kompaktnější a vejde se bez rolování: místo velkého tlačítka Pokračovat ukazuje, co je na řadě, Dnešní plán („teď“); cvičení jsou 4 v řadě.'
  ]},{v:63,major:true,items:[
   'Doplň slovo, Slož větu, Spoj dvojice a Poslech vět: kompaktnější vyhodnocení – ✓/✗, 🔊 a Další v jednom řádku, tlačítko Další se už neschová pod okraj. Ve Spoj dvojice je výslovnost přímo v dlaždici.'
