@@ -1,3 +1,6 @@
+NOVÉ VE v73
+- Poslech se zamčenou obrazovkou: jedna nepovedená nahrávka už nezastaví celý poslech (místo ní 1 s ticha); přehrávání se spouští hned po přípravě bez čekání na načtení; když se poslech přepne na obyčejný, poznámka ukáže důvod.
+
 NOVÉ VE v72
 - Poslech bez rukou hraje i se zamčenou obrazovkou: z uložených nahrávek hlasů Google se podle aktuálního nastavení (směr, obsah, pauzy, rychlost) poskládá jeden zvukový soubor (WAV 24 kHz) a přehraje se jako podcast; ovládání na zamčené obrazovce (Media Session). Chybějící nahrávky se před spuštěním stáhnou; když to nejde, poslech hraje postaru (hlas iPhonu, zastaví se při zamčení).
 - Nastavení Poslechu: „Hrát i se zamčenou obrazovkou“ (zapnuto, dočasný přepínač do ověření).
