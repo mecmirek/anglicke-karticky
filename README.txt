@@ -1,3 +1,8 @@
+NOVÉ VE v72
+- Poslech bez rukou hraje i se zamčenou obrazovkou: z uložených nahrávek hlasů Google se podle aktuálního nastavení (směr, obsah, pauzy, rychlost) poskládá jeden zvukový soubor (WAV 24 kHz) a přehraje se jako podcast; ovládání na zamčené obrazovce (Media Session). Chybějící nahrávky se před spuštěním stáhnou; když to nejde, poslech hraje postaru (hlas iPhonu, zastaví se při zamčení).
+- Nastavení Poslechu: „Hrát i se zamčenou obrazovkou“ (zapnuto, dočasný přepínač do ověření).
+- Rychlost řeči platí pro celý poslech včetně češtiny.
+
 NOVÉ VE v71
 - Poslech bez rukou: volba Obsah – Slova / Spojení / Věty (výchozí Spojení). Spojení se u každého slova vybírá náhodně ze 3 slovních spojení; Věty čtou vzorovou větu a její překlad. V režimu Slova se drobná slova (předložky, zájmena, spojky, členy, částice) čtou ve slovním spojení. Volby „vzorová věta“ jsou vidět jen v režimu Slova.
 - Samotné české k, v, s, z se čtou jako ke, ve, se, ze (ne jako písmeno).

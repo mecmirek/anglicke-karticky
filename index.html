@@ -489,7 +489,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.71</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.72</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1795,7 +1795,8 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
       <label class="listen-check" id="listenSentenceCsRow"><input type="checkbox" id="listenSentenceCs"> … a její český překlad</label>
       <label class="listen-check"><input type="checkbox" id="listenShuffle"> Náhodné pořadí</label>
       <label class="listen-check"><input type="checkbox" id="listenLoop"> Po skončení začít znovu</label>
-      <p class="note">Displej zůstane zapnutý. Když telefon zamkneš nebo přepneš do jiné aplikace, poslech se zastaví – po návratu stiskni Pokračovat.</p>
+      <label class="listen-check"><input type="checkbox" id="listenBg"> Hrát i se zamčenou obrazovkou</label>
+      <p class="note" id="listenBgNote"></p>
     </section>
   </div></div>
 </div>
@@ -2665,14 +2666,15 @@ $('mistakesBody').addEventListener('click',e=>{const t=e.target;
 // Dlaždice Slovesa: slovesa na řadě k opakování (jinak běžná lekce).
 $('todayVerbs').onclick=()=>practiceVerbList(dueVerbs(),'Slovesa na řadě');
 // --- Poslech bez rukou: slovo – pauza – překlad (a věta), oběma směry; pauza se nastavuje ---
-const LISTEN_DEF={src:'today',dir:'en-cs',content:'phrases',pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
+const LISTEN_DEF={src:'today',dir:'en-cs',content:'phrases',bg:true,pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
 let listen={items:[],i:0,playing:false,token:0,wake:null};
 function listenCfg(){prefs.listen={...LISTEN_DEF,...(prefs.listen||{})};return prefs.listen;}
-function saveListenCfg(){savePrefs();renderListenCfg();}
+function saveListenCfg(){listenBgGen++;savePrefs();renderListenCfg();}
 function renderListenCfg(){const c=listenCfg();$('listenSrc').value=c.src;document.querySelectorAll('#listenDir [data-dir]').forEach(b=>{b.classList.toggle('on',b.dataset.dir===c.dir);b.setAttribute('aria-pressed',b.dataset.dir===c.dir);});
  $('listenPauseVal').textContent=c.pause+' s';$('listenGapVal').textContent=c.gap+' s';$('listenSentence').checked=c.sentence;$('listenSentenceCs').checked=c.sentenceCs;$('listenSentenceCs').disabled=!c.sentence;$('listenShuffle').checked=c.shuffle;$('listenLoop').checked=c.loop;
  document.querySelectorAll('#listenContent [data-content]').forEach(b=>{b.classList.toggle('on',b.dataset.content===c.content);b.setAttribute('aria-pressed',b.dataset.content===c.content);});
- $('listenSentenceRow').hidden=$('listenSentenceCsRow').hidden=c.content!=='words';}
+ $('listenSentenceRow').hidden=$('listenSentenceCsRow').hidden=c.content!=='words';
+ $('listenBg').checked=c.bg!==false;$('listenBgNote').textContent=c.bg!==false?'Poslech hraje i se zamčenou obrazovkou nebo v jiné aplikaci (ovládání ▶ ⏸ ⏮ ⏭ je na zamčené obrazovce). Co ještě nezaznělo, se před spuštěním stáhne – je potřeba internet.':'Displej zůstane zapnutý. Když telefon zamkneš nebo přepneš do jiné aplikace, poslech se zastaví – po návratu stiskni Pokračovat.';}
 function listenWords(src){const ok=w=>w&&w.cs&&w.cs!==PLACEHOLDER;let a;
  if(src==='today')a=todayWords();else if(src==='due')a=dueWords();else if(src==='lesson')a=base();else if(src==='starred')a=words.filter(w=>starred[w.word]);
  else if(src==='mistakes')a=activeMistakes().filter(m=>m.key.startsWith('w:')).map(m=>words.find(w=>w.word===m.key.slice(2)));
@@ -2715,7 +2717,7 @@ function listenShow(w,dir,reveal){const c=listen.items.length;$('listenCount').t
  $('listenWord').textContent=q;$('listenWord').classList.toggle('long',q.length>18);
  const hint=it.kind==='word'?'':`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.word)} – ${esc(w.cs)}</div>`;
  $('listenAnswer').innerHTML=reveal?(dir==='en-cs'?esc(it.cs):`${esc(it.en)}${it.kind==='word'?` <span class="ipa">${esc(w.ipa||'')}</span>`:''}`)+hint+(it.kind==='word'&&listenCfg().sentence&&w.sentence?`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.sentence)}</div>`:''):'';}
-async function listenRun(){const tok=++listen.token;listen.playing=true;updateListenBtn();requestWake();
+async function listenRunLive(){const tok=++listen.token;listen.playing=true;listen.bgMode=false;updateListenBtn();requestWake();
  while(listenAlive(tok)){
   if(listen.i>=listen.items.length){if(listenCfg().loop&&listen.items.length){listen.i=0;listen.pick={};if(listenCfg().shuffle)listen.items=shuffle(listen.items);}else break;}
   const c=listenCfg(),w=listen.items[listen.i],dir=c.dir==='mix'?(listen.i%2?'cs-en':'en-cs'):c.dir;
@@ -2729,14 +2731,79 @@ async function listenRun(){const tok=++listen.token;listen.playing=true;updateLi
  }
  if(tok===listen.token){listen.playing=false;listen.i=0;$('listenPhase').textContent='Hotovo 🎉 Stiskni Spustit pro další kolo.';updateListenBtn();releaseWake();markActive();}}
 function updateListenBtn(){$('listenPlay').textContent=listen.playing?'⏸ Pauza':(listen.i>0?'▶ Pokračovat':'▶ Spustit');}
-function listenStop(){listen.playing=false;listen.token++;try{window.speechSynthesis.cancel();}catch(e){}updateListenBtn();releaseWake();}
-function listenLoad(){const c=listenCfg();listen.pick={};listen.items=listenWords(c.src);if(c.shuffle)listen.items=shuffle(listen.items);listen.i=0;
+function listenStop(){listen.playing=false;listen.token++;if(listen.bgMode){clearInterval(listenBgTimer);try{listenAudio.pause();}catch(e){}}try{window.speechSynthesis.cancel();}catch(e){}updateListenBtn();releaseWake();}
+function listenLoad(){const c=listenCfg();listen.pick={};listenBgGen++;listen.items=listenWords(c.src);if(c.shuffle)listen.items=shuffle(listen.items);listen.i=0;
  $('listenWord').textContent='🎧';$('listenAnswer').textContent='';$('listenCount').textContent=listen.items.length?`${listen.items.length} slov připraveno`:'Žádná slova';
  $('listenPhase').textContent=listen.items.length?'Stiskni Spustit.':'V tomto výběru teď nejsou žádná slova – zvol jiný.';$('listenPlay').disabled=!listen.items.length;
  const cz=czechVoice();$('listenNote').textContent=('speechSynthesis' in window)?(cz?'':'V zařízení není český hlas – česká slova může přečíst anglický hlas. Na iPhonu/Macu ho přidáš v Nastavení → Zpřístupnění → Předčítaný obsah → Hlasy → Čeština.'):'Tento prohlížeč neumí předčítat.';updateListenBtn();}
 async function requestWake(){try{if('wakeLock' in navigator&&!listen.wake){listen.wake=await navigator.wakeLock.request('screen');listen.wake.addEventListener('release',()=>{listen.wake=null;});}}catch(e){listen.wake=null;}}
 function releaseWake(){try{if(listen.wake)listen.wake.release();}catch(e){}listen.wake=null;}
 function openListen(src){if(src){listenCfg().src=src;savePrefs();}renderListenCfg();listenLoad();$('listenOverlay').hidden=false;document.body.style.overflow='hidden';$('listenPlay').focus();}
+// v72: Poslech se zamčenou obrazovkou. iPhone při zamčení uspí předčítání, ale zvukový soubor hraje dál (jako podcast).
+// Aplikace proto z uložených nahrávek hlasů Google poskládá jeden souvislý zvuk (slovo, pauza, odpověď, mezera…) podle
+// aktuálního nastavení a pustí ho. Co ještě nezaznělo, se stáhne (je potřeba internet); když to nejde, hraje se postaru.
+const listenAudio=new Audio();listenAudio.preload='auto';
+let listenBg=null,listenBgTimer=null,listenBgGen=0;
+function listenBgOn(){return listenCfg().bg!==false&&cloudOn()&&typeof (window.AudioContext||window.webkitAudioContext)==='function';}
+function listenBgKey(){const c=listenCfg();return JSON.stringify([listenBgGen,c.dir,c.content,c.pause,c.gap,c.sentence,c.sentenceCs,c.loop,audioSettings.rate||1,listen.items.length]);}
+function listenBgReusable(){return !!(listenBg&&listenBg.key===listenBgKey()&&listen.i>=listenBg.from&&listen.i<listenBg.from+listenBg.tl.length);}
+async function listenDecode(ab){const ctx=cloudCtx||(cloudCtx=new (window.AudioContext||window.webkitAudioContext)());
+ return await new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
+async function listenBuild(tok){const c=listenCfg(),rate=Math.max(0.5,Math.min(2,audioSettings.rate||1)),SR=24000,from=listen.i;
+ const plan=listen.items.slice(from).map((w,k)=>{const i=from+k,dir=c.dir==='mix'?(i%2?'cs-en':'en-cs'):c.dir,it=listenItem(w,i);
+  const en={t:it.en,v:cloudVoiceFor({voice:rotVoice(i)})},cs={t:listenCsSay(it),v:CLOUD_VOICE.cs};
+  const segs=[dir==='en-cs'?en:cs,{pause:c.pause},dir==='en-cs'?cs:en];
+  if(it.kind==='word'&&c.sentence&&w.sentence){segs.push({sil:0.4},{t:w.sentence,v:en.v});if(c.sentenceCs&&csText(w))segs.push({t:csText(w),v:CLOUD_VOICE.cs});}
+  segs.push({sil:c.gap});return {i,dir,segs};});
+ const jobs=[];plan.forEach(p=>p.segs.forEach(sg=>{if(sg.t)jobs.push(sg);}));
+ let next=0,done=0;
+ await Promise.all(Array.from({length:4},async()=>{while(next<jobs.length){const sg=jobs[next++];
+  const blob=await cloudGet(sg.t,sg.v);if(tok!==listen.token)throw new Error('cancel');
+  const buf=await listenDecode(await blob.arrayBuffer());const d=buf.getChannelData(0),r=buf.sampleRate/SR,n=Math.floor(d.length/r),o=new Float32Array(n);
+  for(let k=0;k<n;k++){const x=k*r,j=Math.floor(x),f=x-j;o[k]=d[j]*(1-f)+(d[j+1]||0)*f;}sg.pcm=o;
+  done++;if(tok===listen.token)$('listenPhase').textContent=`⏳ Připravuji poslech… ${done} / ${jobs.length}`;}}));
+ // poskládání: ticho se prodlouží podle rychlosti řeči, aby pauzy v sekundách seděly
+ const silN=sec=>Math.round(sec*rate*SR),lead=silN(0.3);let total=lead;
+ plan.forEach(p=>p.segs.forEach(sg=>{total+=sg.pcm?sg.pcm.length:silN(sg.pause!=null?sg.pause:sg.sil);}));
+ const pcm=new Int16Array(total),tl=[];let pos=lead;const tsec=n=>n/SR;
+ plan.forEach(p=>{const e={i:p.i,dir:p.dir,start:tsec(pos)};p.segs.forEach((sg,k)=>{
+  if(sg.pcm){for(let q=0;q<sg.pcm.length;q++){const v=Math.max(-1,Math.min(1,sg.pcm[q]));pcm[pos+q]=v<0?v*32768:v*32767;}pos+=sg.pcm.length;}
+  else pos+=silN(sg.pause!=null?sg.pause:sg.sil);
+  if(k===0)e.qEnd=tsec(pos);if(k===1)e.pauseEnd=tsec(pos);});e.end=tsec(pos);tl.push(e);});
+ const hb=new ArrayBuffer(44),dv=new DataView(hb),ws=(o,t)=>{for(let k=0;k<t.length;k++)dv.setUint8(o+k,t.charCodeAt(k));};
+ ws(0,'RIFF');dv.setUint32(4,36+total*2,true);ws(8,'WAVE');ws(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+ dv.setUint32(24,SR,true);dv.setUint32(28,SR*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);ws(36,'data');dv.setUint32(40,total*2,true);
+ if(listenBg&&listenBg.url)try{URL.revokeObjectURL(listenBg.url);}catch(e){}
+ listenBg={key:listenBgKey(),from,tl,rate,url:URL.createObjectURL(new Blob([hb,pcm.buffer],{type:'audio/wav'}))};}
+function listenBgEntry(t){const tl=listenBg.tl;for(let k=tl.length-1;k>=0;k--)if(t>=tl[k].start-0.05)return tl[k];return tl[0];}
+function listenBgTick(){if(!listenBg||!listen.bgMode)return;const t=listenAudio.currentTime,e=listenBgEntry(t),w=listen.items[e.i];if(!w)return;
+ const reveal=t>=e.pauseEnd,ph=t<e.qEnd?'🔊 Poslouchej':!reveal?`⏳ Přemýšlej… ${Math.max(1,Math.ceil((e.pauseEnd-t)/listenBg.rate))} s`:'✓ Odpověď';
+ if(listen.i!==e.i||listen.bgReveal!==reveal){listen.i=e.i;listen.bgReveal=reveal;listenShow(w,e.dir,reveal);}
+ if($('listenPhase').textContent!==ph)$('listenPhase').textContent=ph;}
+function listenBgMedia(){try{if(!('mediaSession' in navigator))return;if(typeof MediaMetadata==='function')navigator.mediaSession.metadata=new MediaMetadata({title:'Poslech slovíček',artist:'Anglické kartičky'});
+ const h=(a,f)=>{try{navigator.mediaSession.setActionHandler(a,f);}catch(e){}};
+ h('play',()=>{if(!listen.playing)listenRun();});h('pause',()=>{if(listen.playing)listenStop();});
+ h('previoustrack',()=>$('listenPrev').click());h('nexttrack',()=>$('listenNext').click());}catch(e){}}
+listenAudio.addEventListener('ended',()=>{if(!listen.bgMode||listenCfg().loop)return;clearInterval(listenBgTimer);listen.playing=false;listen.bgMode=false;listen.i=0;
+ $('listenPhase').textContent='Hotovo 🎉 Stiskni Spustit pro další kolo.';updateListenBtn();markActive();});
+async function listenRunBg(){const tok=++listen.token;listen.playing=true;listen.bgMode=true;updateListenBtn();
+ const reuse=listenBgReusable();
+ // iPhone pustí zvuk jen po klepnutí – přehrávač se „odemkne“ hned teď, ještě před přípravou.
+ try{if(!reuse){listenAudio.src=silentWavUrl();}const p=listenAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
+ try{if(!reuse){$('listenPhase').textContent='⏳ Připravuji poslech…';await listenBuild(tok);if(tok!==listen.token)return;listenAudio.src=listenBg.url;listen.bgReveal=null;}
+  const e=listenBg.tl[listen.i-listenBg.from],t=listenAudio.currentTime;
+  listenAudio.loop=!!listenCfg().loop;
+  const seek=()=>{if(!reuse||!(t>=e.start-0.05&&t<e.end))try{listenAudio.currentTime=e.start;}catch(er){}};
+  if(listenAudio.readyState>=1)seek();else await new Promise(res=>{listenAudio.addEventListener('loadedmetadata',()=>{seek();res();},{once:true});listenAudio.load();});
+  if(tok!==listen.token)return;
+  try{listenAudio.preservesPitch=true;listenAudio.webkitPreservesPitch=true;}catch(er){}listenAudio.defaultPlaybackRate=listenAudio.playbackRate=listenBg.rate;
+  await listenAudio.play();try{listenAudio.playbackRate=listenBg.rate;}catch(er){}
+  listenBgMedia();clearInterval(listenBgTimer);listenBgTimer=setInterval(listenBgTick,200);listenBgTick();}
+ catch(err){if(tok!==listen.token||String(err&&err.message)==='cancel')return;
+  listen.bgMode=false;listen.playing=false;try{listenAudio.pause();}catch(e){}
+  $('listenNote').textContent='Hraní se zamčenou obrazovkou teď nejde (chybí internet?) – poslech hraje obyčejně, při zamčení se zastaví.';
+  listenRunLive();}}
+function listenRun(){return listenBgOn()?listenRunBg():listenRunLive();}
 function closeListen(){listenStop();$('listenOverlay').hidden=true;document.body.style.overflow='';render();}
 $('openListen').onclick=()=>openListen();$('closeListen').onclick=closeListen;
 // --- Diktát: uslyšíš anglické slovo a napíšeš ho (pravopis). Chybná slova jdou do Mých chyb. ---
@@ -2893,8 +2960,8 @@ $('listenSrc').onchange=()=>{listenStop();listenCfg().src=$('listenSrc').value;s
 $('listenDir').addEventListener('click',e=>{const b=e.target.closest('[data-dir]');if(!b)return;listenCfg().dir=b.dataset.dir;saveListenCfg();});
 $('listenContent').addEventListener('click',e=>{const b=e.target.closest('[data-content]');if(!b)return;listenCfg().content=b.dataset.content;listen.pick={};saveListenCfg();if(listen.items.length&&!listen.playing&&listen.i<listen.items.length&&$('listenWord').textContent!=='🎧')listenShow(listen.items[listen.i],listenCfg().dir==='mix'?(listen.i%2?'cs-en':'en-cs'):listenCfg().dir,false);});
 document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const c=listenCfg(),k=b.dataset.step,max=k==='pause'?15:10,min=k==='pause'?1:0;c[k]=Math.max(min,Math.min(max,(+c[k]||0)+ +b.dataset.d));saveListenCfg();});
-[['listenSentence','sentence'],['listenSentenceCs','sentenceCs'],['listenShuffle','shuffle'],['listenLoop','loop']].forEach(([id,k])=>$(id).onchange=()=>{listenCfg()[k]=$(id).checked;saveListenCfg();if(k==='shuffle'&&!listen.playing)listenLoad();});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&listen.playing)listenStop();});
+[['listenSentence','sentence'],['listenSentenceCs','sentenceCs'],['listenShuffle','shuffle'],['listenLoop','loop'],['listenBg','bg']].forEach(([id,k])=>$(id).onchange=()=>{listenCfg()[k]=$(id).checked;saveListenCfg();if(k==='shuffle'&&!listen.playing)listenLoad();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&listen.playing&&!listen.bgMode)listenStop();});
 if('speechSynthesis' in window&&window.speechSynthesis.addEventListener)window.speechSynthesis.addEventListener('voiceschanged',()=>{if(!$('listenOverlay').hidden&&!listen.playing)listenLoad();});
 // --- Vstupní test: 2 neprobraná slova z každé lekce (od nejlehčích); „Znám“ je označí jako naučená ---
 let placement=null;
@@ -3140,8 +3207,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=71,KEY='karticky-seen-ver';
- var NEWS=[{v:71,major:true,items:[
+ var VER=72,KEY='karticky-seen-ver';
+ var NEWS=[{v:72,major:true,items:[
+  'Poslech bez rukou hraje i se zamčenou obrazovkou nebo v jiné aplikaci – ovládání je na zamčené obrazovce. Před spuštěním se chvilku připravuje (nová slova se stáhnou). Vypnout jde v nastavení Poslechu.'
+ ]},{v:71,major:true,items:[
   'Poslech bez rukou: nová volba Obsah – Slova, Spojení (např. go home → jít domů) nebo Věty. Výchozí jsou slovní spojení; drobná slova (it, to, at…) se i v režimu Slova čtou ve spojení.'
  ]},{v:70,major:true,items:[
   'Hlasy Google spolehlivěji vysloví krátká slova (On, Tam, At).',
