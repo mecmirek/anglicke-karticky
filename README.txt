@@ -1,3 +1,7 @@
+NOVÉ VE v71
+- Poslech bez rukou: volba Obsah – Slova / Spojení / Věty (výchozí Spojení). Spojení se u každého slova vybírá náhodně ze 3 slovních spojení; Věty čtou vzorovou větu a její překlad. V režimu Slova se drobná slova (předložky, zájmena, spojky, členy, částice) čtou ve slovním spojení. Volby „vzorová věta“ jsou vidět jen v režimu Slova.
+- Samotné české k, v, s, z se čtou jako ke, ve, se, ze (ne jako písmeno).
+
 NOVÉ VE v70
 - Kvalitní hlasy: krátká samostatná slova (do 4 písmen, např. On, Tam, At) se posílají s tečkou, aby je hlas vyslovil.
 - Každá nově stažená nahrávka se zkontroluje (hlasitost); skoro tichá (jen nádech) se neuloží, zkusí se znovu a případně promluví hlas iPhonu.

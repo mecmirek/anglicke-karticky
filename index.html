@@ -272,6 +272,7 @@ html.dark .card-setup summary::after{color:#5dcaa5}
 .listen-launch span{font-weight:400;font-size:.85rem;color:var(--muted)}
 .listen-now{text-align:center}
 .listen-word{font-family:Fraunces,Georgia,serif;font-size:clamp(2rem,9vw,3.2rem);color:#085041;margin:8px 0 2px;overflow-wrap:anywhere}
+.listen-word.long{font-size:clamp(1.35rem,5.5vw,1.9rem);line-height:1.25}
 .listen-answer{font-size:1.25rem;font-weight:650;min-height:1.6em;overflow-wrap:anywhere}
 .listen-answer .ipa{font-size:.95rem;font-weight:400}
 .listen-phase{color:var(--muted);min-height:1.5em;margin:6px 0 12px}
@@ -280,7 +281,7 @@ html.dark .card-setup summary::after{color:#5dcaa5}
 .listen-field select{width:100%}
 .seg{display:flex;flex-wrap:wrap;gap:6px}.seg button{flex:1 1 auto;padding:8px 10px;border-radius:20px;font-size:.88rem}.seg button.on{background:#0f6e56;border-color:#0f6e56;color:#fff}
 .stepper{display:flex;align-items:center;gap:10px}.stepper button{width:46px;height:42px;padding:0;font-size:1.3rem;border-radius:12px}.stepper output{min-width:52px;text-align:center;font-size:1.15rem;font-weight:700}
-.listen-check{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:.95rem}
+.listen-check{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:.95rem}.listen-check[hidden]{display:none}
 .mis-actions{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}
 .mis-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:9px 0}
 .mis-row:first-of-type{border-top:0}
@@ -488,7 +489,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.70</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.71</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1787,10 +1788,11 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
       <h3>Nastavení</h3>
       <label class="listen-field">Co poslouchat<select id="listenSrc"><option value="today">Dnešní nová slova</option><option value="due">Slova na řadě k opakování</option><option value="lesson">Aktuální lekce (50 slov)</option><option value="mistakes">Moje chyby</option><option value="starred">Oblíbená ★</option><option value="known">Naučená slova (náhodně 50)</option></select></label>
       <div class="listen-field">Směr<div class="seg" id="listenDir" role="group" aria-label="Směr"><button type="button" data-dir="en-cs">Anglicky → česky</button><button type="button" data-dir="cs-en">Česky → anglicky</button><button type="button" data-dir="mix">Střídavě</button></div></div>
+      <div class="listen-field">Obsah<div class="seg" id="listenContent" role="group" aria-label="Obsah"><button type="button" data-content="words">Slova</button><button type="button" data-content="phrases">Spojení</button><button type="button" data-content="sentences">Věty</button></div></div>
       <div class="listen-field">Pauza na rozmyšlenou<div class="stepper"><button type="button" data-step="pause" data-d="-1" aria-label="Kratší pauza">−</button><output id="listenPauseVal">3 s</output><button type="button" data-step="pause" data-d="1" aria-label="Delší pauza">+</button></div></div>
       <div class="listen-field">Mezera před dalším slovem<div class="stepper"><button type="button" data-step="gap" data-d="-1" aria-label="Kratší mezera">−</button><output id="listenGapVal">2 s</output><button type="button" data-step="gap" data-d="1" aria-label="Delší mezera">+</button></div></div>
-      <label class="listen-check"><input type="checkbox" id="listenSentence"> Přečíst i anglickou vzorovou větu</label>
-      <label class="listen-check"><input type="checkbox" id="listenSentenceCs"> … a její český překlad</label>
+      <label class="listen-check" id="listenSentenceRow"><input type="checkbox" id="listenSentence"> Přečíst i anglickou vzorovou větu</label>
+      <label class="listen-check" id="listenSentenceCsRow"><input type="checkbox" id="listenSentenceCs"> … a její český překlad</label>
       <label class="listen-check"><input type="checkbox" id="listenShuffle"> Náhodné pořadí</label>
       <label class="listen-check"><input type="checkbox" id="listenLoop"> Po skončení začít znovu</label>
       <p class="note">Displej zůstane zapnutý. Když telefon zamkneš nebo přepneš do jiné aplikace, poslech se zastaví – po návratu stiskni Pokračovat.</p>
@@ -2663,12 +2665,14 @@ $('mistakesBody').addEventListener('click',e=>{const t=e.target;
 // Dlaždice Slovesa: slovesa na řadě k opakování (jinak běžná lekce).
 $('todayVerbs').onclick=()=>practiceVerbList(dueVerbs(),'Slovesa na řadě');
 // --- Poslech bez rukou: slovo – pauza – překlad (a věta), oběma směry; pauza se nastavuje ---
-const LISTEN_DEF={src:'today',dir:'en-cs',pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
+const LISTEN_DEF={src:'today',dir:'en-cs',content:'phrases',pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
 let listen={items:[],i:0,playing:false,token:0,wake:null};
 function listenCfg(){prefs.listen={...LISTEN_DEF,...(prefs.listen||{})};return prefs.listen;}
 function saveListenCfg(){savePrefs();renderListenCfg();}
 function renderListenCfg(){const c=listenCfg();$('listenSrc').value=c.src;document.querySelectorAll('#listenDir [data-dir]').forEach(b=>{b.classList.toggle('on',b.dataset.dir===c.dir);b.setAttribute('aria-pressed',b.dataset.dir===c.dir);});
- $('listenPauseVal').textContent=c.pause+' s';$('listenGapVal').textContent=c.gap+' s';$('listenSentence').checked=c.sentence;$('listenSentenceCs').checked=c.sentenceCs;$('listenSentenceCs').disabled=!c.sentence;$('listenShuffle').checked=c.shuffle;$('listenLoop').checked=c.loop;}
+ $('listenPauseVal').textContent=c.pause+' s';$('listenGapVal').textContent=c.gap+' s';$('listenSentence').checked=c.sentence;$('listenSentenceCs').checked=c.sentenceCs;$('listenSentenceCs').disabled=!c.sentence;$('listenShuffle').checked=c.shuffle;$('listenLoop').checked=c.loop;
+ document.querySelectorAll('#listenContent [data-content]').forEach(b=>{b.classList.toggle('on',b.dataset.content===c.content);b.setAttribute('aria-pressed',b.dataset.content===c.content);});
+ $('listenSentenceRow').hidden=$('listenSentenceCsRow').hidden=c.content!=='words';}
 function listenWords(src){const ok=w=>w&&w.cs&&w.cs!==PLACEHOLDER;let a;
  if(src==='today')a=todayWords();else if(src==='due')a=dueWords();else if(src==='lesson')a=base();else if(src==='starred')a=words.filter(w=>starred[w.word]);
  else if(src==='mistakes')a=activeMistakes().filter(m=>m.key.startsWith('w:')).map(m=>words.find(w=>w.word===m.key.slice(2)));
@@ -2678,7 +2682,8 @@ function listenWords(src){const ok=w=>w&&w.cs&&w.cs!==PLACEHOLDER;let a;
 function csSay(s){
  const t=String(s||'').replace(/\([^)]*\)/g,' ');
  const parts=t.split(/\s*(?:;|\.(?=\s|$))\s*/).map(p=>p.replace(/\s+/g,' ').replace(/^[,\s–-]+|[,\s–-]+$/g,'').trim()).filter(Boolean);
- return parts.map(p=>/[.!?…]$/.test(p)?p:p+'.').join(' ');}
+ // v71: samotné k, v, s, z by hlas přečetl jako písmeno („ka“) – čte se ke, ve, se, ze.
+ return parts.map(p=>/^[kvsz]$/i.test(p)?p+'e':p).filter((p,i,a)=>p!==a[i-1]).map(p=>/[.!?…]$/.test(p)?p:p+'.').join(' ');}
 function czechVoice(){const cz=czVoices();return cz.find(v=>voiceKey(v)===audioSettings.voiceCs)||cz[0]||null;}
 // Přečte text a počká na konec; pojistka pro prohlížeče, které konec řeči neohlásí.
 function say(text,lang,voice){return new Promise(res=>{let done=false;const fin=()=>{if(!done){done=true;clearTimeout(tm);res();}};
@@ -2692,25 +2697,40 @@ function say(text,lang,voice){return new Promise(res=>{let done=false;const fin=
 function listenAlive(tok){return listen.playing&&tok===listen.token;}
 function listenWait(ms,tok){return new Promise(res=>{const end=Date.now()+ms;const step=()=>{if(!listenAlive(tok)||Date.now()>=end){res();return;}setTimeout(step,100);};step();});}
 async function listenCountdown(sec,tok){for(let s=sec;s>0&&listenAlive(tok);s--){$('listenPhase').textContent=`⏳ Přemýšlej… ${s} s`;await listenWait(1000,tok);}}
+// v71: Co se v Poslechu čte – slovo, slovní spojení, nebo vzorová věta. Drobná slova (předložky, zájmena, spojky…)
+// se i v režimu Slova čtou ve spojení – samotná je hlas často vysloví špatně. Spojení se u slova vybírá náhodně.
+const LISTEN_FN=/předložka|spojka|zájmeno|člen|částice/;
+function listenItem(w,i){listen.pick=listen.pick||{};if(listen.pick[i]&&listen.pick[i].w===w)return listen.pick[i];
+ const mode=listenCfg().content||'phrases',col=(w.colloc||[]).filter(x=>x&&x.en&&x.cs);
+ const phrase=()=>{const x=col[Math.floor(Math.random()*col.length)];return {kind:'phrase',en:x.en,cs:x.cs};};
+ let it;
+ if(mode==='sentences'&&w.sentence&&csText(w))it={kind:'sentence',en:w.sentence,cs:csText(w)};
+ else if(mode!=='words'&&col.length)it=phrase();
+ else if(mode==='words'&&LISTEN_FN.test(w.pos||'')&&col.length)it=phrase();
+ else it={kind:'word',en:w.word,cs:w.cs};
+ it.w=w;return listen.pick[i]=it;}
+function listenCsSay(it){return it.kind==='sentence'?it.cs:csSay(it.cs);}
 function listenShow(w,dir,reveal){const c=listen.items.length;$('listenCount').textContent=`${listen.i+1} / ${c}`;
- $('listenWord').textContent=dir==='en-cs'?w.word:w.cs;
- $('listenAnswer').innerHTML=reveal?(dir==='en-cs'?esc(w.cs):`${esc(w.word)} <span class="ipa">${esc(w.ipa||'')}</span>`)+(listenCfg().sentence&&w.sentence?`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.sentence)}</div>`:''):'';}
+ const it=listenItem(w,listen.i),q=dir==='en-cs'?it.en:it.cs;
+ $('listenWord').textContent=q;$('listenWord').classList.toggle('long',q.length>18);
+ const hint=it.kind==='word'?'':`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.word)} – ${esc(w.cs)}</div>`;
+ $('listenAnswer').innerHTML=reveal?(dir==='en-cs'?esc(it.cs):`${esc(it.en)}${it.kind==='word'?` <span class="ipa">${esc(w.ipa||'')}</span>`:''}`)+hint+(it.kind==='word'&&listenCfg().sentence&&w.sentence?`<div class="note" style="font-weight:400;margin-top:4px">${esc(w.sentence)}</div>`:''):'';}
 async function listenRun(){const tok=++listen.token;listen.playing=true;updateListenBtn();requestWake();
  while(listenAlive(tok)){
-  if(listen.i>=listen.items.length){if(listenCfg().loop&&listen.items.length){listen.i=0;if(listenCfg().shuffle)listen.items=shuffle(listen.items);}else break;}
+  if(listen.i>=listen.items.length){if(listenCfg().loop&&listen.items.length){listen.i=0;listen.pick={};if(listenCfg().shuffle)listen.items=shuffle(listen.items);}else break;}
   const c=listenCfg(),w=listen.items[listen.i],dir=c.dir==='mix'?(listen.i%2?'cs-en':'en-cs'):c.dir;
   listenShow(w,dir,false);$('listenPhase').textContent='🔊 Poslouchej';
-  const vv=rotVoice(listen.i);if(dir==='en-cs')await say(w.word,'en',vv);else await say(csSay(w.cs),'cs');if(!listenAlive(tok))return;
+  const vv=rotVoice(listen.i),it=listenItem(w,listen.i);if(dir==='en-cs')await say(it.en,'en',vv);else await say(listenCsSay(it),'cs');if(!listenAlive(tok))return;
   await listenCountdown(c.pause,tok);if(!listenAlive(tok))return;
   listenShow(w,dir,true);$('listenPhase').textContent='✓ Odpověď';
-  if(dir==='en-cs')await say(csSay(w.cs),'cs');else await say(w.word,'en',vv);if(!listenAlive(tok))return;
-  if(c.sentence&&w.sentence){await listenWait(400,tok);await say(w.sentence,'en',vv);if(!listenAlive(tok))return;if(c.sentenceCs&&csText(w)){await say(csText(w),'cs');if(!listenAlive(tok))return;}}
+  if(dir==='en-cs')await say(listenCsSay(it),'cs');else await say(it.en,'en',vv);if(!listenAlive(tok))return;
+  if(it.kind==='word'&&c.sentence&&w.sentence){await listenWait(400,tok);await say(w.sentence,'en',vv);if(!listenAlive(tok))return;if(c.sentenceCs&&csText(w)){await say(csText(w),'cs');if(!listenAlive(tok))return;}}
   await listenWait(c.gap*1000,tok);if(!listenAlive(tok))return;listen.i++;
  }
  if(tok===listen.token){listen.playing=false;listen.i=0;$('listenPhase').textContent='Hotovo 🎉 Stiskni Spustit pro další kolo.';updateListenBtn();releaseWake();markActive();}}
 function updateListenBtn(){$('listenPlay').textContent=listen.playing?'⏸ Pauza':(listen.i>0?'▶ Pokračovat':'▶ Spustit');}
 function listenStop(){listen.playing=false;listen.token++;try{window.speechSynthesis.cancel();}catch(e){}updateListenBtn();releaseWake();}
-function listenLoad(){const c=listenCfg();listen.items=listenWords(c.src);if(c.shuffle)listen.items=shuffle(listen.items);listen.i=0;
+function listenLoad(){const c=listenCfg();listen.pick={};listen.items=listenWords(c.src);if(c.shuffle)listen.items=shuffle(listen.items);listen.i=0;
  $('listenWord').textContent='🎧';$('listenAnswer').textContent='';$('listenCount').textContent=listen.items.length?`${listen.items.length} slov připraveno`:'Žádná slova';
  $('listenPhase').textContent=listen.items.length?'Stiskni Spustit.':'V tomto výběru teď nejsou žádná slova – zvol jiný.';$('listenPlay').disabled=!listen.items.length;
  const cz=czechVoice();$('listenNote').textContent=('speechSynthesis' in window)?(cz?'':'V zařízení není český hlas – česká slova může přečíst anglický hlas. Na iPhonu/Macu ho přidáš v Nastavení → Zpřístupnění → Předčítaný obsah → Hlasy → Čeština.'):'Tento prohlížeč neumí předčítat.';updateListenBtn();}
@@ -2871,6 +2891,7 @@ $('listenNext').onclick=()=>{if(!listen.items.length)return;const was=listen.pla
 $('listenPrev').onclick=()=>{if(!listen.items.length)return;const was=listen.playing;listenStop();listen.i=Math.max(listen.i-1,0);listenShow(listen.items[listen.i],listenCfg().dir==='cs-en'?'cs-en':'en-cs',false);if(was)listenRun();};
 $('listenSrc').onchange=()=>{listenStop();listenCfg().src=$('listenSrc').value;saveListenCfg();listenLoad();};
 $('listenDir').addEventListener('click',e=>{const b=e.target.closest('[data-dir]');if(!b)return;listenCfg().dir=b.dataset.dir;saveListenCfg();});
+$('listenContent').addEventListener('click',e=>{const b=e.target.closest('[data-content]');if(!b)return;listenCfg().content=b.dataset.content;listen.pick={};saveListenCfg();if(listen.items.length&&!listen.playing&&listen.i<listen.items.length&&$('listenWord').textContent!=='🎧')listenShow(listen.items[listen.i],listenCfg().dir==='mix'?(listen.i%2?'cs-en':'en-cs'):listenCfg().dir,false);});
 document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const c=listenCfg(),k=b.dataset.step,max=k==='pause'?15:10,min=k==='pause'?1:0;c[k]=Math.max(min,Math.min(max,(+c[k]||0)+ +b.dataset.d));saveListenCfg();});
 [['listenSentence','sentence'],['listenSentenceCs','sentenceCs'],['listenShuffle','shuffle'],['listenLoop','loop']].forEach(([id,k])=>$(id).onchange=()=>{listenCfg()[k]=$(id).checked;saveListenCfg();if(k==='shuffle'&&!listen.playing)listenLoad();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&listen.playing)listenStop();});
@@ -3119,8 +3140,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=70,KEY='karticky-seen-ver';
- var NEWS=[{v:70,major:true,items:[
+ var VER=71,KEY='karticky-seen-ver';
+ var NEWS=[{v:71,major:true,items:[
+  'Poslech bez rukou: nová volba Obsah – Slova, Spojení (např. go home → jít domů) nebo Věty. Výchozí jsou slovní spojení; drobná slova (it, to, at…) se i v režimu Slova čtou ve spojení.'
+ ]},{v:70,major:true,items:[
   'Hlasy Google spolehlivěji vysloví krátká slova (On, Tam, At).',
   'Čeština v Poslechu bez rukou: mezi významy je vždy stejná pauza.'
  ]},{v:69,major:true,items:[
