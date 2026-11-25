@@ -1,3 +1,7 @@
+NOVÉ VE v74
+- Oprava: po první přípravě se nezobrazovaly kartičky a tlačítko ukazovalo Spustit (konec krátkého „odemykacího“ zvuku se bral jako konec poslechu).
+- Během přípravy se ukazuje počet nahrávek (u Vět a Spojení 2 na slovo – česky a anglicky).
+
 NOVÉ VE v73
 - Poslech se zamčenou obrazovkou: jedna nepovedená nahrávka už nezastaví celý poslech (místo ní 1 s ticha); přehrávání se spouští hned po přípravě bez čekání na načtení; když se poslech přepne na obyčejný, poznámka ukáže důvod.
 

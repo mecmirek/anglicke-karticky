@@ -489,7 +489,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.73</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.74</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -2762,7 +2762,7 @@ async function listenBuild(tok){const c=listenCfg(),rate=Math.max(0.5,Math.min(2
   const buf=await listenDecode(await blob.arrayBuffer());const d=buf.getChannelData(0),r=buf.sampleRate/SR,n=Math.floor(d.length/r),o=new Float32Array(n);
   for(let k=0;k<n;k++){const x=k*r,j=Math.floor(x),f=x-j;o[k]=d[j]*(1-f)+(d[j+1]||0)*f;}sg.pcm=o;}
   catch(er){if(tok!==listen.token||String(er&&er.message)==='cancel')throw er;sg.err=String((er&&(er.name+': '+er.message))||er);sg.pcm=new Float32Array(SR);}
-  done++;if(tok===listen.token)$('listenPhase').textContent=`⏳ Připravuji poslech… ${done} / ${jobs.length}`;}}));
+  done++;if(tok===listen.token)$('listenPhase').textContent=`⏳ Připravuji nahrávky… ${done} / ${jobs.length}`;}}));
  // v73: jedna nepovedená nahrávka nezastaví celý poslech (místo ní je 1 s ticha); jen když chybí moc nahrávek, hraje se postaru.
  const bad=jobs.filter(sg=>sg.err);if(bad.length&&bad.length>jobs.length*0.3)throw new Error('nahrávky '+bad.length+'/'+jobs.length+' – '+bad[0].err);
  // poskládání: ticho se prodlouží podle rychlosti řeči, aby pauzy v sekundách seděly
@@ -2787,13 +2787,14 @@ function listenBgMedia(){try{if(!('mediaSession' in navigator))return;if(typeof 
  const h=(a,f)=>{try{navigator.mediaSession.setActionHandler(a,f);}catch(e){}};
  h('play',()=>{if(!listen.playing)listenRun();});h('pause',()=>{if(listen.playing)listenStop();});
  h('previoustrack',()=>$('listenPrev').click());h('nexttrack',()=>$('listenNext').click());}catch(e){}}
-listenAudio.addEventListener('ended',()=>{if(!listen.bgMode||listenCfg().loop)return;clearInterval(listenBgTimer);listen.playing=false;listen.bgMode=false;listen.i=0;
+// v73: „konec“ se počítá jen u poskládaného poslechu – ne u krátkého tichého zvuku, kterým se přehrávač odemyká.
+listenAudio.addEventListener('ended',()=>{if(!listen.bgMode||listenCfg().loop||!listenBg||listenAudio.src!==listenBg.url)return;clearInterval(listenBgTimer);listen.playing=false;listen.bgMode=false;listen.i=0;
  $('listenPhase').textContent='Hotovo 🎉 Stiskni Spustit pro další kolo.';updateListenBtn();markActive();});
 async function listenRunBg(){const tok=++listen.token;listen.playing=true;listen.bgMode=true;updateListenBtn();
  const reuse=listenBgReusable();
  // iPhone pustí zvuk jen po klepnutí – přehrávač se „odemkne“ hned teď, ještě před přípravou.
  try{if(!reuse){listenAudio.src=silentWavUrl();}const p=listenAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
- try{if(!reuse){$('listenPhase').textContent='⏳ Připravuji poslech…';await listenBuild(tok);if(tok!==listen.token)return;listenAudio.src=listenBg.url;listen.bgReveal=null;}
+ try{if(!reuse){$('listenPhase').textContent='⏳ Připravuji nahrávky…';await listenBuild(tok);if(tok!==listen.token)return;listenAudio.src=listenBg.url;listen.bgReveal=null;}
   const e=listenBg.tl[listen.i-listenBg.from],t=listenAudio.currentTime;
   listenAudio.loop=!!listenCfg().loop;
   const seek=()=>{if(!reuse||!(t>=e.start-0.05&&t<e.end))try{listenAudio.currentTime=e.start;}catch(er){}};
@@ -3210,7 +3211,7 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=73,KEY='karticky-seen-ver';
+ var VER=74,KEY='karticky-seen-ver';
  var NEWS=[{v:72,major:true,items:[
   'Poslech bez rukou hraje i se zamčenou obrazovkou nebo v jiné aplikaci – ovládání je na zamčené obrazovce. Před spuštěním se chvilku připravuje (nová slova se stáhnou). Vypnout jde v nastavení Poslechu.'
  ]},{v:71,major:true,items:[
