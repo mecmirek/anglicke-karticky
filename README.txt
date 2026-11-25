@@ -1,3 +1,9 @@
+NOVÉ VE v75
+- Vlastní slova („Moje slova“): ve Slovníku, když hledané slovo chybí, tlačítko ＋ Přidat. Pole: anglické slovo, český význam, nepovinně vzorová věta a překlad. Úprava a smazání tlačítkem ✎. Kontrola duplicit (i se slovníkem 2 000 slov).
+- Vlastní slova jsou ve Slovníku (filtr Moje slova), v Kartičkách (Režim: Moje slova), v Opakování a v Poslechu (Co poslouchat: Moje slova). Nemají lekci ani úroveň, nepočítají se do 2 000 ani do statistik postupu; kvíz a cvičení je nepoužívají.
+- Slovník → Otevřít nově přepne na Kartičky (dřív zůstala zobrazená obrazovka Dnes).
+- Synchronizace: vlastní slova jsou ve stavu účtu (user_state.custom, u každého slova novější změna vyhrává, smazání se pamatuje); jejich hodnocení se na jiném zařízení odvodí z plánu opakování (srs). Do tabulky card_progress (podle čísla slova) se nezapisují. Export/import výsledků je obsahuje.
+
 NOVÉ VE v74
 - Oprava: po první přípravě se nezobrazovaly kartičky a tlačítko ukazovalo Spustit (konec krátkého „odemykacího“ zvuku se bral jako konec poslechu).
 - Během přípravy se ukazuje počet nahrávek (u Vět a Spojení 2 na slovo – česky a anglicky).
