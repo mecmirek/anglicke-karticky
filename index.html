@@ -116,13 +116,11 @@ h2,.today-greet,.progress-body h3,.quiz-question,.lesson-overlay-bar strong{font
 .bottom-nav button.active{color:#0f6e56}
 @media(max-width:420px){.bottom-nav button{min-width:0;padding:4px 2px;font-size:.68rem}}
 .dict-body{max-width:760px;margin:0 auto}
-/* v75: vlastní slova */
-.custom-form{background:#fff;border:1px solid #d3d1c7;border-radius:12px;padding:12px 14px;margin:8px 0}.custom-form h3{margin:0 0 6px;font-size:1.05rem}
-.cf-field{display:block;margin:8px 0;font-size:.9rem;font-weight:600}.cf-field input{display:block;width:100%;margin-top:4px;font:inherit;font-size:16px;font-weight:400;padding:10px 12px;border:1px solid #d3d1c7;border-radius:10px;background:#fff;color:var(--ink)}
-.cf-btns{display:flex;gap:8px;flex-wrap:wrap}.cf-btns button{padding:10px 16px}.cf-del{margin-left:auto;color:#a32d2d}
+/* v76: návrh slova */
 .dict-add{display:block;width:100%;text-align:left;padding:12px 14px;margin:6px 0;border:1px dashed #1d9e75;border-radius:12px;background:#f1faf6;color:#085041;font:inherit;font-weight:650}
-.dict-row .dict-edit{padding:6px 8px;font-size:.85rem}
-html.dark .custom-form{background:#1f211e;border-color:#3a3c36}html.dark .cf-field input{background:#2a2c28;border-color:#3a3c36}html.dark .dict-add{background:#15261f;color:#5dcaa5;border-color:#2f7d62}html.dark .cf-del{color:#f09595}
+.dict-add:disabled{opacity:.7;border-style:solid}
+.prop-list{list-style:none;padding:0;margin:8px 0}.prop-list li{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-bottom:1px solid #e3e1d8}.prop-list li span{color:var(--muted);font-size:.9rem}
+html.dark .dict-add{background:#15261f;color:#5dcaa5;border-color:#2f7d62}html.dark .prop-list li{border-color:#3a3c36}
 #dictSearch{width:100%;font:inherit;font-size:1.05rem;padding:12px 14px;border:1px solid #d3d1c7;border-radius:12px;background:#fff;color:var(--ink)}
 .dict-filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}.dict-filters button{padding:6px 12px;border-radius:20px;font-size:.88rem}
 .dict-filters button.on{background:#0f6e56;border-color:#0f6e56;color:#fff}
@@ -496,7 +494,7 @@ html{overscroll-behavior-y:none}html.no-scroll,html.no-scroll body{overflow:hidd
 /* v66: na rubu kartičky se číslo kartičky nezobrazuje (je na líci) – dlouhý slovní druh („podstatné jméno / sloveso“) se s ním už nepřekrývá a kartička se nezvětší. */
 .side.back>.counter{display:none}
 #dlgBody #dlgNext,#dlgBody section.quiz-card,#dlgBody .bubble-row{scroll-margin-bottom:96px}
-</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.75</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
+</style></head><body class="view-today"><header><h1><span class="app-title">Anglické kartičky</span> <span class="app-ver" id="appVer">v.76</span></h1><div class="head-tools"><button type="button" class="sync-badge" id="syncBadge" title="Synchronizace mezi zařízeními">☁ Přihlásit</button><button type="button" id="openSettings" aria-label="Nastavení" title="Nastavení">⚙</button></div></header>
 <div class="lesson-launch"><button type="button" class="primary" id="openIrregularLesson">📘 Otevřít lekci nepravidelných sloves</button></div>
 <div id="irregularLessonOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Lekce nepravidelných sloves">
   <div class="lesson-overlay-bar irregular-outer-bar"><strong>Angličtina A2 – nepravidelná slovesa</strong><button type="button" id="closeIrregularLesson">← Zpět</button></div>
@@ -1719,21 +1717,21 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
     <p class="note" style="text-align:center">Klávesy: → znám · ← neznám. Slova, která znáš, se ti v denní dávce nebudou nabízet.</p>
   </div></div>
 </div>
+<div id="propOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Návrhy slov">
+  <div class="lesson-overlay-bar"><strong>Návrhy slov</strong><button type="button" id="closeProp">← Zpět</button></div>
+  <div class="quiz-wrap"><div class="dict-body">
+    <p class="note" id="propCount" aria-live="polite"></p>
+    <div class="cf-btns" style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="primary" id="propCopy">Zkopírovat seznam</button><button type="button" id="propClean" hidden></button><button type="button" id="propBack" style="margin-left:auto">Zpět</button></div>
+    <textarea id="propText" hidden rows="8" style="width:100%;margin-top:8px;font:inherit;font-size:16px"></textarea>
+    <ul class="prop-list" id="propList"></ul>
+  </div></div>
+</div>
 <div id="dictOverlay" class="lesson-overlay" hidden role="dialog" aria-modal="false" aria-label="Slovník">
   <div class="lesson-overlay-bar"><strong>Slovník</strong><button type="button" id="closeDict">← Zpět</button></div>
   <div class="quiz-wrap"><div class="dict-body">
     <input id="dictSearch" type="search" placeholder="Hledej anglicky nebo česky…" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Hledat ve slovníku">
     <div class="dict-filters" id="dictFilters" role="group" aria-label="Filtr">
-      <button type="button" data-f="all" class="on">Vše</button><button type="button" data-f="known">Umím</button><button type="button" data-f="review">Neumím</button><button type="button" data-f="new">Neprobraná</button><button type="button" data-f="starred">Oblíbená ★</button><button type="button" data-f="custom">Moje slova</button>
-    </div>
-    <div id="customForm" class="custom-form" hidden>
-      <h3 id="cfTitle">Nové slovo</h3>
-      <label class="cf-field">Anglické slovo nebo spojení<input id="cfWord" type="text" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false"></label>
-      <label class="cf-field">Český význam<input id="cfCs" type="text" maxlength="200" autocomplete="off" placeholder="např. pořad; díl podcastu"></label>
-      <label class="cf-field">Vzorová věta <span class="note">(nepovinné)</span><input id="cfSent" type="text" maxlength="300" autocomplete="off" autocapitalize="sentences"></label>
-      <label class="cf-field">Překlad věty <span class="note">(nepovinné)</span><input id="cfSentCs" type="text" maxlength="300" autocomplete="off"></label>
-      <p class="note" id="cfMsg" aria-live="polite"></p>
-      <div class="cf-btns"><button type="button" class="primary" id="cfSave">Uložit</button><button type="button" id="cfCancel">Zrušit</button><button type="button" id="cfDelete" class="cf-del">Smazat</button></div>
+      <button type="button" data-f="all" class="on">Vše</button><button type="button" data-f="known">Umím</button><button type="button" data-f="review">Neumím</button><button type="button" data-f="new">Neprobraná</button><button type="button" data-f="starred">Oblíbená ★</button>
     </div>
     <p class="note" id="dictCount" aria-live="polite"></p>
     <div id="dictList"></div>
@@ -1802,7 +1800,7 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
     </section>
     <section class="listen-settings">
       <h3>Nastavení</h3>
-      <label class="listen-field">Co poslouchat<select id="listenSrc"><option value="today">Dnešní nová slova</option><option value="due">Slova na řadě k opakování</option><option value="lesson">Aktuální lekce (50 slov)</option><option value="mistakes">Moje chyby</option><option value="starred">Oblíbená ★</option><option value="known">Naučená slova (náhodně 50)</option><option value="custom">Moje slova</option></select></label>
+      <label class="listen-field">Co poslouchat<select id="listenSrc"><option value="today">Dnešní nová slova</option><option value="due">Slova na řadě k opakování</option><option value="lesson">Aktuální lekce (50 slov)</option><option value="mistakes">Moje chyby</option><option value="starred">Oblíbená ★</option><option value="known">Naučená slova (náhodně 50)</option></select></label>
       <div class="listen-field">Směr<div class="seg" id="listenDir" role="group" aria-label="Směr"><button type="button" data-dir="en-cs">Anglicky → česky</button><button type="button" data-dir="cs-en">Česky → anglicky</button><button type="button" data-dir="mix">Střídavě</button></div></div>
       <div class="listen-field">Obsah<div class="seg" id="listenContent" role="group" aria-label="Obsah"><button type="button" data-content="words">Slova</button><button type="button" data-content="phrases">Spojení</button><button type="button" data-content="sentences">Věty</button></div></div>
       <div class="listen-field">Pauza na rozmyšlenou<div class="stepper"><button type="button" data-step="pause" data-d="-1" aria-label="Kratší pauza">−</button><output id="listenPauseVal">3 s</output><button type="button" data-step="pause" data-d="1" aria-label="Delší pauza">+</button></div></div>
@@ -1828,6 +1826,7 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
     <button type="button" class="plan-row" id="todayQuiz"><span class="pi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14"/><path d="M12 17.5v.01"/></svg></span><b>Kvíz dne</b><span id="todayQuizInfo">20 otázek</span></button>
   </div>
   <div class="week-card">
+  <button type="button" class="link-btn hidden" id="adminProposals" style="margin:0 0 10px">📬 Návrhy slov od uživatelů</button>
   <p class="note hidden" id="placementHint" style="margin:0 0 10px">Část slov už možná znáš. <button type="button" class="link-btn" id="openPlacement">Vstupní test (3 min)</button> je přeskočí.</p>
   <div class="week" id="todayWeek"></div>
   <div class="today-path"><span>Cesta k 2 000</span><div class="bar"><span id="pathBar"></span></div><span id="pathInfo">0 naučených</span></div>
@@ -1876,7 +1875,7 @@ function speechLang(){try{const a=(JSON.parse(localStorage.getItem("engcards1000
 </form>
 <p id="cloudStatus" class="note" aria-live="polite">Online synchronizace čeká na přihlášení.</p>
 </section>
-<section class="panel setup-panel" data-view="cards"><details class="card-setup" id="cardSetup"><summary id="cardSetupSum">Lekce 1</summary><div class="toolbar"><div class="field"><label for="lesson">Lekce</label><select id="lesson"></select></div><div class="field"><label for="direction">Směr procvičování</label><select id="direction"><option value="en-cs">Anglicky → česky</option><option value="cs-en">Česky → anglicky</option></select></div><div class="field"><label for="mode">Režim</label><select id="mode"><option value="all">Všechna slovíčka lekce</option><option value="review">Pouze „Neumím“</option><option value="due">Dnes k opakování</option><option value="today">Dnešní nová slova</option><option value="starred">Oblíbená ★</option><option value="custom">Moje slova</option></select></div><div class="field"><label for="jump">Přejít na kartičku</label><select id="jump"></select></div><div class="field"><label>Celkový postup</label><div class="stats"><span><b id="tk">0</b> umím</span><span><b id="tr">0</b> opakovat</span></div></div></div><div class="bar"><span id="bar"></span></div><div class="stats"><span>V lekci: <b id="lp">1/50</b></span><span>Celková kartička: <b id="cn">1/1000</b></span><span>Hodnoceno: <b id="rated">0</b></span><span>Dnes k opakování: <b id="dueCount">0</b></span><span id="srsNote" aria-live="polite"></span></div></details></section>
+<section class="panel setup-panel" data-view="cards"><details class="card-setup" id="cardSetup"><summary id="cardSetupSum">Lekce 1</summary><div class="toolbar"><div class="field"><label for="lesson">Lekce</label><select id="lesson"></select></div><div class="field"><label for="direction">Směr procvičování</label><select id="direction"><option value="en-cs">Anglicky → česky</option><option value="cs-en">Česky → anglicky</option></select></div><div class="field"><label for="mode">Režim</label><select id="mode"><option value="all">Všechna slovíčka lekce</option><option value="review">Pouze „Neumím“</option><option value="due">Dnes k opakování</option><option value="today">Dnešní nová slova</option><option value="starred">Oblíbená ★</option></select></div><div class="field"><label for="jump">Přejít na kartičku</label><select id="jump"></select></div><div class="field"><label>Celkový postup</label><div class="stats"><span><b id="tk">0</b> umím</span><span><b id="tr">0</b> opakovat</span></div></div></div><div class="bar"><span id="bar"></span></div><div class="stats"><span>V lekci: <b id="lp">1/50</b></span><span>Celková kartička: <b id="cn">1/1000</b></span><span>Hodnoceno: <b id="rated">0</b></span><span>Dnes k opakování: <b id="dueCount">0</b></span><span id="srsNote" aria-live="polite"></span></div></details></section>
 <details class="audio-settings" id="audioSettings" data-view="settings" open>
 <summary>Vzhled, hlas a překlad vět</summary>
 <label class="pref-row" for="prefTheme">Vzhled: <select id="prefTheme" style="width:auto;padding:4px 8px"><option value="auto">podle zařízení</option><option value="light">světlý</option><option value="dark">tmavý</option></select></label>
@@ -1921,7 +1920,8 @@ const wordByLower=new Map(words.map(w=>[w.word.toLowerCase(),w.word]));
 // v75: Vlastní slova („Moje slova“) – přidávají se ve Slovníku. Ukládají se do stavu účtu (synchronizace přes Supabase user_state),
 // ne do seznamu 2 000 slov: nemají lekci ani úroveň a nepočítají se do postupu. Hodnocení kartiček se u nich odvozuje z plánu opakování (srs).
 let customT={};const customObjs=new Map();
-function customWords(){const out=[];for(const x of Object.values(customT).filter(x=>x&&!x.del&&x.word&&x.cs).sort((a,b)=>(a.c||a.t||0)-(b.c||b.t||0))){
+function customWords(){return [];/* v76: osobní „Moje slova“ zrušena – nahradily je návrhy slov pro všechny; uložená data zůstávají */}
+function customWordsOld(){const out=[];for(const x of Object.values(customT).filter(x=>x&&!x.del&&x.word&&x.cs).sort((a,b)=>(a.c||a.t||0)-(b.c||b.t||0))){
  let o=customObjs.get(x.word);if(!o){o={word:x.word,custom:true,ipa:'',pos:'vlastní slovo',pos_en:'my word',colloc:[],sentence_ipa:''};customObjs.set(x.word,o);}
  o.cs=x.cs;o.sentence=x.sentence||'';o.sentence_cs=x.sentence_cs||'';out.push(o);}return out;}
 function isCustomWord(w){const x=customT[w];return !!(x&&!x.del);}
@@ -2269,7 +2269,7 @@ async function loadCloudProgress(user){
   try{const ak=prefsKeyFor(user.id),gp=localStorage.getItem(PREFS_KEY);if(!localStorage.getItem(ak)&&gp){localStorage.setItem(ak,gp);localStorage.removeItem(PREFS_KEY);}}catch(e){}
   switchPrefs(user.id);
   loadDaily();$('dailyCount').value=String(daily.count);$('myLevel').value=daily.level;
-  cloudReady=true;localSave();render();
+  cloudReady=true;localSave();render();setTimeout(()=>{checkProposals();migrateCustomToProposals();},800);
   await syncOneCardChanges();
   await syncVerbPracticeAnswers();
   await loadVerbPracticeHistory();
@@ -2699,7 +2699,7 @@ $('todayVerbs').onclick=()=>practiceVerbList(dueVerbs(),'Slovesa na řadě');
 // --- Poslech bez rukou: slovo – pauza – překlad (a věta), oběma směry; pauza se nastavuje ---
 const LISTEN_DEF={src:'today',dir:'en-cs',content:'phrases',bg:true,pause:3,gap:2,sentence:true,sentenceCs:false,shuffle:false,loop:false};
 let listen={items:[],i:0,playing:false,token:0,wake:null};
-function listenCfg(){prefs.listen={...LISTEN_DEF,...(prefs.listen||{})};return prefs.listen;}
+function listenCfg(){prefs.listen={...LISTEN_DEF,...(prefs.listen||{})};if(prefs.listen.src==='custom')prefs.listen.src='today';return prefs.listen;}
 function saveListenCfg(){listenBgGen++;savePrefs();renderListenCfg();}
 function renderListenCfg(){const c=listenCfg();$('listenSrc').value=c.src;document.querySelectorAll('#listenDir [data-dir]').forEach(b=>{b.classList.toggle('on',b.dataset.dir===c.dir);b.setAttribute('aria-pressed',b.dataset.dir===c.dir);});
  $('listenPauseVal').textContent=c.pause+' s';$('listenGapVal').textContent=c.gap+' s';$('listenSentence').checked=c.sentence;$('listenSentenceCs').checked=c.sentenceCs;$('listenSentenceCs').disabled=!c.sentence;$('listenShuffle').checked=c.shuffle;$('listenLoop').checked=c.loop;
@@ -3058,56 +3058,73 @@ function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[�
 function dictState(w){return grades[w.word]==='known'?'known':grades[w.word]==='review'?'review':'new';}
 function renderDict(){
  const raw=$('dictSearch').value.trim().replace(/\s+/g,' '),q=fold(raw);
- let list=words.map((w,i)=>({w,i})).concat(customWords().map(w=>({w,i:words.length+1e6})));
- if(dictFilter==='custom')list=list.filter(x=>x.w.custom);else
+ let list=words.map((w,i)=>({w,i}));
+
  if(dictFilter==='starred')list=list.filter(x=>starred[x.w.word]);else if(dictFilter!=='all')list=list.filter(x=>dictState(x.w)===dictFilter);
  if(q){list=list.map(x=>{const en=fold(x.w.word),cs=fold(x.w.cs);const score=en===q?0:en.startsWith(q)?1:cs.split(/[;,()]\s*/).some(p=>p.trim()===q)?2:en.includes(q)?3:cs.includes(q)?4:9;return {...x,score};}).filter(x=>x.score<9).sort((a,b)=>a.score-b.score||a.i-b.i);}
  const shown=list.slice(0,DICT_LIMIT);
  const exact=q&&allWords().some(w=>fold(w.word)===q);
- $('dictCount').textContent=dictFilter==='custom'&&!list.length&&!q?'Zatím nemáš žádná vlastní slova. Napiš slovo do vyhledávání – když ve slovníku není, objeví se tlačítko Přidat.':list.length?(list.length>DICT_LIMIT?`Nalezeno ${list.length} slov, zobrazeno prvních ${DICT_LIMIT}. Upřesni hledání.`:`Nalezeno ${list.length} ${list.length===1?'slovo':list.length<5?'slova':'slov'}.`):'Nic nenalezeno. Zkus jiné slovo nebo jiný filtr.';
+ $('dictCount').textContent=list.length?(list.length>DICT_LIMIT?`Nalezeno ${list.length} slov, zobrazeno prvních ${DICT_LIMIT}. Upřesni hledání.`:`Nalezeno ${list.length} ${list.length===1?'slovo':list.length<5?'slova':'slov'}.`):'Nic nenalezeno. Zkus jiné slovo nebo jiný filtr.';
  const label={known:'✓ umím',review:'✗ neumím',new:'nové'};
- $('dictList').innerHTML=(q&&!exact&&/[a-z]/i.test(raw)?`<button type="button" class="dict-add" data-add>＋ Přidat slovo „${esc(raw)}“ do Moje slova</button>`:'')+shown.map(({w,i})=>{const st=dictState(w);return `<div class="dict-row" data-w="${esc(w.word)}"><button type="button" class="audio-btn extra-audio" data-say aria-label="Přehrát ${esc(w.word)}">🔊</button><div class="dict-main"><b>${esc(w.word)}</b><span class="ipa">${esc(w.ipa||'')}</span><div class="dict-cs">${esc(w.cs)} · ${w.custom?'moje slovo':`lekce ${Math.floor(i/50)+1} ${levelBadge(w.word)}`}</div></div><span class="dict-state ${st}">${label[st]}</span><div style="display:flex;gap:4px;align-items:center"><button type="button" class="star-btn${starred[w.word]?' on':''}" data-dstar aria-pressed="${!!starred[w.word]}" aria-label="Oblíbené">${starred[w.word]?'★':'☆'}</button>${w.custom?'<button type="button" class="dict-edit" data-edit aria-label="Upravit">✎</button>':''}<button type="button" class="dict-open" data-open>Otevřít</button></div></div>`;}).join('');
+ $('dictList').innerHTML=(q&&!exact?proposeButton(raw):'')+shown.map(({w,i})=>{const st=dictState(w);return `<div class="dict-row" data-w="${esc(w.word)}"><button type="button" class="audio-btn extra-audio" data-say aria-label="Přehrát ${esc(w.word)}">🔊</button><div class="dict-main"><b>${esc(w.word)}</b><span class="ipa">${esc(w.ipa||'')}</span><div class="dict-cs">${esc(w.cs)} · ${w.custom?'moje slovo':`lekce ${Math.floor(i/50)+1} ${levelBadge(w.word)}`}</div></div><span class="dict-state ${st}">${label[st]}</span><div style="display:flex;gap:4px;align-items:center"><button type="button" class="star-btn${starred[w.word]?' on':''}" data-dstar aria-pressed="${!!starred[w.word]}" aria-label="Oblíbené">${starred[w.word]?'★':'☆'}</button><button type="button" class="dict-open" data-open>Otevřít</button></div></div>`;}).join('');
 }
 function openDict(){$('dictOverlay').hidden=false;document.body.style.overflow='hidden';renderDict();$('dictSearch').focus();}
 function closeDict(){$('dictOverlay').hidden=true;document.body.style.overflow='';}
 $('closeDict').onclick=closeDict;
 $('dictSearch').addEventListener('input',renderDict);
 $('dictFilters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;dictFilter=b.dataset.f;$('dictFilters').querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));renderDict();});
-$('dictList').addEventListener('click',e=>{if(e.target.closest('[data-add]')){customOpen(null,$('dictSearch').value.trim().replace(/\s+/g,' '));return;}
+$('dictList').addEventListener('click',e=>{if(e.target.closest('[data-add]')){proposeWord($('dictSearch').value);return;}
  const row=e.target.closest('.dict-row');if(!row)return;const w=allWords().find(x=>x.word===row.dataset.w);if(!w)return;const i=words.indexOf(w);
- if(e.target.closest('[data-edit]')){customOpen(w.word);return;}
  if(e.target.closest('[data-say]')){speakText(w.word);return;}
  if(e.target.closest('[data-dstar]')){toggleStar(w.word);localSave();renderDict();render();return;}
  if(e.target.closest('[data-open]')){
   // Otevře kartičku ve své lekci (režim všech slov); v režimu Česky → anglicky jen pokud má český význam.
   if(w.custom){$('mode').value='custom';mode='custom';}else{lesson=Math.floor(i/50)+1;$('lesson').value=lesson;$('mode').value='all';mode='all';}let idx=set().indexOf(w);if(idx<0){$('direction').value='en-cs';idx=set().indexOf(w);}index=Math.max(0,idx);save();render();closeDict();setView('cards');setNav('cards');}
 });
-// v75: Formulář vlastního slova (přidat / upravit / smazat).
-let cfEditing=null;
-function customOpen(word,prefill){cfEditing=word;const x=word?customT[word]:null;
- $('cfTitle').textContent=word?'Upravit vlastní slovo':'Nové slovo';$('cfWord').value=x?x.word:(prefill||'');$('cfCs').value=x?x.cs:'';$('cfSent').value=x?(x.sentence||''):'';$('cfSentCs').value=x?(x.sentence_cs||''):'';
- $('cfMsg').textContent=word?'':'Výslovnost obstará hlas. Slovo najdeš v Kartičkách (Režim: Moje slova), v Opakování a v Poslechu.';$('cfDelete').hidden=!word;
- $('customForm').hidden=false;$('customForm').scrollIntoView({block:'start'});setTimeout(()=>{try{$(word||!prefill?'cfWord':'cfCs').focus();}catch(e){}},50);}
-function customClose(){cfEditing=null;$('customForm').hidden=true;}
-function customMove(from,to){if(from===to)return;const now=Date.now();
- if(grades[from]){grades[to]=grades[from];delete grades[from];}delete dirty[from];
- if(srs[from]){srs[to]={...srs[from],t:now};delete srs[from];}
- if(starred[from]){delete starred[from];starredT[from]={on:false,t:now};starred[to]=true;starredT[to]={on:true,t:now};}}
-$('cfCancel').onclick=customClose;
-$('cfSave').onclick=()=>{const clean=v=>v.trim().replace(/\s+/g,' ');const word=clean($('cfWord').value),cs=clean($('cfCs').value),sentence=clean($('cfSent').value),sentence_cs=clean($('cfSentCs').value);
- if(!word){$('cfMsg').textContent='Napiš anglické slovo.';$('cfWord').focus();return;}
- if(!cs){$('cfMsg').textContent='Napiš český význam.';$('cfCs').focus();return;}
- const low=word.toLowerCase();
- if(wordByLower.has(low)){$('cfMsg').textContent=`„${wordByLower.get(low)}“ už ve slovníku je – najdeš ho vyhledáním.`;return;}
- const dup=customWords().find(w=>w.word.toLowerCase()===low&&w.word!==cfEditing);if(dup){$('cfMsg').textContent=`„${dup.word}“ už máš v Moje slova.`;return;}
- const now=Date.now(),prev=cfEditing?customT[cfEditing]:null;
- if(cfEditing&&cfEditing!==word){customT[cfEditing]={word:cfEditing,del:true,t:now};customMove(cfEditing,word);customObjs.delete(cfEditing);}
- customT[word]={word,cs,sentence,sentence_cs,c:(prev&&prev.c)||now,t:now};
- const added=!cfEditing;customClose();localSave();
- $('dictSearch').value=word;renderDict();render();$('dictCount').textContent=added?`✓ „${word}“ přidáno do Moje slova.`:`✓ „${word}“ upraveno.`;};
-$('cfDelete').onclick=()=>{const w=cfEditing;if(!w)return;if(!confirm(`Smazat „${w}“ z Moje slova? Smaže se i jeho postup.`))return;
- const now=Date.now();customT[w]={word:w,del:true,t:now};delete grades[w];delete srs[w];delete dirty[w];if(starred[w]){delete starred[w];starredT[w]={on:false,t:now};}customObjs.delete(w);
- customClose();localSave();renderDict();render();$('dictCount').textContent=`„${w}“ smazáno.`;};
+// v76: Návrhy slov pro všechny. Přihlášený uživatel navrhne chybějící slovo (jen anglické slovo) – uloží se do Supabase
+// (tabulka word_requests, max 20 denně). Správce vidí na obrazovce Dnes počet nových návrhů, seznam zkopíruje a slova se
+// doplní do další verze aplikace. Slova, která už ve slovníku jsou, se v seznamu nezobrazují (a správce je může smazat).
+const ADMIN_EMAIL='mec.miroslav@icloud.com',PROPOSED_KEY='engcards-proposed-v1';
+let proposed=new Set();try{proposed=new Set(JSON.parse(localStorage.getItem(PROPOSED_KEY)||'[]'));}catch(e){}
+function proposeNorm(v){return String(v||'').trim().replace(/\s+/g,' ').replace(/[’`]/g,"'").toLowerCase();}
+function proposeValid(v){return v.length>=1&&v.length<=60&&/^[a-z][a-z' -]*$/.test(v);}
+function proposeButton(raw){const v=proposeNorm(raw);if(!proposeValid(v))return '';
+ if(proposed.has(v))return `<button type="button" class="dict-add" disabled>✓ „${esc(v)}“ už je navržené – přibude v některé z příštích verzí</button>`;
+ if(!(cloudUser&&cloudReady))return `<button type="button" class="dict-add" disabled>Slovo tu chybí. Přihlas se a můžeš ho navrhnout do aplikace.</button>`;
+ return `<button type="button" class="dict-add" data-add>＋ Navrhnout slovo „${esc(v)}“ do aplikace</button>`;}
+async function proposeWord(raw){const v=proposeNorm(raw);if(!proposeValid(v)||!cloud||!cloudUser)return;const b=document.querySelector('[data-add]');if(b){b.disabled=true;b.textContent='Odesílám…';}
+ let msg;try{const {error}=await cloud.from('word_requests').insert({word:v});
+  if(error&&error.code!=='23505')throw error;proposed.add(v);try{localStorage.setItem(PROPOSED_KEY,JSON.stringify([...proposed]));}catch(e){}
+  msg=`✓ Díky! „${v}“ je navržené – přibude v některé z příštích verzí aplikace.`;}
+ catch(err){msg=/row-level security|policy/i.test(err.message||'')?'Dnes už jsi navrhl hodně slov (max. 20 denně). Zkus to zítra.':'Návrh se nepodařilo odeslat – zkontroluj internet a zkus to znovu.';}
+ renderDict();$('dictCount').textContent=msg;}
+// Správce: počet nových návrhů na obrazovce Dnes + seznam ke zkopírování.
+let proposals=[];
+function isAdmin(){return !!(cloudUser&&cloudReady&&String(cloudUser.email||'').toLowerCase()===ADMIN_EMAIL);}
+async function checkProposals(){if(!isAdmin()||!cloud){$('adminProposals').classList.add('hidden');return;}
+ try{const {data,error}=await cloud.from('word_requests').select('word,created_at').order('created_at',{ascending:true}).limit(5000);if(error)throw error;
+  const m=new Map();for(const r of data||[]){const v=proposeNorm(r.word);if(!v)continue;const x=m.get(v)||{word:v,n:0,first:r.created_at,inApp:wordByLower.has(v)};x.n++;m.set(v,x);}
+  proposals=[...m.values()];const fresh=proposals.filter(x=>!x.inApp);
+  $('adminProposals').textContent=`📬 Návrhy slov od uživatelů: ${fresh.length}`;$('adminProposals').classList.toggle('hidden',!fresh.length&&!proposals.some(x=>x.inApp));}
+ catch(e){$('adminProposals').classList.add('hidden');}}
+function renderProposals(){const fresh=proposals.filter(x=>!x.inApp).sort((a,b)=>b.n-a.n||a.word.localeCompare(b.word)),done=proposals.filter(x=>x.inApp);
+ $('propCount').textContent=fresh.length?`Nová slova k doplnění: ${fresh.length}. Zkopíruj seznam a pošli ho Claudovi – doplní je do další verze.`:'Žádné nové návrhy.';
+ $('propList').innerHTML=fresh.map(x=>`<li><b>${esc(x.word)}</b><span>${x.n>1?x.n+'× navrženo':''}</span></li>`).join('');
+ $('propCopy').disabled=!fresh.length;$('propClean').hidden=!done.length;$('propClean').textContent=`Smazat ${done.length} už doplněných`;}
+$('adminProposals').onclick=()=>{renderProposals();$('propOverlay').hidden=false;document.body.style.overflow='hidden';};
+$('propBack').onclick=()=>$('closeProp').click();
+$('closeProp').onclick=()=>{$('propOverlay').hidden=true;document.body.style.overflow='';checkProposals();};
+$('propCopy').onclick=async()=>{const fresh=proposals.filter(x=>!x.inApp).sort((a,b)=>b.n-a.n||a.word.localeCompare(b.word));
+ const txt='Návrhy slov do aplikace Anglické kartičky ('+fresh.length+'):\n'+fresh.map(x=>x.word+(x.n>1?' ('+x.n+'×)':'')).join('\n');
+ try{await navigator.clipboard.writeText(txt);$('propCount').textContent='✓ Zkopírováno – vlož to do chatu s Claudem.';}
+ catch(e){const t=$('propText');t.hidden=false;t.value=txt;t.select();$('propCount').textContent='Označ text níže a zkopíruj ho.';}};
+$('propClean').onclick=async()=>{const done=proposals.filter(x=>x.inApp).map(x=>x.word);if(!done.length)return;$('propClean').disabled=true;
+ try{const {error}=await cloud.from('word_requests').delete().in('word',done);if(error)throw error;proposals=proposals.filter(x=>!x.inApp);renderProposals();$('propCount').textContent='✓ Smazáno. '+$('propCount').textContent;}
+ catch(e){$('propCount').textContent='Mazání se nepovedlo: '+(e.message||'');}finally{$('propClean').disabled=false;}};
+// Slova uložená dřív jako osobní „Moje slova“ (v75) se jednou pošlou jako návrhy.
+async function migrateCustomToProposals(){if(!(cloudUser&&cloudReady&&cloud))return;const list=Object.values(customT||{}).filter(x=>x&&!x.del&&x.word).map(x=>proposeNorm(x.word)).filter(v=>proposeValid(v)&&!proposed.has(v)&&!wordByLower.has(v));
+ for(const v of list.slice(0,20)){try{const {error}=await cloud.from('word_requests').insert({word:v});if(!error||error.code==='23505'){proposed.add(v);}}catch(e){}}
+ try{localStorage.setItem(PROPOSED_KEY,JSON.stringify([...proposed]));}catch(e){}}
 // --- Spodní navigace ---
 function setNav(k){document.querySelectorAll('[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===k));}
 document.querySelector('.bottom-nav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(!b)return;const k=b.dataset.nav;
@@ -3272,8 +3289,10 @@ document.addEventListener('keydown',e=>{
 </script><script>
 /* v42: okno „Co je nového“ – po aktualizaci s výraznými změnami se jednou zobrazí popis. */
 (function(){
- var VER=75,KEY='karticky-seen-ver';
- var NEWS=[{v:75,major:true,items:[
+ var VER=76,KEY='karticky-seen-ver';
+ var NEWS=[{v:76,major:true,items:[
+  'Chybí ti ve Slovníku slovo? Když jsi přihlášený, tlačítkem ＋ Navrhnout slovo ho pošleš do aplikace. Navržená slova doplníme (s výslovností, významy a větami) v některé z příštích verzí – pro všechny. Osobní „Moje slova“ se tím ruší; slova, která sis v nich uložil, se odešlou jako návrhy.'
+ ]},{v:75,major:true,items:[
   'Vlastní slova: když hledané slovo ve Slovníku není, přidáš ho tlačítkem ＋ Přidat (anglicky, česky, případně věta). Najdeš je ve Slovníku (filtr Moje slova), v Kartičkách (Režim: Moje slova), v Opakování a v Poslechu. Upravit nebo smazat je jde tlačítkem ✎.'
  ]},{v:72,major:true,items:[
   'Poslech bez rukou hraje i se zamčenou obrazovkou nebo v jiné aplikaci – ovládání je na zamčené obrazovce. Před spuštěním se chvilku připravuje (nová slova se stáhnou). Vypnout jde v nastavení Poslechu.'

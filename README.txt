@@ -1,3 +1,9 @@
+NOVÉ VE v76
+- Návrhy slov pro všechny: ve Slovníku, když hledané slovo chybí, přihlášený uživatel klepne na „＋ Navrhnout slovo“. Uloží se jen anglické slovo (malými písmeny) do Supabase tabulky word_requests (max. 20 denně na uživatele, stejné slovo od stejného uživatele jen jednou). Nepřihlášený uživatel vidí výzvu k přihlášení.
+- Správce (mec.miroslav@icloud.com): na obrazovce Dnes „📬 Návrhy slov od uživatelů: N“ → seznam (s počtem navržení), „Zkopírovat seznam“ (pro Clauda) a „Smazat už doplněné“ (slova, která už v aplikaci jsou).
+- Osobní „Moje slova“ (v75) zrušena v rozhraní; uložená data zůstávají ve stavu účtu a slova se po přihlášení jednou odešlou jako návrhy.
+- Potřebná tabulka v Supabase: viz soubor supabase_word_requests.sql (jednorázově spustit v SQL Editoru).
+
 NOVÉ VE v75
 - Vlastní slova („Moje slova“): ve Slovníku, když hledané slovo chybí, tlačítko ＋ Přidat. Pole: anglické slovo, český význam, nepovinně vzorová věta a překlad. Úprava a smazání tlačítkem ✎. Kontrola duplicit (i se slovníkem 2 000 slov).
 - Vlastní slova jsou ve Slovníku (filtr Moje slova), v Kartičkách (Režim: Moje slova), v Opakování a v Poslechu (Co poslouchat: Moje slova). Nemají lekci ani úroveň, nepočítají se do 2 000 ani do statistik postupu; kvíz a cvičení je nepoužívají.
