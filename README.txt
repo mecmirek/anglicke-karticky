@@ -1,3 +1,10 @@
+NOVÉ VE v77
+- Dnes → nová dlaždice „Mluv s AI“ (na místě dřívější dlaždice Poslech vět). Otevře panel s textem pro hlasový chat: prompt pro AI (úroveň z Nastavení → Moje úroveň) a seznam slov „anglicky – česky | ukázková věta“. Slova: dnešní nová slova + slova k opakování, nejvýš 10; když žádná nejsou, použije se 10 naposledy procvičovaných. Slovo bez ukázkové věty dostane pokyn, ať AI větu vymyslí. Konverzace probíhá anglicky, souhrn chyb na konci česky.
+- Tlačítka: „Kopírovat“ (schránka, s náhradním způsobem pro starší prohlížeče) a „Sdílet“ (systémová nabídka sdílení – na iPhonu a Macu; kde není, tlačítko se neukáže). Aplikace nic neodesílá, text jen předá.
+- Kartičky „Nová slova“ ve stavu „Hotovo!“: odkaz „🗣️ Procvič mluvení s AI“.
+- Dlaždice „Poslech“ teď otevře výběr zespodu: „Bez rukou“ (dosavadní Poslech bez rukou) nebo „Poslech vět“ (cvičení z v61) + Zrušit. Samotná cvičení se nemění.
+- Zobrazí se „Co je nového“.
+
 NOVÉ VE v76
 - Návrhy slov pro všechny: ve Slovníku, když hledané slovo chybí, přihlášený uživatel klepne na „＋ Navrhnout slovo“. Uloží se jen anglické slovo (malými písmeny) do Supabase tabulky word_requests (max. 20 denně na uživatele, stejné slovo od stejného uživatele jen jednou). Nepřihlášený uživatel vidí výzvu k přihlášení.
 - Správce (mec.miroslav@icloud.com): na obrazovce Dnes „📬 Návrhy slov od uživatelů: N“ → seznam (s počtem navržení), „Zkopírovat seznam“ (pro Clauda) a „Smazat už doplněné“ (slova, která už v aplikaci jsou).
